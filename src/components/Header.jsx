@@ -1,7 +1,7 @@
 import React from 'react';
-import { Users, Server, Bell, UserCheck, AlertTriangle } from 'lucide-react';
+import { Users, Server, Bell, UserCheck, AlertTriangle, Menu } from 'lucide-react';
 
-export default function Header({ activeTab, isDdosActive }) {
+export default function Header({ activeTab, isDdosActive, setIsMobileOpen }) {
   const getTitle = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -19,9 +19,18 @@ export default function Header({ activeTab, isDdosActive }) {
 
   return (
     <header className="header">
-      <div className="header-title-section">
-        <h1 className="header-title">{getTitle()}</h1>
-        <p className="header-subtitle">Real-time network security console</p>
+      <div className="header-left-group">
+        <button 
+          onClick={() => setIsMobileOpen(true)} 
+          className="mobile-menu-trigger-btn"
+          title="Open Menu"
+        >
+          <Menu size={20} />
+        </button>
+        <div className="header-title-section">
+          <h1 className="header-title">{getTitle()}</h1>
+          <p className="header-subtitle">Real-time network security console</p>
+        </div>
       </div>
 
       <div className="header-widgets">

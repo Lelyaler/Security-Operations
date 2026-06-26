@@ -12,6 +12,10 @@ import { ShieldAlert, X } from 'lucide-react';
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   
+  // Sidebar State (Desktop Collapse & Mobile Swipe Open)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  
   // Shared Simulator States
   const [isDdosActive, setIsDdosActive] = useState(false);
   const [isFeedFrozen, setIsFeedFrozen] = useState(false);
@@ -106,16 +110,24 @@ function App() {
   const unresolvedAlertsCount = alerts.filter(a => a.status !== 'resolved').length;
 
   return (
-    <div className="app-container">
+    <div className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isMobileSidebarOpen ? 'mobile-sidebar-open' : ''}`}>
       <Sidebar 
         activeTab={activeTab} 
         setActiveTab={setActiveTab} 
         alertsCount={unresolvedAlertsCount}
         isDdosActive={isDdosActive}
+        isCollapsed={isSidebarCollapsed}
+        setIsCollapsed={setIsSidebarCollapsed}
+        isMobileOpen={isMobileSidebarOpen}
+        setIsMobileOpen={setIsMobileSidebarOpen}
       />
       
       <div className="main-content">
-        <Header activeTab={activeTab} isDdosActive={isDdosActive} />
+        <Header 
+          activeTab={activeTab} 
+          isDdosActive={isDdosActive} 
+          setIsMobileOpen={setIsMobileSidebarOpen} 
+        />
         
         <main className="content-area">
           {renderContent()}

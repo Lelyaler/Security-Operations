@@ -105,21 +105,90 @@ body {
 /* Sidebar Styles */
 .sidebar {
   width: var(--sidebar-width);
-  background: rgba(4, 5, 7, 0.9);
+  background: rgba(4, 5, 7, 0.95);
   backdrop-filter: blur(20px);
   border-right: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
   height: 100vh;
+  transition: var(--transition-smooth);
+  position: relative;
 }
 
 .sidebar-logo {
   height: var(--header-height);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
   padding: 0 24px;
   border-bottom: 1px solid var(--card-border);
+  position: relative;
+}
+
+.sidebar-toggle-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-dark);
+  border: 1px solid var(--card-border);
+  color: var(--text-muted);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  position: absolute;
+  right: -13px;
+  top: calc(50% - 13px);
+  z-index: 105;
+}
+
+.sidebar-toggle-action-btn:hover {
+  background: var(--primary-glow);
+  color: var(--primary);
+  border-color: var(--primary);
+  transform: scale(1.1);
+}
+
+.sidebar-close-mobile-btn {
+  display: none;
+}
+
+.mobile-menu-trigger-btn {
+  display: none;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Sidebar Desktop Collapsed Styles */
+.sidebar.collapsed {
+  width: 76px;
+}
+
+.sidebar.collapsed .sidebar-logo {
+  justify-content: center;
+  padding: 0;
+}
+
+.sidebar.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px;
+}
+
+.sidebar.collapsed .nav-badge {
+  position: absolute;
+  top: 4px;
+  right: 12px;
+}
+
+.sidebar.collapsed .nav-badge.collapsed-badge {
+  font-size: 0.6rem;
+  padding: 1px 4px;
 }
 
 .logo-text {
@@ -1602,7 +1671,7 @@ body {
   }
   
   .main-content {
-    height: calc(100vh - 64px);
+    height: 100vh;
     width: 100%;
   }
 
@@ -1611,64 +1680,110 @@ body {
     padding-bottom: 24px;
   }
 
-  /* Bottom Navigation Bar instead of Sidebar */
-  .sidebar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 64px;
-    flex-direction: row;
-    border-right: none;
-    border-top: 1px solid var(--card-border);
-    z-index: 999;
+  /* Hamburger Menu Button inside Header */
+  .mobile-menu-trigger-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-main);
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    margin-right: 12px;
   }
 
+  .mobile-menu-trigger-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  /* Slide-out Sidebar for Mobile */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    height: 100vh;
+    transform: translateX(-100%);
+    z-index: 1001;
+    border-right: 1px solid var(--card-border);
+    box-shadow: 20px 0 50px rgba(0, 0, 0, 0.8);
+    background: rgba(4, 5, 7, 0.98);
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+  }
+
+  /* Show Logo & Footer inside mobile menu drawer */
   .sidebar-logo, 
   .sidebar-footer {
+    display: flex !important;
+  }
+
+  .sidebar-close-mobile-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+  }
+
+  .sidebar-close-mobile-btn:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Hide Desktop Collapse btn on Mobile */
+  .sidebar-toggle-action-btn {
     display: none !important;
   }
 
   .sidebar-nav {
-    flex-direction: row;
-    padding: 0 8px;
-    gap: 4px;
-    width: 100%;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column !important;
+    padding: 24px 16px !important;
+    gap: 8px !important;
+    justify-content: flex-start !important;
+    align-items: stretch !important;
+    height: auto !important;
   }
 
   .nav-item {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 0;
-    font-size: 0.65rem;
-    gap: 3px;
-    text-align: center;
-    height: 100%;
-    width: 22%;
-    border-radius: 8px;
-    color: var(--text-muted);
-    background: transparent;
-    position: relative;
-  }
-
-  .nav-item.active {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-title);
-  }
-
-  .nav-icon {
-    width: 18px !important;
-    height: 18px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 12px 16px !important;
+    font-size: 0.95rem !important;
+    gap: 12px !important;
+    width: 100% !important;
+    text-align: left !important;
+    height: auto !important;
+    color: var(--text-muted) !important;
   }
 
   .nav-badge {
-    position: absolute;
-    top: 4px;
-    right: calc(50% - 20px);
+    position: static !important;
   }
 
   /* Compact Header */
@@ -1681,7 +1796,7 @@ body {
   }
 
   .header-title-section {
-    max-width: 60%;
+    max-width: 100%;
   }
 
   .header-title {
@@ -1729,7 +1844,7 @@ body {
 
   /* Floating controls and overlays */
   .simulator-toggle-btn {
-    bottom: 80px;
+    bottom: 24px;
     right: 16px;
     padding: 10px 16px;
     font-size: 0.8rem;
@@ -1737,7 +1852,7 @@ body {
 
   .simulator-drawer {
     position: fixed;
-    bottom: 140px;
+    bottom: 80px;
     top: auto;
     right: 16px;
     left: 16px;
