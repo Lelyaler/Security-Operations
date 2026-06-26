@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './components/DashboardView';
-import GamesView from './components/GamesView';
-import FraudView from './components/FraudView';
-import TransactionsView from './components/TransactionsView';
 import SimulatorDeck from './components/SimulatorDeck';
 import { initialLiveBets, mockFraudAlerts } from './utils/mockData';
 import { ShieldAlert, X } from 'lucide-react';
+
+const GamesView = lazy(() => import('./components/GamesView'));
+const FraudView = lazy(() => import('./components/FraudView'));
+const TransactionsView = lazy(() => import('./components/TransactionsView'));
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -147,7 +148,9 @@ function App() {
         />
         
         <main className="content-area">
-          {renderContent()}
+          <Suspense fallback={<div className="loading-fallback">Loading Console Node...</div>}>
+            {renderContent()}
+          </Suspense>
         </main>
       </div>
 
