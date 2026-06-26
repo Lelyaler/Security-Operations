@@ -1433,6 +1433,12 @@ body {
   overflow-y: auto;
   max-height: calc(100vh - 180px);
   padding-right: 8px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.games-grid-container::-webkit-scrollbar {
+  display: none;
 }
 
 .games-cards-grid {
