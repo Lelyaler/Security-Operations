@@ -72,7 +72,7 @@ export const mockGamesList = [
     ggr: 18230, 
     popularity: 95, 
     activePlayers: 290,
-    image: "https://images.unsplash.com/photo-1518133680790-3985350d8702?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 5, 
@@ -132,7 +132,7 @@ export const mockGamesList = [
     ggr: 9540, 
     popularity: 82, 
     activePlayers: 75,
-    image: "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 10, 
