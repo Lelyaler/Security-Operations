@@ -1,24 +1,24 @@
 import React from 'react';
-import { LayoutDashboard, Gamepad2, ShieldAlert, Coins, ShieldCheck, Terminal, Award, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, Server, ShieldAlert, Terminal, ShieldCheck, Award, AlertTriangle } from 'lucide-react';
 
 export default function Sidebar({ activeTab, setActiveTab, alertsCount, isDdosActive }) {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'games', label: 'Games Matrix', icon: Gamepad2 },
+    { id: 'games', label: 'Server Matrix', icon: Server },
     { 
       id: 'fraud', 
-      label: 'Fraud Center', 
+      label: 'Threat Center', 
       icon: ShieldAlert, 
       badge: alertsCount > 0 ? alertsCount : null 
     },
-    { id: 'transactions', label: 'Transactions', icon: Coins }
+    { id: 'transactions', label: 'Access Logs', icon: Terminal }
   ];
 
   return (
     <aside className="sidebar">
       <div className="sidebar-logo">
-        <Award className={`logo-icon ${isDdosActive ? 'text-danger animate-pulse' : 'text-primary animate-pulse'}`} size={28} />
-        <span className="logo-text">NEON<span className={isDdosActive ? 'text-danger' : 'text-primary'}>SPIN</span></span>
+        <ShieldCheck className={`logo-icon ${isDdosActive ? 'text-danger animate-pulse' : 'text-primary animate-pulse'}`} size={28} />
+        <span className="logo-text">SECURE<span className={isDdosActive ? 'text-danger' : 'text-primary'}>NODE</span></span>
       </div>
 
       <nav className="sidebar-nav">

@@ -7,7 +7,7 @@ import FraudView from './components/FraudView';
 import TransactionsView from './components/TransactionsView';
 import SimulatorDeck from './components/SimulatorDeck';
 import { initialLiveBets, mockFraudAlerts } from './utils/mockData';
-import { Award, X } from 'lucide-react';
+import { ShieldAlert, X } from 'lucide-react';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -21,21 +21,21 @@ function App() {
   const [simDeckOpen, setSimDeckOpen] = useState(false);
 
   const handleTriggerJackpot = () => {
-    const jackpotBet = {
+    const breachEvent = {
       id: Date.now(),
-      player: `Player-VIP-${Math.floor(Math.random() * 80) + 10}`,
-      game: 'Crazy Time',
-      amount: '$10,000',
-      multiplier: '25x',
-      win: '$250,000',
-      type: 'win'
+      player: `185.220.101.${Math.floor(Math.random() * 80) + 10}`,
+      game: '/etc/passwd',
+      amount: '24 KB',
+      multiplier: 'CVE-2026-0928',
+      win: 'CRITICAL BLOCK',
+      type: 'loss' // blocked
     };
     
-    // Inject immediately into live feed
-    setLiveBets(prev => [jackpotBet, ...prev.slice(0, 4)]);
+    // Inject immediately into live traffic feed
+    setLiveBets(prev => [breachEvent, ...prev.slice(0, 4)]);
     
     // Trigger overlay banner
-    setJackpotEvent(jackpotBet);
+    setJackpotEvent(breachEvent);
     setSimDeckOpen(false);
 
     // Auto close after 5 seconds
@@ -46,22 +46,33 @@ function App() {
 
   const handleInjectFraud = () => {
     const customReasons = [
-      'Velocity Limit exceeded: $50k in 1 min',
-      'Carding attempt: 4 failed Visa auths',
-      'Geo-IP discrepancy: Login session mismatch',
-      'Exploit signature matched: Roulette bets'
+      'Port scanning detected: 50+ connections/sec',
+      'Credential stuffing: 4 failed OAuth attempts',
+      'Geo-IP mismatch: Suspicious routing bypass',
+      'Remote Code Execution signature detected'
     ];
     
-    const randomName = ['Lucas G.', 'Victor D.', 'Diana M.', 'Clara L.'][Math.floor(Math.random() * 4)];
-    const randomCountry = ['UA', 'CY', 'MT', 'GB'][Math.floor(Math.random() * 4)];
+    const randomIP = [
+      '185.220.101.99', 
+      '192.168.22.4', 
+      '94.130.49.205', 
+      '213.89.141.15'
+    ][Math.floor(Math.random() * 4)];
+    
+    const randomNode = [
+      'Auth Node-01', 
+      'API Gateway Alpha', 
+      'Database Primary', 
+      'CDN Edge-03'
+    ][Math.floor(Math.random() * 4)];
     
     const newAlert = {
-      id: `FL-${Math.floor(Math.random() * 9000) + 1000}`,
-      player: randomName,
-      country: randomCountry,
+      id: `SEC-${Math.floor(Math.random() * 9000) + 1000}`,
+      player: randomIP,
+      country: randomNode,
       risk: 'high',
       reason: customReasons[Math.floor(Math.random() * customReasons.length)],
-      amount: `$${(Math.floor(Math.random() * 40) + 10) * 1000}`,
+      amount: `${(Math.random() * 20 + 1).toFixed(1)} MB`,
       time: 'Just now',
       status: 'pending'
     };
@@ -123,21 +134,21 @@ function App() {
         onInjectFraud={handleInjectFraud}
       />
 
-      {/* Global Jackpot Banner Overlay */}
+      {/* Global Security Breach Overlay */}
       {jackpotEvent && (
-        <div className="jackpot-overlay animate-zoom-in">
-          <div className="jackpot-banner glass-card pulse-primary">
+        <div className="jackpot-overlay animate-zoom-in" style={{ zIndex: 1100 }}>
+          <div className="jackpot-banner glass-card border-danger" style={{ boxShadow: 'var(--card-shadow), 0 0 50px rgba(239, 68, 68, 0.4)' }}>
             <button className="jackpot-close-btn" onClick={() => setJackpotEvent(null)}>
               <X size={16} />
             </button>
             <div className="jackpot-icon-wrapper">
-              <Award className="jackpot-crown animate-bounce-slow" size={48} />
+              <ShieldAlert className="jackpot-crown animate-bounce-slow text-danger" style={{ filter: 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.6))' }} size={48} />
             </div>
             <div className="jackpot-message">
-              <h2>MEGA JACKPOT WINNER!</h2>
-              <p>Player <strong>{jackpotEvent.player}</strong> just won</p>
-              <h1 className="jackpot-win-amount">{jackpotEvent.win}</h1>
-              <p className="jackpot-game-meta">on game <strong>{jackpotEvent.game}</strong> ({jackpotEvent.multiplier})</p>
+              <h2 className="text-danger">SECURITY BREACH DETECTED!</h2>
+              <p>Unauthorized attempt to read root shell files</p>
+              <h1 className="jackpot-win-amount text-danger" style={{ textShadow: '0 0 25px var(--danger)' }}>CRITICAL EXPLOIT</h1>
+              <p className="jackpot-game-meta">Source IP: <strong>{jackpotEvent.player}</strong> | Target Path: <strong>{jackpotEvent.game}</strong> | Signature: <strong>{jackpotEvent.multiplier}</strong></p>
             </div>
           </div>
         </div>

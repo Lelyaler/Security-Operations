@@ -53,11 +53,11 @@ export default function FraudView({ alerts, setAlerts }) {
           <thead>
             <tr>
               <th>Case ID</th>
-              <th>Player Name</th>
-              <th>Location</th>
+              <th>Source IP</th>
+              <th>Target Node</th>
               <th>Risk Level</th>
               <th>Flag Reason</th>
-              <th>Flagged Volume</th>
+              <th>Payload Volume</th>
               <th>Age</th>
               <th>Status</th>
               <th className="actions-header">Actions</th>
@@ -138,11 +138,11 @@ export default function FraudView({ alerts, setAlerts }) {
             <div className="modal-body">
               <div className="player-meta-box">
                 <div className="meta-item">
-                  <span className="label">Target Subject:</span>
+                  <span className="label">Intrusion Source:</span>
                   <span className="val">{selectedAlert.player} ({selectedAlert.country})</span>
                 </div>
                 <div className="meta-item">
-                  <span className="label">Flagged Volume:</span>
+                  <span className="label">Payload Volume:</span>
                   <span className="val text-danger">{selectedAlert.amount}</span>
                 </div>
                 <div className="meta-item">
@@ -161,13 +161,13 @@ export default function FraudView({ alerts, setAlerts }) {
                     <span className="time">[13:41:05]</span> <span className="msg">Login initiated from unauthorized proxy server.</span>
                   </div>
                   <div className="log-line text-warning">
-                    <span className="time">[13:42:19]</span> <span className="msg">Anomaly: Bet sizes increased by 1500% over standard average.</span>
+                    <span className="time">[13:42:19]</span> <span className="msg">Anomaly: Request density increased by 1500% over baseline.</span>
                   </div>
                   <div className="log-line">
                     <span className="time">[13:43:01]</span> <span className="msg">Triggered pattern match: <em>{selectedAlert.reason}</em>.</span>
                   </div>
                   <div className="log-line text-danger">
-                    <span className="time">[13:44:00]</span> <span className="msg">Transaction volume threshold exceeded. Automatic account hold.</span>
+                    <span className="time">[13:44:00]</span> <span className="msg">Data transfer threshold exceeded. Automated rate-limiting active.</span>
                   </div>
                 </div>
               </div>
@@ -181,20 +181,20 @@ export default function FraudView({ alerts, setAlerts }) {
                     }}
                     className="btn btn-primary"
                   >
-                    <ShieldCheck size={16} /> Approve & Dismiss Case
+                    <ShieldCheck size={16} /> Resolve & Close Ticket
                   </button>
                 </div>
                 <div className="right-actions">
                   <button 
                     onClick={() => {
                       // Simulating lock account
-                      alert(`Account for ${selectedAlert.player} has been suspended.`);
+                      alert(`Session for IP ${selectedAlert.player} has been revoked and quarantined.`);
                       handleAction(selectedAlert.id, 'resolved');
                       setSelectedAlert(null);
                     }}
                     className="btn btn-secondary text-danger"
                   >
-                    <UserX size={16} /> Suspend Player
+                    <UserX size={16} /> Quarantine IP
                   </button>
                 </div>
               </div>

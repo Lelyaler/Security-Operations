@@ -1056,14 +1056,21 @@ body {
   border-radius: 4px;
 }
 
-.type-tag.deposit {
+.type-tag.deposit,
+.type-tag.api-call {
   background: rgba(16, 185, 129, 0.1);
   color: var(--primary);
 }
 
-.type-tag.withdrawal {
+.type-tag.withdrawal,
+.type-tag.file-write {
   background: rgba(139, 92, 246, 0.1);
   color: var(--secondary);
+}
+
+.type-tag.ssh-access {
+  background: rgba(251, 191, 36, 0.1);
+  color: var(--accent);
 }
 
 .method-tag {

@@ -1,27 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Coins, Percent, AlertCircle } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Activity, ShieldAlert, AlertCircle } from 'lucide-react';
 import { kpiStats, revenueHistory, playerDistribution, initialLiveBets, liveGamesList } from '../utils/mockData';
 
 export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isDdosActive, alertsCount }) {
-  // Live simulation of active casino bets
+  // Live simulation of network sockets and traffic
   useEffect(() => {
     if (isFeedFrozen) return;
 
     const interval = setInterval(() => {
-      const isWin = Math.random() > 0.5;
-      const amount = [10, 20, 50, 100, 500, 1000][Math.floor(Math.random() * 6)];
-      const multiplier = isWin ? (Math.random() * 4 + 1.2).toFixed(2) : "0.00";
-      const winVal = isWin ? Math.round(amount * parseFloat(multiplier)) : 0;
+      const isSuccess = Math.random() > 0.15;
+      const bytes = Math.floor(Math.random() * 1400) + 64;
+      const ports = [443, 80, 22, 8080, 3306, 5432];
+      const port = ports[Math.floor(Math.random() * ports.length)];
+      
+      const statusText = isSuccess ? "200 OK" : ["403 Blocked", "401 Unauthorized", "502 Bad Gateway"][Math.floor(Math.random() * 3)];
       
       const newBet = {
         id: Date.now(),
-        player: `Player-${Math.floor(Math.random() * 900) + 100}`,
+        player: `185.90.11.${Math.floor(Math.random() * 240) + 10}`,
         game: liveGamesList[Math.floor(Math.random() * liveGamesList.length)],
-        amount: `$${amount}`,
-        multiplier: isWin ? `${multiplier}x` : "0x",
-        win: `$${winVal}`,
-        type: isWin ? 'win' : 'loss'
+        amount: bytes >= 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${bytes} B`,
+        multiplier: `${port}`,
+        win: statusText,
+        type: isSuccess ? 'win' : 'loss'
       };
 
       setLiveBets(prev => [newBet, ...prev.slice(0, 4)]);
@@ -38,8 +40,8 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
       <div className="kpi-grid">
         <div className="glass-card kpi-card">
           <div className="kpi-header">
-            <span className="kpi-title">Gross Gaming Revenue (GGR)</span>
-            <Coins className="kpi-icon text-primary" size={20} />
+            <span className="kpi-title">Total Network Packets</span>
+            <Activity className="kpi-icon text-primary" size={20} />
           </div>
           <div className="kpi-value">{kpiStats.ggr.value}</div>
           <div className="kpi-footer">
@@ -52,8 +54,8 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
 
         <div className="glass-card kpi-card">
           <div className="kpi-header">
-            <span className="kpi-title">Net Gaming Revenue (NGR)</span>
-            <Percent className="kpi-icon text-secondary" size={20} />
+            <span className="kpi-title">Blocked Threats</span>
+            <ShieldAlert className="kpi-icon text-secondary" size={20} />
           </div>
           <div className="kpi-value">{kpiStats.ngr.value}</div>
           <div className="kpi-footer">
@@ -66,13 +68,13 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
 
         <div className="glass-card kpi-card">
           <div className="kpi-header">
-            <span className="kpi-title">Active Players Today</span>
+            <span className="kpi-title">Active Sockets</span>
             <Users className="kpi-icon text-accent" size={20} />
           </div>
-          <div className="kpi-value">{isDdosActive ? '184' : kpiStats.activePlayers.value}</div>
+          <div className="kpi-value">{isDdosActive ? '1,842' : kpiStats.activePlayers.value}</div>
           <div className="kpi-footer">
             <span className={isDdosActive ? 'trend-badge negative' : 'trend-badge positive'}>
-              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-94.3%' : kpiStats.activePlayers.change}
+              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-43.9%' : kpiStats.activePlayers.change}
             </span>
             <span className="trend-label">vs yesterday</span>
           </div>
@@ -80,7 +82,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
 
         <div className="glass-card kpi-card">
           <div className="kpi-header">
-            <span className="kpi-title">Fraud Risk Alerts</span>
+            <span className="kpi-title">Intrusion Alerts (IDS)</span>
             <AlertCircle className="kpi-icon text-danger" size={20} />
           </div>
           <div className="kpi-value text-danger">{alertsCount}</div>
@@ -88,7 +90,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             <span className="trend-badge negative">
               {isDdosActive ? 'CRITICAL' : kpiStats.pendingAlerts.change}
             </span>
-            <span className="trend-label">unresolved files</span>
+            <span className="trend-label">unresolved threat files</span>
           </div>
         </div>
       </div>
@@ -97,16 +99,16 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
       <div className="dashboard-content-layout">
         {/* Analytics Chart */}
         <div className="glass-card main-chart-card">
-          <h3 className="card-heading">Revenue Comparison (GGR vs NGR)</h3>
+          <h3 className="card-heading">Network Traffic vs Blocked Threats</h3>
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height={320}>
               <AreaChart data={revenueHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
-                  <linearGradient id="colorGgr" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="colorTraffic" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4}/>
                     <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
                   </linearGradient>
-                  <linearGradient id="colorNgr" x1="0" y1="0" x2="0" y2="1">
+                  <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="var(--secondary)" stopOpacity={0.4}/>
                     <stop offset="95%" stopColor="var(--secondary)" stopOpacity={0}/>
                   </linearGradient>
@@ -122,8 +124,8 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
                     color: 'var(--text-main)' 
                   }} 
                 />
-                <Area type="monotone" dataKey="GGR" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorGgr)" />
-                <Area type="monotone" dataKey="NGR" stroke="var(--secondary)" strokeWidth={2} fillOpacity={1} fill="url(#colorNgr)" />
+                <Area type="monotone" dataKey="Traffic" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorTraffic)" />
+                <Area type="monotone" dataKey="Threats" stroke="var(--secondary)" strokeWidth={2} fillOpacity={1} fill="url(#colorThreats)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -134,7 +136,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
           <div className="live-feed-header">
             <div className="live-pulse-container">
               <span className="live-dot pulse-primary"></span>
-              <h3 className="card-heading">Live Casino Bets</h3>
+              <h3 className="card-heading">Live Network Traffic Logs</h3>
             </div>
             <span className="badge badge-success">Simulated Feed</span>
           </div>
@@ -148,10 +150,10 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
                 </div>
                 <div className="bet-row-center">
                   <span className="bet-amount">{bet.amount}</span>
-                  <span className="bet-multiplier badge">{bet.multiplier}</span>
+                  <span className="bet-multiplier badge">Port {bet.multiplier}</span>
                 </div>
                 <div className="bet-row-right">
-                  <span className={`bet-win ${bet.type === 'win' ? 'text-success' : 'text-muted'}`}>
+                  <span className={`bet-win ${bet.type === 'win' ? 'text-success' : 'text-danger font-bold'}`}>
                     {bet.win}
                   </span>
                 </div>
@@ -165,13 +167,13 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
       <div className="secondary-metrics-layout">
         {/* Game Distribution Chart */}
         <div className="glass-card dist-chart-card">
-          <h3 className="card-heading">Active Players by Vertical</h3>
+          <h3 className="card-heading">Active Sockets by Protocol</h3>
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={playerDistribution} layout="vertical" barSize={14}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" horizontal={false} />
                 <XAxis type="number" stroke="var(--text-muted)" fontSize={11} tickLine={false} />
-                <YAxis dataKey="name" type="category" stroke="var(--text-muted)" fontSize={11} tickLine={false} width={85} />
+                <YAxis dataKey="name" type="category" stroke="var(--text-muted)" fontSize={11} tickLine={false} width={100} />
                 <Tooltip 
                   contentStyle={{ 
                     background: 'var(--bg-dark)', 
@@ -191,7 +193,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
 
         {/* System Operations Logs */}
         <div className="glass-card system-logs-card">
-          <h3 className="card-heading">System Operator Log</h3>
+          <h3 className="card-heading">Security Operations Audit Log</h3>
           <div className="logs-container">
             {isDdosActive && (
               <div className="log-item animate-pulse" style={{ borderLeftColor: 'var(--danger)' }}>
@@ -201,19 +203,19 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             )}
             <div className="log-item">
               <span className="log-time">[14:38:12]</span>
-              <span className="log-text">GeoIP verification updated for <strong>SE region</strong>.</span>
+              <span className="log-text">GeoIP database updated. Added <strong>14 new firewall rule blocks</strong>.</span>
             </div>
             <div className="log-item">
               <span className="log-time">[14:29:45]</span>
-              <span className="log-text text-warning">Compliance: Flagged transaction TX-4096 (Skrill, Failed).</span>
+              <span className="log-text text-warning">Threat Intelligence: Pattern match on file access attempt by guest.</span>
             </div>
             <div className="log-item">
               <span className="log-time">[14:15:30]</span>
-              <span className="log-text">RTP checks completed for <strong>Evolution Gaming</strong>. Variance: 0.02% (Healthy).</span>
+              <span className="log-text">Integrity Scan: System binary check completed. Hash match <strong>100% (Healthy)</strong>.</span>
             </div>
             <div className="log-item">
               <span className="log-time">[13:58:02]</span>
-              <span className="log-text text-success">Main wallet cluster reconciliation completed successfully.</span>
+              <span className="log-text text-success">Network perimeter check completed. No open SSH ports found.</span>
             </div>
           </div>
         </div>

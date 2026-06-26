@@ -1,171 +1,171 @@
-// Mock Data Service for iGaming & Casino Analytics Dashboard
+// Mock Data Service for Cybersecurity Operations Center (SOC Dashboard)
 
 export const kpiStats = {
-  ggr: { value: "$124,850", change: "+14.2%", isPositive: true },
-  ngr: { value: "$98,420", change: "+12.8%", isPositive: true },
-  activePlayers: { value: "3,284", change: "+8.4%", isPositive: true },
-  vipBetsCount: { value: "148", change: "+24.1%", isPositive: true },
-  pendingAlerts: { value: "7", change: "-2", isPositive: false, isWarning: true }
+  ggr: { value: "12.4M", change: "+14.2%", isPositive: true }, // Total network packets
+  ngr: { value: "98.4K", change: "+12.8%", isPositive: true }, // Blocked threats
+  activePlayers: { value: "3,284", change: "+8.4%", isPositive: true }, // Active socket connections
+  vipBetsCount: { value: "148", change: "+24.1%", isPositive: true }, // Security audits
+  pendingAlerts: { value: "7", change: "-2", isPositive: false, isWarning: true } // Intrusion alerts
 };
 
 export const revenueHistory = [
-  { name: "Mon", GGR: 15200, NGR: 11800, Bets: 34000 },
-  { name: "Tue", GGR: 18400, NGR: 14200, Bets: 41000 },
-  { name: "Wed", GGR: 16100, NGR: 12500, Bets: 38000 },
-  { name: "Thu", GGR: 21900, NGR: 17300, Bets: 49000 },
-  { name: "Fri", GGR: 24500, NGR: 19800, Bets: 56000 },
-  { name: "Sat", GGR: 32000, NGR: 26500, Bets: 74000 },
-  { name: "Sun", GGR: 28800, NGR: 22800, Bets: 65000 }
+  { name: "Mon", Traffic: 15200, Threats: 1180, Connections: 3400 },
+  { name: "Tue", Traffic: 18400, Threats: 1420, Connections: 4100 },
+  { name: "Wed", Traffic: 16100, Threats: 1250, Connections: 3800 },
+  { name: "Thu", Traffic: 21900, Threats: 1730, Connections: 4900 },
+  { name: "Fri", Traffic: 24500, Threats: 1980, Connections: 5600 },
+  { name: "Sat", Traffic: 32000, Threats: 2650, Connections: 7400 },
+  { name: "Sun", Traffic: 28800, Threats: 2280, Connections: 6500 }
 ];
 
 export const playerDistribution = [
-  { name: "Slots", players: 1840, share: "56%" },
-  { name: "Live Casino", players: 820, share: "25%" },
-  { name: "Table Games", players: 390, share: "12%" },
-  { name: "Crash Games", players: 234, share: "7%" }
+  { name: "Web (HTTPS)", players: 1840, share: "56%" },
+  { name: "API Gateway", players: 820, share: "25%" },
+  { name: "DB Queries", players: 390, share: "12%" },
+  { name: "SSH Terminal", players: 234, share: "7%" }
 ];
 
 export const mockGamesList = [
   { 
     id: 1, 
-    name: "Book of Ra Deluxe", 
-    category: "Slots", 
-    provider: "Novomatic", 
-    rtp: "95.10%", 
-    spins: 42390, 
-    ggr: 12450, 
-    popularity: 98, 
-    activePlayers: 480,
+    name: "Auth Node-01", 
+    category: "Microservice", 
+    provider: "EU-WEST", 
+    rtp: "14.20%", // CPU load
+    spins: 423900, // Total Requests
+    ggr: 124, // Data Sent (GB)
+    popularity: 98, // Health status
+    activePlayers: 480, // Active threads
     image: "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 2, 
-    name: "Crazy Time", 
-    category: "Live Casino", 
-    provider: "Evolution", 
-    rtp: "96.08%", 
-    spins: 28410, 
-    ggr: 38100, 
+    name: "API Gateway Alpha", 
+    category: "Gateway", 
+    provider: "US-EAST", 
+    rtp: "38.10%", 
+    spins: 284100, 
+    ggr: 381, 
     popularity: 99, 
     activePlayers: 820,
     image: "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 3, 
-    name: "Gates of Olympus", 
-    category: "Slots", 
-    provider: "Pragmatic Play", 
-    rtp: "96.50%", 
-    spins: 54120, 
-    ggr: 24900, 
+    name: "Database Primary", 
+    category: "Database", 
+    provider: "EU-WEST", 
+    rtp: "24.90%", 
+    spins: 541200, 
+    ggr: 249, 
     popularity: 97, 
     activePlayers: 340,
     image: "https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 4, 
-    name: "Lightning Roulette", 
-    category: "Live Casino", 
-    provider: "Evolution", 
-    rtp: "97.30%", 
-    spins: 19480, 
-    ggr: 18230, 
+    name: "Caching Redis-02", 
+    category: "Caching", 
+    provider: "AP-SOUTH", 
+    rtp: "18.23%", 
+    spins: 194800, 
+    ggr: 182, 
     popularity: 95, 
     activePlayers: 290,
     image: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 5, 
-    name: "Sweet Bonanza", 
-    category: "Slots", 
-    provider: "Pragmatic Play", 
-    rtp: "96.48%", 
-    spins: 31200, 
-    ggr: 14200, 
+    name: "CDN Edge-03", 
+    category: "Gateway", 
+    provider: "US-WEST", 
+    rtp: "14.20%", 
+    spins: 312000, 
+    ggr: 142, 
     popularity: 94, 
     activePlayers: 210,
     image: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 6, 
-    name: "Aviator", 
-    category: "Crash Games", 
-    provider: "Spribe", 
-    rtp: "97.00%", 
-    spins: 89450, 
-    ggr: 34120, 
+    name: "Billing API Secure", 
+    category: "Microservice", 
+    provider: "EU-WEST", 
+    rtp: "34.12%", 
+    spins: 894500, 
+    ggr: 341, 
     popularity: 96, 
     activePlayers: 540,
     image: "https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 7, 
-    name: "Blackjack VIP", 
-    category: "Table Games", 
-    provider: "NetEnt", 
-    rtp: "99.59%", 
-    spins: 5480, 
-    ggr: 15400, 
+    name: "Load Balancer Main", 
+    category: "Load Balancer", 
+    provider: "EU-WEST", 
+    rtp: "15.40%", 
+    spins: 54800, 
+    ggr: 154, 
     popularity: 88, 
     activePlayers: 90,
     image: "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 8, 
-    name: "Starburst", 
-    category: "Slots", 
-    provider: "NetEnt", 
-    rtp: "96.09%", 
-    spins: 22400, 
-    ggr: 8900, 
+    name: "Message Queue Rabbit", 
+    category: "Microservice", 
+    provider: "US-EAST", 
+    rtp: "8.90%", 
+    spins: 224000, 
+    ggr: 89, 
     popularity: 85, 
     activePlayers: 120,
     image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 9, 
-    name: "Baccarat Control", 
-    category: "Table Games", 
-    provider: "Evolution", 
-    rtp: "98.94%", 
-    spins: 11200, 
-    ggr: 9540, 
+    name: "Backup Vault Storage", 
+    category: "Backup", 
+    provider: "AP-SOUTH", 
+    rtp: "9.54%", 
+    spins: 112000, 
+    ggr: 954, 
     popularity: 82, 
     activePlayers: 75,
     image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 10, 
-    name: "Gonzo's Quest", 
-    category: "Slots", 
-    provider: "NetEnt", 
-    rtp: "95.97%", 
-    spins: 18450, 
-    ggr: 7200, 
+    name: "DNS Resolver Primary", 
+    category: "Gateway", 
+    provider: "EU-WEST", 
+    rtp: "7.20%", 
+    spins: 184500, 
+    ggr: 72, 
     popularity: 80, 
     activePlayers: 85,
     image: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 11, 
-    name: "Mega Moolah", 
-    category: "Slots", 
-    provider: "Microgaming", 
-    rtp: "88.12%", 
-    spins: 45100, 
-    ggr: 31200, 
+    name: "Web Server Front", 
+    category: "Microservice", 
+    provider: "US-WEST", 
+    rtp: "31.20%", 
+    spins: 451000, 
+    ggr: 312, 
     popularity: 91, 
     activePlayers: 190,
     image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 12, 
-    name: "Plinko Neon", 
-    category: "Crash Games", 
-    provider: "BGaming", 
-    rtp: "99.00%", 
-    spins: 62400, 
-    ggr: 11450, 
+    name: "Caching Redis-01", 
+    category: "Caching", 
+    provider: "US-EAST", 
+    rtp: "11.45%", 
+    spins: 624000, 
+    ggr: 114, 
     popularity: 89, 
     activePlayers: 230,
     image: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=400&auto=format&fit=crop&q=80" 
@@ -173,32 +173,32 @@ export const mockGamesList = [
 ];
 
 export const mockFraudAlerts = [
-  { id: "FL-9081", player: "Alexander K.", country: "DE", risk: "high", reason: "Multiple account activity (Same IP)", amount: "$8,500", time: "10 mins ago", status: "pending" },
-  { id: "FL-9082", player: "Sophia M.", country: "SE", risk: "medium", reason: "Opposite betting in Roulette", amount: "$3,200", time: "25 mins ago", status: "pending" },
-  { id: "FL-9083", player: "Dimitri V.", country: "GR", risk: "high", reason: "Sudden high-stakes slot spin pattern", amount: "$15,000", time: "42 mins ago", status: "investigating" },
-  { id: "FL-9084", player: "Jean L.", country: "FR", risk: "low", reason: "Frequent deposit/withdrawal cycles", amount: "$1,200", time: "1 hour ago", status: "pending" },
-  { id: "FL-9085", player: "Marcus T.", country: "UK", risk: "high", reason: "Carding attempt (chargeback risk)", amount: "$5,000", time: "3 hours ago", status: "resolved" }
+  { id: "SEC-9081", player: "185.220.101.42", country: "Auth Node-01", risk: "high", reason: "Brute force login wave detected", amount: "8.5 MB", time: "10 mins ago", status: "pending" },
+  { id: "SEC-9082", player: "94.130.49.201", country: "Database Primary", risk: "medium", reason: "SQL injection signature matched", amount: "3.2 MB", time: "25 mins ago", status: "pending" },
+  { id: "SEC-9083", player: "213.89.141.12", country: "Billing API Secure", risk: "high", reason: "Suspicious API request sequence", amount: "15.0 MB", time: "42 mins ago", status: "investigating" },
+  { id: "SEC-9084", player: "109.224.8.115", country: "DNS Resolver Primary", risk: "low", reason: "Rapid DNS lookup cycle anomaly", amount: "1.2 MB", time: "1 hour ago", status: "pending" },
+  { id: "SEC-9085", player: "77.108.92.54", country: "API Gateway Alpha", risk: "high", reason: "Admin privilege escalation attempt", amount: "5.0 MB", time: "3 hours ago", status: "resolved" }
 ];
 
 export const mockTransactions = [
-  { id: "TX-4091", player: "John D.", type: "Deposit", amount: 2500, method: "Visa", time: "14:38:22", status: "success" },
-  { id: "TX-4092", player: "Sarah W.", type: "Withdrawal", amount: 1200, method: "Bitcoin", time: "14:35:10", status: "success" },
-  { id: "TX-4093", player: "Mike R.", type: "Deposit", amount: 500, method: "Mastercard", time: "14:31:05", status: "success" },
-  { id: "TX-4094", player: "Elena P.", type: "Withdrawal", amount: 4500, method: "Bank Transfer", time: "14:28:44", status: "pending" },
-  { id: "TX-4095", player: "Arthur K.", type: "Deposit", amount: 10000, method: "Ethereum", time: "14:19:15", status: "success" },
-  { id: "TX-4096", player: "Lucas B.", type: "Withdrawal", amount: 300, method: "Skrill", time: "14:15:00", status: "failed" },
-  { id: "TX-4097", player: "Nadia S.", type: "Deposit", amount: 1500, method: "Neteller", time: "14:02:11", status: "success" }
+  { id: "LOG-4091", player: "sys_backup_svc", type: "File Write", amount: 2500, method: "REST", time: "14:38:22", status: "success" },
+  { id: "LOG-4092", player: "developer_alex", type: "SSH Access", amount: 1200, method: "SSH", time: "14:35:10", status: "success" },
+  { id: "LOG-4093", player: "anonymous_guest", type: "API Call", amount: 500, method: "HTTPS", time: "14:31:05", status: "success" },
+  { id: "LOG-4094", player: "root_administrator", type: "SSH Access", amount: 4500, method: "SSH", time: "14:28:44", status: "pending" },
+  { id: "LOG-4095", player: "billing_worker", type: "API Call", amount: 10000, method: "gRPC", time: "14:19:15", status: "success" },
+  { id: "LOG-4096", player: "developer_clara", type: "File Write", amount: 300, method: "REST", time: "14:15:00", status: "failed" },
+  { id: "LOG-4097", player: "sys_monitor_daemon", type: "API Call", amount: 1500, method: "HTTPS", time: "14:02:11", status: "success" }
 ];
 
 export const initialLiveBets = [
-  { id: 1, player: "User-893", game: "Crazy Time", amount: "$50", multiplier: "2x", win: "$100", type: "win" },
-  { id: 2, player: "User-114", game: "Gates of Olympus", amount: "$10", multiplier: "0x", win: "$0", type: "loss" },
-  { id: 3, player: "User-542", game: "Aviator", amount: "$100", multiplier: "1.45x", win: "$145", type: "win" },
-  { id: 4, player: "User-209", game: "Blackjack VIP", amount: "$500", multiplier: "2.5x", win: "$1,250", type: "win" },
-  { id: 5, player: "User-773", game: "Book of Ra", amount: "$25", multiplier: "0x", win: "$0", type: "loss" }
+  { id: 1, player: "185.90.11.23", game: "/api/v1/auth/login", amount: "142", multiplier: "443", win: "200 OK", type: "win" }, // allowed
+  { id: 2, player: "92.140.231.8", game: "/wp-admin/login.php", amount: "89", multiplier: "80", win: "403 Blocked", type: "loss" }, // blocked
+  { id: 3, player: "10.0.8.22", game: "/gateway/queries", amount: "524", multiplier: "443", win: "200 OK", type: "win" },
+  { id: 4, player: "77.202.94.18", game: "/api/v2/billing", amount: "1124", multiplier: "443", win: "200 OK", type: "win" },
+  { id: 5, player: "185.220.101.9", game: "/etc/passwd", amount: "20", multiplier: "22", win: "401 Blocked", type: "loss" }
 ];
 
 export const liveGamesList = [
-  "Crazy Time", "Gates of Olympus", "Aviator", "Blackjack VIP", "Book of Ra Deluxe",
-  "Sweet Bonanza", "Lightning Roulette", "Starburst", "Space XY"
+  "/api/v1/auth/login", "/gateway/queries", "/api/v2/billing", "/users/profile",
+  "/cache/keys/flush", "/ssh/session/request", "/metrics/push", "/db/healthcheck"
 ];

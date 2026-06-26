@@ -7,7 +7,7 @@ export default function GamesView() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedGame, setSelectedGame] = useState(mockGamesList[0]);
 
-  const categories = ['All', 'Slots', 'Live Casino', 'Table Games', 'Crash Games'];
+  const categories = ['All', 'Microservice', 'Gateway', 'Database', 'Caching', 'Backup', 'Load Balancer'];
 
   const filteredGames = mockGamesList.filter(game => {
     const matchesSearch = game.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -23,7 +23,7 @@ export default function GamesView() {
           <Search size={18} className="text-muted" />
           <input
             type="text"
-            placeholder="Search games or providers..."
+            placeholder="Search nodes or regions..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -66,19 +66,19 @@ export default function GamesView() {
 
                     <div className="game-card-stats-row">
                       <div className="card-stat">
-                        <span className="card-stat-lbl">RTP</span>
+                        <span className="card-stat-lbl">CPU Load</span>
                         <span className="card-stat-val text-primary">{game.rtp}</span>
                       </div>
                       <div className="card-stat">
-                        <span className="card-stat-lbl">Players</span>
+                        <span className="card-stat-lbl">Threads</span>
                         <span className="card-stat-val text-accent" style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
                           <span className="status-dot bg-success" style={{ width: '6px', height: '6px', margin: 0 }}></span>
                           {game.activePlayers}
                         </span>
                       </div>
                       <div className="card-stat">
-                        <span className="card-stat-lbl">GGR</span>
-                        <span className="card-stat-val text-success">${game.ggr.toLocaleString()}</span>
+                        <span className="card-stat-lbl">Data Sent</span>
+                        <span className="card-stat-val text-success">{game.ggr.toLocaleString()} GB</span>
                       </div>
                     </div>
                   </div>
@@ -87,7 +87,7 @@ export default function GamesView() {
             ) : (
               <div className="no-results-box glass-card">
                 <AlertCircle size={24} className="text-muted" />
-                <p>No games found matching your search criteria.</p>
+                <p>No infrastructure nodes found matching your search criteria.</p>
               </div>
             )}
           </div>
@@ -96,7 +96,7 @@ export default function GamesView() {
         {/* Selected Game Sidebar details */}
         {selectedGame && (
           <div className="game-details-sidebar glass-card animate-slide-left">
-            <h3 className="card-heading">Game Performance Profile</h3>
+            <h3 className="card-heading">Server Node Profile</h3>
             <div className="detail-hero-card">
               <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" />
               <div className="detail-hero-info">
@@ -107,33 +107,33 @@ export default function GamesView() {
 
             <div className="detail-stats-grid">
               <div className="detail-stat-card">
-                <span className="stat-label">Theoretical RTP</span>
+                <span className="stat-label">CPU Load</span>
                 <span className="stat-val text-primary">{selectedGame.rtp}</span>
               </div>
               <div className="detail-stat-card">
-                <span className="stat-label">Total Revenue (GGR)</span>
-                <span className="stat-val text-success">${selectedGame.ggr.toLocaleString()}</span>
+                <span className="stat-label">Total Traffic</span>
+                <span className="stat-val text-success">{selectedGame.ggr.toLocaleString()} GB</span>
               </div>
               <div className="detail-stat-card">
-                <span className="stat-label">Total Game Spins</span>
+                <span className="stat-label">HTTP/TCP Requests</span>
                 <span className="stat-val">{selectedGame.spins.toLocaleString()}</span>
               </div>
               <div className="detail-stat-card">
-                <span className="stat-label">Avg. Bet Size</span>
-                <span className="stat-val">$2.40</span>
+                <span className="stat-label">Avg Payload Size</span>
+                <span className="stat-val">4.2 KB</span>
               </div>
             </div>
 
             <div className="detail-alert-box">
               <Info size={16} className="text-accent" />
-              <p>RTP variance is within regular parameters (+0.12% deviation from theoretical profile).</p>
+              <p>Server load and error rates are within normal operational limits (+0.12% deviation).</p>
             </div>
 
             <div className="detail-charts-panel">
-              <span className="panel-title">Active Play Sessions (24h)</span>
+              <span className="panel-title">Active Threads (24h)</span>
               <div className="dummy-chart-placeholder">
                 <Users size={24} className="text-primary animate-pulse" />
-                <span className="text-muted">High player demand registered: {selectedGame.activePlayers} sessions online.</span>
+                <span className="text-muted">High connection density registered: {selectedGame.activePlayers} threads processing.</span>
               </div>
             </div>
           </div>

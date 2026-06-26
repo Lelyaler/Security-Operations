@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Download, RefreshCw, CheckCircle, Clock, AlertTriangle, FileSpreadsheet } from 'lucide-react';
+import { Search, Download, CheckCircle, Clock, AlertTriangle, FileSpreadsheet } from 'lucide-react';
 import { mockTransactions } from '../utils/mockData';
 
 export default function TransactionsView() {
@@ -60,7 +60,7 @@ export default function TransactionsView() {
           <Search size={18} className="text-muted" />
           <input
             type="text"
-            placeholder="Search by Player or Transaction ID..."
+            placeholder="Search by User or Log ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -70,8 +70,9 @@ export default function TransactionsView() {
           <div className="select-wrapper">
             <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
               <option value="All">All Types</option>
-              <option value="Deposit">Deposits</option>
-              <option value="Withdrawal">Withdrawals</option>
+              <option value="File Write">File Write</option>
+              <option value="SSH Access">SSH Access</option>
+              <option value="API Call">API Call</option>
             </select>
           </div>
 
@@ -90,7 +91,7 @@ export default function TransactionsView() {
             className="btn btn-primary"
           >
             <Download size={16} />
-            {isExporting ? `Exporting (${exportProgress}%)` : 'Export Ledger'}
+            {isExporting ? `Exporting (${exportProgress}%)` : 'Export Log Ledger'}
           </button>
         </div>
       </div>
@@ -99,7 +100,7 @@ export default function TransactionsView() {
         <div className="export-progress-container glass-card animate-slide-in">
           <div className="progress-bar-label">
             <FileSpreadsheet size={16} className="text-primary" />
-            <span>Compiling transactions ledger into CSV format...</span>
+            <span>Compiling access audit logs into CSV format...</span>
           </div>
           <div className="progress-track">
             <div className="progress-fill" style={{ width: `${exportProgress}%` }}></div>
@@ -110,7 +111,7 @@ export default function TransactionsView() {
       {exportComplete && (
         <div className="export-complete-alert glass-card animate-slide-in">
           <CheckCircle size={16} className="text-success" />
-          <span>Success! <strong>ledger_report_{new Date().toISOString().slice(0,10)}.csv</strong> downloaded to virtual disk.</span>
+          <span>Success! <strong>access_audit_log_{new Date().toISOString().slice(0,10)}.csv</strong> downloaded to virtual disk.</span>
           <button className="dismiss-alert-btn" onClick={() => setExportComplete(false)}>Dismiss</button>
         </div>
       )}
@@ -119,12 +120,12 @@ export default function TransactionsView() {
         <table className="ledger-table">
           <thead>
             <tr>
-              <th>Transaction ID</th>
-              <th>Player Name</th>
-              <th>Method</th>
+              <th>Log ID</th>
+              <th>User Principal</th>
+              <th>Protocol</th>
               <th>Timestamp</th>
-              <th>Type</th>
-              <th>Amount</th>
+              <th>Action Type</th>
+              <th>Payload Size</th>
               <th>Status</th>
             </tr>
           </thead>
@@ -137,13 +138,13 @@ export default function TransactionsView() {
                   <td><span className="method-tag">{tx.method}</span></td>
                   <td className="text-muted">{tx.time}</td>
                   <td>
-                    <span className={`type-tag ${tx.type.toLowerCase()}`}>
+                    <span className={`type-tag ${tx.type.toLowerCase().replace(' ', '-')}`}>
                       {tx.type}
                     </span>
                   </td>
                   <td>
-                    <strong className={tx.type === 'Deposit' ? 'text-success' : 'text-danger'}>
-                      {tx.type === 'Deposit' ? '+' : '-'}${tx.amount.toLocaleString()}
+                    <strong className="text-primary">
+                      {tx.amount.toLocaleString()} B
                     </strong>
                   </td>
                   <td>
@@ -156,7 +157,7 @@ export default function TransactionsView() {
               ))
             ) : (
               <tr>
-                <td colSpan="7" className="no-results">No transactions match your search filter.</td>
+                <td colSpan="7" className="no-results">No audit logs match your search filter.</td>
               </tr>
             )}
           </tbody>

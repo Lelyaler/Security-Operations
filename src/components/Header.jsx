@@ -5,13 +5,13 @@ export default function Header({ activeTab, isDdosActive }) {
   const getTitle = () => {
     switch (activeTab) {
       case 'dashboard':
-        return 'iGaming Real-Time Analytics';
+        return 'Security Operations Center (SOC)';
       case 'games':
-        return 'Games Performance Matrix';
+        return 'Server Infrastructure Matrix';
       case 'fraud':
-        return 'Compliance & Fraud Center';
+        return 'Threat Intelligence & IDS';
       case 'transactions':
-        return 'Financial Transactions Ledger';
+        return 'System Access Audit Logs';
       default:
         return 'Dashboard';
     }
@@ -21,7 +21,7 @@ export default function Header({ activeTab, isDdosActive }) {
     <header className="header">
       <div className="header-title-section">
         <h1 className="header-title">{getTitle()}</h1>
-        <p className="header-subtitle">Real-time gaming operations console</p>
+        <p className="header-subtitle">Real-time network security console</p>
       </div>
 
       <div className="header-widgets">
@@ -29,7 +29,7 @@ export default function Header({ activeTab, isDdosActive }) {
           <Users size={16} className={isDdosActive ? 'text-danger' : 'text-primary'} />
           <div className="widget-content">
             <span className="widget-value pulse-text">{isDdosActive ? '184' : '3,284'}</span>
-            <span className="widget-label">Players Online</span>
+            <span className="widget-label">Active Sockets</span>
           </div>
         </div>
 
@@ -60,7 +60,7 @@ export default function Header({ activeTab, isDdosActive }) {
           </div>
           <div className="profile-info">
             <span className="profile-name">Alexander K.</span>
-            <span className="profile-role">Compliance Officer</span>
+            <span className="profile-role">Security Analyst</span>
           </div>
         </div>
       </div>

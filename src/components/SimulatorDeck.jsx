@@ -41,14 +41,14 @@ export default function SimulatorDeck({
           </p>
 
           <div className="sim-actions-list">
-            {/* Action 1: Trigger VIP Jackpot */}
+            {/* Action 1: Trigger Security Exploit */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Trigger Mega Jackpot</h4>
-                <p>Simulates a high-roller slot win. Displays a golden screen banner and injects a $250k item to the live feed.</p>
+                <h4>Trigger Security Exploit</h4>
+                <p>Simulates a critical file path access attempt. Triggers a red intrusion banner and injects a blocked query in the feed.</p>
               </div>
               <button onClick={onTriggerJackpot} className="btn btn-primary btn-sim-action">
-                <Zap size={14} /> Trigger
+                <Zap size={14} /> Exploit
               </button>
             </div>
 
@@ -67,29 +67,29 @@ export default function SimulatorDeck({
               </button>
             </div>
 
-            {/* Action 3: Inject Fraud Alert */}
+            {/* Action 3: Inject Threat Alert */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Inject Fraud Alert</h4>
-                <p>Adds a new High-Risk compliance alert case. Increases the sidebar alert badge count instantly.</p>
+                <h4>Inject Threat Alert</h4>
+                <p>Injects a new High-Risk port scan or SQL injection alert. Spikes alert badge count instantly.</p>
               </div>
               <button onClick={onInjectFraud} className="btn btn-secondary btn-sim-action text-warning">
-                <ShieldAlert size={14} /> Inject Alert
+                <ShieldAlert size={14} /> Inject Threat
               </button>
             </div>
 
-            {/* Action 4: Freeze Live Feed */}
+            {/* Action 4: Freeze Live Traffic */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Live Feed Stream</h4>
-                <p>Pause or play the background ticker that populates live bet cards every 3 seconds.</p>
+                <h4>Live Traffic Stream</h4>
+                <p>Pause or play the background packet logs generated every 3 seconds.</p>
               </div>
               <button 
                 onClick={() => setIsFeedFrozen(!isFeedFrozen)} 
                 className="btn btn-secondary btn-sim-action"
               >
                 {isFeedFrozen ? <Play size={14} /> : <Pause size={14} />}
-                {isFeedFrozen ? 'Resume Feed' : 'Freeze Feed'}
+                {isFeedFrozen ? 'Resume Traffic' : 'Pause Traffic'}
               </button>
             </div>
           </div>
