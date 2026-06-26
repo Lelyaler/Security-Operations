@@ -1,32 +1,32 @@
-# NeonSpin Analytics — iGaming & Casino Operator Dashboard
+# SecureNode SOC — Cybersecurity Operations Center Dashboard
 
-A premium, interactive real-time analytics console built with **React** and **Vite**, designed for casino operators and compliance managers. The dashboard features live transaction ledgers, performance stats, a real-time bet ticker, comprehensive game matrix searches, and interactive fraud/compliance alert centers.
+A premium, interactive real-time security analytics console built with **React** and **Vite**, designed for security analysts and operations center teams. The dashboard features real-time network traffic logs, server infrastructure matrices, a threat intelligence hub with intrusion detection systems (IDS), and interactive audit log ledgers.
 
-🚀 **Live Site URL**: [https://lelyaler.github.io/project1/](https://lelyaler.github.io/project1/)
+🚀 **Live Site URL**: [https://lelyaler.github.io/project/](https://lelyaler.github.io/project/)
 
 ---
 
 ## ✨ Features
 
 ### 📊 Real-Time Operations Console
-- **KPI Metrics Grid**: Track Gross Gaming Revenue (GGR), Net Gaming Revenue (NGR), Online Player count, and Security Alerts with growth indicator badges.
-- **Dynamic Charting**: Interactive area charts comparing GGR vs. NGR over time and platform distribution metrics, built using **Recharts**.
-- **Live Bet Ticker**: A simulated real-time feed that displays live player bets, win multipliers, and returns with fluid UI animations.
+- **KPI Metrics Grid**: Track Total Network Packets, Blocked Threats, Active Socket Connections, and Intrusion Alerts with growth and warning indicators.
+- **Dynamic Charting**: Interactive area charts comparing traffic throughput vs. blocked anomalies over time, built using **Recharts**.
+- **Live Network Feed**: A simulated real-time feed displaying socket requests, payload size, ports, and server response codes with smooth animations.
 
-### 🎮 Games Performance Matrix
-- Live games catalog (slots, table, live casino, crash vertical) with stats like Theoretical RTP, Total Spins, and Accumulated Revenue.
-- Full text search and category filtering.
-- Performance Profile Drawer: Clicking a game loads detailed data sheets and variance metrics.
+### 🖥️ Server Infrastructure Matrix
+- Comprehensive health and performance logs for various microservices, database clusters, caching nodes, load balancers, and edge gateways.
+- Visual statistics detailing CPU Load, Active Processing Threads, and Transferred Data volumes.
+- Full-text search and category filtering with detail profile drawers.
 
-### 🛡️ Compliance & Fraud alert center
-- Case management table to review high/medium risk flags.
-- Action items allowing compliance officers to **Approve & Dismiss Case** or **Suspend Account**.
-- Custom Interactive Audit Modal with detailed user activity log, login timestamps, proxy detection triggers, and stake anomaly details.
+### 🛡️ Threat Intelligence & IDS
+- Case management center to quarantine malicious IPs, audit attack vectors, and resolve security incident alerts.
+- High, Medium, and Low risk classification indicators.
+- Detailed intrusion logs tracing request patterns, routing signatures, and malicious queries.
 
-### 💸 Financial Ledger (Finance)
-- Detailed logs of deposits and withdrawals filterable by transaction type and status.
-- Instant search by Transaction ID or Player Name.
-- Interactive report compilation: Triggers a mock download process with a visual progress bar and desktop alerts upon assembly.
+### ⚙️ System Access Audit Logs
+- Comprehensive ledger tracking administrative access, script executions, API queries, and server file writes.
+- Advanced filters for log types (File Write, SSH Access, API Call) and execution statuses.
+- Interactive export module to compile server log reports into CSV formats.
 
 ---
 
@@ -46,12 +46,12 @@ A premium, interactive real-time analytics console built with **React** and **Vi
 ```text
 src/
 ├── components/
-│   ├── DashboardView.jsx      # KPI statistics, Recharts graphs, and live bet feed
-│   ├── GamesView.jsx          # Searchable game catalog table and detail inspector drawer
-│   ├── FraudView.jsx          # Flagged accounts, status toggles, and detail audit logs modal
-│   ├── TransactionsView.jsx   # Ledger logs and interactive CSV exporter
-│   ├── Sidebar.jsx            # Left shell navigation and API gateway monitor
-│   └── Header.jsx             # Top bar, active players counter, and admin avatar
+│   ├── DashboardView.jsx      # KPI statistics, Recharts graphs, and live socket feed
+│   ├── GamesView.jsx          # Server list matrix cards and detail profiles drawer
+│   ├── FraudView.jsx          # Security alerts center, IP quarantine, and logs audit modal
+│   ├── TransactionsView.jsx   # System access logs and interactive CSV exporter
+│   ├── Sidebar.jsx            # Left navigation bar and system status indicators
+│   └── Header.jsx             # Top widgets, active connection counter, and analyst profile
 ├── utils/
 │   └── mockData.js            # Offline database structure
 ├── App.jsx                    # Root layout and tab router
@@ -67,8 +67,8 @@ To run this dashboard project locally:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/Lelyaler/project1.git
-   cd project1
+   git clone https://github.com/Lelyaler/project.git
+   cd project
    ```
 
 2. **Install all package dependencies**:
@@ -81,4 +81,4 @@ To run this dashboard project locally:
    npm run dev
    ```
 
-4. Open [http://localhost:5173/project1/](http://localhost:5173/project1/) in your web browser.
+4. Open [http://localhost:5173/project/](http://localhost:5173/project/) in your web browser.
