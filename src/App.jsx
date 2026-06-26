@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './components/DashboardView';
@@ -15,6 +15,23 @@ function App() {
   // Sidebar State (Desktop Collapse & Mobile Swipe Open)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+
+  // Auto collapse sidebar on tablet/smaller screens (<= 1056px)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1056) {
+        setIsSidebarCollapsed(true);
+      } else {
+        setIsSidebarCollapsed(false);
+      }
+    };
+    
+    // Set initial collapse state based on window size
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   // Shared Simulator States
   const [isDdosActive, setIsDdosActive] = useState(false);
