@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/Security-Operations-Center-/',
+  base: '/Security-Operations/',
   plugins: [react()],
   build: {
     rollupOptions: {

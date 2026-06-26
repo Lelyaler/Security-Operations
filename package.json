@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://Lelyaler.github.io/Security-Operations-Center-",
+  "homepage": "https://Lelyaler.github.io/Security-Operations",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
