@@ -23,6 +23,8 @@ export default function Sidebar({
     { id: 'transactions', label: 'Access Logs', icon: Terminal }
   ];
 
+  const showFullMenu = !isCollapsed || isMobileOpen;
+
   return (
     <>
       {/* Backdrop overlay for mobile */}
@@ -30,10 +32,10 @@ export default function Sidebar({
         <div className="sidebar-backdrop" onClick={() => setIsMobileOpen(false)} />
       )}
 
-      <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
+      <aside className={`sidebar ${isCollapsed && !isMobileOpen ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-logo">
           <ShieldCheck className={`logo-icon ${isDdosActive ? 'text-danger animate-pulse' : 'text-primary animate-pulse'}`} size={28} />
-          {!isCollapsed && <span className="logo-text">SECURE<span className={isDdosActive ? 'text-danger' : 'text-primary'}>NODE</span></span>}
+          {showFullMenu && <span className="logo-text">SECURE<span className={isDdosActive ? 'text-danger' : 'text-primary'}>NODE</span></span>}
           
           {/* Collapse/Expand toggle for desktop */}
           <button 
@@ -66,12 +68,12 @@ export default function Sidebar({
                   setIsMobileOpen(false); // Auto close sidebar on mobile navigation
                 }}
                 className={`nav-item ${isActive ? 'active' : ''}`}
-                title={isCollapsed ? item.label : undefined}
+                title={isCollapsed && !isMobileOpen ? item.label : undefined}
               >
                 <Icon size={20} className="nav-icon" />
-                {!isCollapsed && <span className="nav-label">{item.label}</span>}
+                {showFullMenu && <span className="nav-label">{item.label}</span>}
                 {item.badge && (
-                  <span className={`nav-badge ${isDdosActive ? 'bg-danger text-white' : 'pulse-primary'} ${isCollapsed ? 'collapsed-badge' : ''}`}>
+                  <span className={`nav-badge ${isDdosActive ? 'bg-danger text-white' : 'pulse-primary'} ${isCollapsed && !isMobileOpen ? 'collapsed-badge' : ''}`}>
                     {item.badge}
                   </span>
                 )}
@@ -80,7 +82,7 @@ export default function Sidebar({
           })}
         </nav>
 
-        {!isCollapsed && (
+        {showFullMenu && (
           <div className="sidebar-footer">
             <div className={`system-status glass-card ${isDdosActive ? 'border-danger' : ''}`}>
               <div className="status-header">
