@@ -461,6 +461,12 @@ body {
   gap: 10px;
   overflow-y: auto;
   padding-right: 4px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.live-bets-container::-webkit-scrollbar {
+  display: none;
 }
 
 .live-bet-row {
@@ -1194,4 +1200,383 @@ body {
 @keyframes pulse {
   0%, 100% { opacity: 0.4; }
   50% { opacity: 1; }
+}
+
+/* Floating Simulator Toggle Button */
+.simulator-toggle-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  background: linear-gradient(135deg, var(--secondary) 0%, #6d28d9 100%);
+  color: #fff;
+  border: none;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 12px 20px;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: var(--neon-shadow-secondary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.simulator-toggle-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+}
+
+/* Simulator Drawer */
+.simulator-drawer {
+  position: fixed;
+  top: 100px;
+  right: 24px;
+  width: 320px;
+  max-height: calc(100vh - 140px);
+  z-index: 101;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  overflow-y: auto;
+  border-color: var(--secondary-glow);
+  box-shadow: var(--card-shadow), 0 0 25px rgba(139, 92, 246, 0.15);
+}
+
+.simulator-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 12px;
+}
+
+.sim-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sim-title h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.sim-close-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.sim-close-btn:hover {
+  color: var(--text-title);
+}
+
+.sim-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.sim-actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sim-action-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sim-card-info h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 4px;
+}
+
+.sim-card-info p {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+.btn-sim-action {
+  width: 100%;
+  justify-content: center;
+  font-size: 0.75rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.btn-danger-active {
+  background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+  color: #fff;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+  border: none;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-danger-active:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+/* DDoS Red-glow Alerts */
+.border-danger {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+  box-shadow: var(--card-shadow), inset 0 0 15px rgba(239, 68, 68, 0.1) !important;
+}
+
+.border-danger-glow {
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+.bg-danger {
+  background-color: var(--danger) !important;
+}
+
+/* Jackpot Overlay Banner */
+.jackpot-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jackpot-banner {
+  max-width: 500px;
+  width: 90%;
+  padding: 40px;
+  border-color: var(--accent);
+  box-shadow: var(--card-shadow), 0 0 50px rgba(251, 191, 36, 0.3);
+  text-align: center;
+  position: relative;
+}
+
+.jackpot-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.jackpot-close-btn:hover {
+  color: #fff;
+}
+
+.jackpot-icon-wrapper {
+  margin-bottom: 24px;
+}
+
+.jackpot-crown {
+  color: var(--accent);
+  filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));
+}
+
+.jackpot-message h2 {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 1.8rem;
+  letter-spacing: 1px;
+  color: var(--accent);
+  text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+  margin-bottom: 12px;
+}
+
+.jackpot-message p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.jackpot-win-amount {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 0 25px var(--primary);
+  margin: 16px 0;
+}
+
+.jackpot-game-meta {
+  font-size: 0.85rem !important;
+}
+
+/* Games Grid Layout & Scroll styling */
+.games-grid-container {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 180px);
+  padding-right: 8px;
+}
+
+.games-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding-bottom: 24px;
+}
+
+.game-item-card {
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+}
+
+.game-item-card.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+}
+
+.game-card-image-wrapper {
+  position: relative;
+  height: 130px;
+  width: 100%;
+  overflow: hidden;
+  background: #000;
+}
+
+.game-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  opacity: 0.85;
+}
+
+.game-item-card:hover .game-card-img {
+  transform: scale(1.08);
+  opacity: 1;
+}
+
+.game-card-badge-floating {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(3, 5, 13, 0.85);
+  color: var(--secondary);
+  border: 1px solid var(--secondary-glow);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.game-card-info {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.game-card-header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-bottom: 12px;
+}
+
+.game-card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-title);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.game-card-provider {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.game-card-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  border-top: 1px solid var(--card-border);
+  padding-top: 10px;
+  margin-top: auto;
+}
+
+.card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-stat-lbl {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.card-stat-val {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+/* Detail view adjustments */
+.detail-hero-card {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.detail-hero-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--card-border);
+}
+
+.detail-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.no-results-box {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  gap: 12px;
+  text-align: center;
+  color: var(--text-muted);
 }

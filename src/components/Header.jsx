@@ -1,7 +1,7 @@
 import React from 'react';
-import { Users, Server, Bell, UserCheck } from 'lucide-react';
+import { Users, Server, Bell, UserCheck, AlertTriangle } from 'lucide-react';
 
-export default function Header({ activeTab }) {
+export default function Header({ activeTab, isDdosActive }) {
   const getTitle = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -26,24 +26,32 @@ export default function Header({ activeTab }) {
 
       <div className="header-widgets">
         <div className="widget-item glass-card">
-          <Users size={16} className="text-primary" />
+          <Users size={16} className={isDdosActive ? 'text-danger' : 'text-primary'} />
           <div className="widget-content">
-            <span className="widget-value pulse-text">3,284</span>
+            <span className="widget-value pulse-text">{isDdosActive ? '184' : '3,284'}</span>
             <span className="widget-label">Players Online</span>
           </div>
         </div>
 
-        <div className="widget-item glass-card">
-          <Server size={16} className="text-secondary" />
+        <div className={`widget-item glass-card ${isDdosActive ? 'border-danger-glow' : ''}`}>
+          {isDdosActive ? (
+            <AlertTriangle size={16} className="text-danger animate-pulse" />
+          ) : (
+            <Server size={16} className="text-secondary" />
+          )}
           <div className="widget-content">
-            <span className="widget-value">EU-WEST-1</span>
-            <span className="widget-label">Primary Node</span>
+            <span className={`widget-value ${isDdosActive ? 'text-danger' : ''}`}>
+              {isDdosActive ? 'ANOMALY DETECTED' : 'EU-WEST-1'}
+            </span>
+            <span className="widget-label">
+              {isDdosActive ? 'Latency Warning' : 'Primary Node'}
+            </span>
           </div>
         </div>
 
         <div className="notification-bell glass-card">
-          <Bell size={18} className="text-accent animate-bounce-slow" />
-          <span className="bell-badge"></span>
+          <Bell size={18} className={isDdosActive ? 'text-danger animate-bounce-slow' : 'text-accent animate-bounce-slow'} />
+          <span className={`bell-badge ${isDdosActive ? 'bg-danger' : 'bg-accent'}`}></span>
         </div>
 
         <div className="admin-profile glass-card">

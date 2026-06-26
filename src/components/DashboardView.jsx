@@ -3,11 +3,11 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp, TrendingDown, Users, Coins, Percent, AlertCircle } from 'lucide-react';
 import { kpiStats, revenueHistory, playerDistribution, initialLiveBets, liveGamesList } from '../utils/mockData';
 
-export default function DashboardView() {
-  const [liveBets, setLiveBets] = useState(initialLiveBets);
-
+export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isDdosActive, alertsCount }) {
   // Live simulation of active casino bets
   useEffect(() => {
+    if (isFeedFrozen) return;
+
     const interval = setInterval(() => {
       const isWin = Math.random() > 0.5;
       const amount = [10, 20, 50, 100, 500, 1000][Math.floor(Math.random() * 6)];
@@ -28,7 +28,7 @@ export default function DashboardView() {
     }, 3000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isFeedFrozen, setLiveBets]);
 
   const COLORS = ['#10b981', '#8b5cf6', '#fbbf24', '#3b82f6'];
 
@@ -69,10 +69,10 @@ export default function DashboardView() {
             <span className="kpi-title">Active Players Today</span>
             <Users className="kpi-icon text-accent" size={20} />
           </div>
-          <div className="kpi-value">{kpiStats.activePlayers.value}</div>
+          <div className="kpi-value">{isDdosActive ? '184' : kpiStats.activePlayers.value}</div>
           <div className="kpi-footer">
-            <span className="trend-badge positive">
-              <TrendingUp size={12} /> {kpiStats.activePlayers.change}
+            <span className={isDdosActive ? 'trend-badge negative' : 'trend-badge positive'}>
+              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-94.3%' : kpiStats.activePlayers.change}
             </span>
             <span className="trend-label">vs yesterday</span>
           </div>
@@ -83,10 +83,10 @@ export default function DashboardView() {
             <span className="kpi-title">Fraud Risk Alerts</span>
             <AlertCircle className="kpi-icon text-danger" size={20} />
           </div>
-          <div className="kpi-value text-danger">{kpiStats.pendingAlerts.value}</div>
+          <div className="kpi-value text-danger">{alertsCount}</div>
           <div className="kpi-footer">
             <span className="trend-badge negative">
-              {kpiStats.pendingAlerts.change}
+              {isDdosActive ? 'CRITICAL' : kpiStats.pendingAlerts.change}
             </span>
             <span className="trend-label">unresolved files</span>
           </div>
@@ -193,6 +193,12 @@ export default function DashboardView() {
         <div className="glass-card system-logs-card">
           <h3 className="card-heading">System Operator Log</h3>
           <div className="logs-container">
+            {isDdosActive && (
+              <div className="log-item animate-pulse" style={{ borderLeftColor: 'var(--danger)' }}>
+                <span className="log-time">[WARNING]</span>
+                <span className="log-text text-danger">🚨 DDoS EXPLOIT: Anomaly (1.2M pps) detected on EU-WEST-1. Firewalls active.</span>
+              </div>
+            )}
             <div className="log-item">
               <span className="log-time">[14:38:12]</span>
               <span className="log-text">GeoIP verification updated for <strong>SE region</strong>.</span>

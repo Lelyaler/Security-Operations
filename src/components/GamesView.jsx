@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, HelpCircle, TrendingUp, Info } from 'lucide-react';
+import { Search, Filter, Info, Users, Sparkles, AlertCircle } from 'lucide-react';
 import { mockGamesList } from '../utils/mockData';
 
 export default function GamesView() {
@@ -43,62 +43,66 @@ export default function GamesView() {
       </div>
 
       <div className="games-content-layout">
-        {/* Table List */}
-        <div className="games-list-container glass-card">
-          <table className="games-table">
-            <thead>
-              <tr>
-                <th>Game Name</th>
-                <th>Category</th>
-                <th>Provider</th>
-                <th>RTP</th>
-                <th>Total Spins</th>
-                <th>Total GGR</th>
-                <th>Popularity</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredGames.length > 0 ? (
-                filteredGames.map(game => (
-                  <tr 
-                    key={game.id} 
-                    onClick={() => setSelectedGame(game)}
-                    className={`game-row ${selectedGame && selectedGame.id === game.id ? 'selected' : ''}`}
-                  >
-                    <td>
-                      <div className="game-name-cell">
-                        <span className="game-title">{game.name}</span>
+        {/* Visual Cards Grid */}
+        <div className="games-grid-container">
+          <div className="games-cards-grid">
+            {filteredGames.length > 0 ? (
+              filteredGames.map(game => (
+                <div 
+                  key={game.id} 
+                  onClick={() => setSelectedGame(game)}
+                  className={`game-item-card glass-card ${selectedGame && selectedGame.id === game.id ? 'active' : ''}`}
+                >
+                  <div className="game-card-image-wrapper">
+                    <img src={game.image} alt={game.name} className="game-card-img" />
+                    <span className="game-card-badge-floating">{game.category}</span>
+                  </div>
+                  
+                  <div className="game-card-info">
+                    <div className="game-card-header-row">
+                      <h4 className="game-card-title">{game.name}</h4>
+                      <span className="game-card-provider">{game.provider}</span>
+                    </div>
+
+                    <div className="game-card-stats-row">
+                      <div className="card-stat">
+                        <span className="card-stat-lbl">RTP</span>
+                        <span className="card-stat-val text-primary">{game.rtp}</span>
                       </div>
-                    </td>
-                    <td><span className="game-cat-badge">{game.category}</span></td>
-                    <td className="text-muted">{game.provider}</td>
-                    <td><strong className="text-primary">{game.rtp}</strong></td>
-                    <td>{game.spins.toLocaleString()}</td>
-                    <td>${game.ggr.toLocaleString()}</td>
-                    <td>
-                      <div className="popularity-bar-container">
-                        <div className="popularity-bar" style={{ width: `${game.popularity}%` }}></div>
-                        <span className="popularity-label">{game.popularity}%</span>
+                      <div className="card-stat">
+                        <span className="card-stat-lbl">Players</span>
+                        <span className="card-stat-val text-accent" style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
+                          <span className="status-dot bg-success" style={{ width: '6px', height: '6px', margin: 0 }}></span>
+                          {game.activePlayers}
+                        </span>
                       </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" className="no-results">No games found matching your search criteria.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      <div className="card-stat">
+                        <span className="card-stat-lbl">GGR</span>
+                        <span className="card-stat-val text-success">${game.ggr.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="no-results-box glass-card">
+                <AlertCircle size={24} className="text-muted" />
+                <p>No games found matching your search criteria.</p>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Selected Game Sidebar details */}
         {selectedGame && (
           <div className="game-details-sidebar glass-card animate-slide-left">
             <h3 className="card-heading">Game Performance Profile</h3>
-            <div className="detail-hero">
-              <h4>{selectedGame.name}</h4>
-              <span className="badge badge-success">{selectedGame.provider}</span>
+            <div className="detail-hero-card">
+              <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" />
+              <div className="detail-hero-info">
+                <h4>{selectedGame.name}</h4>
+                <span className="badge badge-success">{selectedGame.provider}</span>
+              </div>
             </div>
 
             <div className="detail-stats-grid">
@@ -128,8 +132,8 @@ export default function GamesView() {
             <div className="detail-charts-panel">
               <span className="panel-title">Active Play Sessions (24h)</span>
               <div className="dummy-chart-placeholder">
-                <TrendingUp size={24} className="text-primary animate-pulse" />
-                <span className="text-muted">High player demand registered between 20:00 - 23:00.</span>
+                <Users size={24} className="text-primary animate-pulse" />
+                <span className="text-muted">High player demand registered: {selectedGame.activePlayers} sessions online.</span>
               </div>
             </div>
           </div>

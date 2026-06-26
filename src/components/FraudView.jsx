@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { ShieldAlert, ShieldCheck, UserX, AlertOctagon, X, Terminal, Globe, Calendar } from 'lucide-react';
 import { mockFraudAlerts } from '../utils/mockData';
 
-export default function FraudView() {
-  const [alerts, setAlerts] = useState(mockFraudAlerts);
+export default function FraudView({ alerts, setAlerts }) {
   const [selectedAlert, setSelectedAlert] = useState(null);
 
   const handleAction = (id, newStatus) => {

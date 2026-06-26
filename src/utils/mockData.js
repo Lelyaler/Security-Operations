@@ -26,14 +26,150 @@ export const playerDistribution = [
 ];
 
 export const mockGamesList = [
-  { id: 1, name: "Book of Ra Deluxe", category: "Slots", provider: "Novomatic", rtp: "95.10%", spins: 42390, ggr: 12450, popularity: 98 },
-  { id: 2, name: "Crazy Time", category: "Live Casino", provider: "Evolution", rtp: "96.08%", spins: 28410, ggr: 38100, popularity: 99 },
-  { id: 3, name: "Gates of Olympus", category: "Slots", provider: "Pragmatic Play", rtp: "96.50%", spins: 54120, ggr: 24900, popularity: 97 },
-  { id: 4, name: "Lightning Roulette", category: "Live Casino", provider: "Evolution", rtp: "97.30%", spins: 19480, ggr: 18230, popularity: 95 },
-  { id: 5, name: "Sweet Bonanza", category: "Slots", provider: "Pragmatic Play", rtp: "96.48%", spins: 31200, ggr: 14200, popularity: 94 },
-  { id: 6, name: "Aviator", category: "Crash Games", provider: "Spribe", rtp: "97.00%", spins: 89450, ggr: 34120, popularity: 96 },
-  { id: 7, name: "Blackjack VIP", category: "Table Games", provider: "NetEnt", rtp: "99.59%", spins: 5480, ggr: 15400, popularity: 88 },
-  { id: 8, name: "Starburst", category: "Slots", provider: "NetEnt", rtp: "96.09%", spins: 22400, ggr: 8900, popularity: 85 }
+  { 
+    id: 1, 
+    name: "Book of Ra Deluxe", 
+    category: "Slots", 
+    provider: "Novomatic", 
+    rtp: "95.10%", 
+    spins: 42390, 
+    ggr: 12450, 
+    popularity: 98, 
+    activePlayers: 480,
+    image: "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 2, 
+    name: "Crazy Time", 
+    category: "Live Casino", 
+    provider: "Evolution", 
+    rtp: "96.08%", 
+    spins: 28410, 
+    ggr: 38100, 
+    popularity: 99, 
+    activePlayers: 820,
+    image: "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 3, 
+    name: "Gates of Olympus", 
+    category: "Slots", 
+    provider: "Pragmatic Play", 
+    rtp: "96.50%", 
+    spins: 54120, 
+    ggr: 24900, 
+    popularity: 97, 
+    activePlayers: 340,
+    image: "https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 4, 
+    name: "Lightning Roulette", 
+    category: "Live Casino", 
+    provider: "Evolution", 
+    rtp: "97.30%", 
+    spins: 19480, 
+    ggr: 18230, 
+    popularity: 95, 
+    activePlayers: 290,
+    image: "https://images.unsplash.com/photo-1518133680790-3985350d8702?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 5, 
+    name: "Sweet Bonanza", 
+    category: "Slots", 
+    provider: "Pragmatic Play", 
+    rtp: "96.48%", 
+    spins: 31200, 
+    ggr: 14200, 
+    popularity: 94, 
+    activePlayers: 210,
+    image: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 6, 
+    name: "Aviator", 
+    category: "Crash Games", 
+    provider: "Spribe", 
+    rtp: "97.00%", 
+    spins: 89450, 
+    ggr: 34120, 
+    popularity: 96, 
+    activePlayers: 540,
+    image: "https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 7, 
+    name: "Blackjack VIP", 
+    category: "Table Games", 
+    provider: "NetEnt", 
+    rtp: "99.59%", 
+    spins: 5480, 
+    ggr: 15400, 
+    popularity: 88, 
+    activePlayers: 90,
+    image: "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 8, 
+    name: "Starburst", 
+    category: "Slots", 
+    provider: "NetEnt", 
+    rtp: "96.09%", 
+    spins: 22400, 
+    ggr: 8900, 
+    popularity: 85, 
+    activePlayers: 120,
+    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 9, 
+    name: "Baccarat Control", 
+    category: "Table Games", 
+    provider: "Evolution", 
+    rtp: "98.94%", 
+    spins: 11200, 
+    ggr: 9540, 
+    popularity: 82, 
+    activePlayers: 75,
+    image: "https://images.unsplash.com/photo-1541252260730-0412e8e2108e?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 10, 
+    name: "Gonzo's Quest", 
+    category: "Slots", 
+    provider: "NetEnt", 
+    rtp: "95.97%", 
+    spins: 18450, 
+    ggr: 7200, 
+    popularity: 80, 
+    activePlayers: 85,
+    image: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 11, 
+    name: "Mega Moolah", 
+    category: "Slots", 
+    provider: "Microgaming", 
+    rtp: "88.12%", 
+    spins: 45100, 
+    ggr: 31200, 
+    popularity: 91, 
+    activePlayers: 190,
+    image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop&q=80" 
+  },
+  { 
+    id: 12, 
+    name: "Plinko Neon", 
+    category: "Crash Games", 
+    provider: "BGaming", 
+    rtp: "99.00%", 
+    spins: 62400, 
+    ggr: 11450, 
+    popularity: 89, 
+    activePlayers: 230,
+    image: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=400&auto=format&fit=crop&q=80" 
+  }
 ];
 
 export const mockFraudAlerts = [
