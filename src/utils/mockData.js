@@ -36,7 +36,7 @@ export const mockGamesList = [
     ggr: 124, // Data Sent (GB)
     popularity: 98, // Health status
     activePlayers: 480, // Active threads
-    image: "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 2, 
@@ -48,7 +48,7 @@ export const mockGamesList = [
     ggr: 381, 
     popularity: 99, 
     activePlayers: 820,
-    image: "https://images.unsplash.com/photo-1596838132731-3301c3fd4317?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 3, 
@@ -60,7 +60,7 @@ export const mockGamesList = [
     ggr: 249, 
     popularity: 97, 
     activePlayers: 340,
-    image: "https://images.unsplash.com/photo-1533073526757-2c8ca1df9f1c?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 4, 
@@ -72,7 +72,7 @@ export const mockGamesList = [
     ggr: 182, 
     popularity: 95, 
     activePlayers: 290,
-    image: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 5, 
@@ -84,7 +84,7 @@ export const mockGamesList = [
     ggr: 142, 
     popularity: 94, 
     activePlayers: 210,
-    image: "https://images.unsplash.com/photo-1581798459219-318e76aecc7b?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 6, 
@@ -96,7 +96,7 @@ export const mockGamesList = [
     ggr: 341, 
     popularity: 96, 
     activePlayers: 540,
-    image: "https://images.unsplash.com/photo-1436076863939-06870fe779c2?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 7, 
@@ -108,7 +108,7 @@ export const mockGamesList = [
     ggr: 154, 
     popularity: 88, 
     activePlayers: 90,
-    image: "https://images.unsplash.com/photo-1511193311914-0346f16efe90?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 8, 
@@ -120,7 +120,7 @@ export const mockGamesList = [
     ggr: 89, 
     popularity: 85, 
     activePlayers: 120,
-    image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 9, 
@@ -144,7 +144,7 @@ export const mockGamesList = [
     ggr: 72, 
     popularity: 80, 
     activePlayers: 85,
-    image: "https://images.unsplash.com/photo-1508193638397-1c4234db14d8?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 11, 
@@ -156,7 +156,7 @@ export const mockGamesList = [
     ggr: 312, 
     popularity: 91, 
     activePlayers: 190,
-    image: "https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1624969862644-791f3dc98927?w=400&auto=format&fit=crop&q=80" 
   },
   { 
     id: 12, 
@@ -168,7 +168,7 @@ export const mockGamesList = [
     ggr: 114, 
     popularity: 89, 
     activePlayers: 230,
-    image: "https://images.unsplash.com/photo-1614850523459-c2f4c699c52e?w=400&auto=format&fit=crop&q=80" 
+    image: "https://images.unsplash.com/photo-1601597111158-2fceff270190?w=400&auto=format&fit=crop&q=80" 
   }
 ];
 
