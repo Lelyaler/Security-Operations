@@ -54,7 +54,7 @@ export default function GamesView() {
                   className={`game-item-card glass-card ${selectedGame && selectedGame.id === game.id ? 'active' : ''}`}
                 >
                   <div className="game-card-image-wrapper">
-                    <img src={game.image} alt={game.name} className="game-card-img" />
+                    <img src={game.image} alt={game.name} className="game-card-img" loading="lazy" />
                     <span className="game-card-badge-floating">{game.category}</span>
                   </div>
                   
@@ -98,7 +98,7 @@ export default function GamesView() {
           <div className="game-details-sidebar glass-card animate-slide-left">
             <h3 className="card-heading">Server Node Profile</h3>
             <div className="detail-hero-card">
-              <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" />
+              <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" loading="lazy" />
               <div className="detail-hero-info">
                 <h4>{selectedGame.name}</h4>
                 <span className="badge badge-success">{selectedGame.provider}</span>
