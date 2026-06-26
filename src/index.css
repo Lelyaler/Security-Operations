@@ -1593,3 +1593,174 @@ body {
   text-align: center;
   color: var(--text-muted);
 }
+
+/* Premium Mobile Responsive Design */
+@media (max-width: 768px) {
+  /* Layout Adjustments */
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .main-content {
+    height: calc(100vh - 64px);
+    width: 100%;
+  }
+
+  .content-area {
+    padding: 16px;
+    padding-bottom: 24px;
+  }
+
+  /* Bottom Navigation Bar instead of Sidebar */
+  .sidebar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 64px;
+    flex-direction: row;
+    border-right: none;
+    border-top: 1px solid var(--card-border);
+    z-index: 999;
+  }
+
+  .sidebar-logo, 
+  .sidebar-footer {
+    display: none !important;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    padding: 0 8px;
+    gap: 4px;
+    width: 100%;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .nav-item {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 0;
+    font-size: 0.65rem;
+    gap: 3px;
+    text-align: center;
+    height: 100%;
+    width: 22%;
+    border-radius: 8px;
+    color: var(--text-muted);
+    background: transparent;
+    position: relative;
+  }
+
+  .nav-item.active {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-title);
+  }
+
+  .nav-icon {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .nav-badge {
+    position: absolute;
+    top: 4px;
+    right: calc(50% - 20px);
+  }
+
+  /* Compact Header */
+  .header {
+    height: auto;
+    padding: 12px 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .header-title-section {
+    max-width: 60%;
+  }
+
+  .header-title {
+    font-size: 1.1rem;
+  }
+
+  .header-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .header-widgets {
+    gap: 8px;
+  }
+
+  /* Compact KPI Stats */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .kpi-card {
+    padding: 16px;
+    gap: 8px;
+  }
+
+  .kpi-value {
+    font-size: 1.4rem;
+  }
+
+  /* Table Scaling */
+  .games-table th, 
+  .ledger-table th, 
+  .alerts-table th {
+    padding: 12px 16px;
+    font-size: 0.75rem;
+  }
+
+  .games-table td, 
+  .ledger-table td, 
+  .alerts-table td {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+  }
+
+  /* Floating controls and overlays */
+  .simulator-toggle-btn {
+    bottom: 80px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 0.8rem;
+  }
+
+  .simulator-drawer {
+    position: fixed;
+    bottom: 140px;
+    top: auto;
+    right: 16px;
+    left: 16px;
+    width: auto;
+    max-height: 55vh;
+    z-index: 1000;
+  }
+}
+
+@media (max-width: 580px) {
+  /* Hide unnecessary header elements for small screens */
+  .widget-item:nth-child(2) {
+    display: none !important;
+  }
+
+  .admin-profile {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
