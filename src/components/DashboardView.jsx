@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { TrendingUp, TrendingDown, Users, Activity, ShieldAlert, AlertCircle } from 'lucide-react';
-import { kpiStats, revenueHistory, playerDistribution, initialLiveBets, liveGamesList } from '../utils/mockData';
+import { kpiStats, revenueHistory, playerDistribution, liveGamesList } from '../utils/mockData';
+
+const NetworkTrafficChart = lazy(() => import('./NetworkTrafficChart'));
+const ProtocolDistributionChart = lazy(() => import('./ProtocolDistributionChart'));
 
 export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isDdosActive, alertsCount }) {
   // Live simulation of network sockets and traffic
@@ -31,8 +33,6 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
 
     return () => clearInterval(interval);
   }, [isFeedFrozen, setLiveBets]);
-
-  const COLORS = ['#10b981', '#8b5cf6', '#fbbf24', '#3b82f6'];
 
   return (
     <div className="dashboard-view animate-fade-in">
@@ -99,35 +99,11 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
       <div className="dashboard-content-layout">
         {/* Analytics Chart */}
         <div className="glass-card main-chart-card">
-          <h3 className="card-heading">Network Traffic vs Blocked Threats</h3>
+          <h2 className="card-heading">Network Traffic vs Blocked Threats</h2>
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={320}>
-              <AreaChart data={revenueHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                <defs>
-                  <linearGradient id="colorTraffic" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="var(--secondary)" stopOpacity={0.4}/>
-                    <stop offset="95%" stopColor="var(--secondary)" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
-                <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} />
-                <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--bg-dark)', 
-                    border: '1px solid var(--card-border)', 
-                    borderRadius: '8px',
-                    color: 'var(--text-main)' 
-                  }} 
-                />
-                <Area type="monotone" dataKey="Traffic" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorTraffic)" />
-                <Area type="monotone" dataKey="Threats" stroke="var(--secondary)" strokeWidth={2} fillOpacity={1} fill="url(#colorThreats)" />
-              </AreaChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<div className="chart-placeholder" style={{ height: 320 }} />}>
+              <NetworkTrafficChart data={revenueHistory} />
+            </Suspense>
           </div>
         </div>
 
@@ -136,7 +112,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
           <div className="live-feed-header">
             <div className="live-pulse-container">
               <span className="live-dot pulse-primary"></span>
-              <h3 className="card-heading">Live Network Traffic Logs</h3>
+              <h2 className="card-heading">Live Network Traffic Logs</h2>
             </div>
             <span className="badge badge-success">Simulated Feed</span>
           </div>
@@ -167,33 +143,17 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
       <div className="secondary-metrics-layout">
         {/* Game Distribution Chart */}
         <div className="glass-card dist-chart-card">
-          <h3 className="card-heading">Active Sockets by Protocol</h3>
+          <h2 className="card-heading">Active Sockets by Protocol</h2>
           <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height={240}>
-              <BarChart data={playerDistribution} layout="vertical" barSize={14}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" horizontal={false} />
-                <XAxis type="number" stroke="var(--text-muted)" fontSize={11} tickLine={false} />
-                <YAxis dataKey="name" type="category" stroke="var(--text-muted)" fontSize={11} tickLine={false} width={100} />
-                <Tooltip 
-                  contentStyle={{ 
-                    background: 'var(--bg-dark)', 
-                    border: '1px solid var(--card-border)', 
-                    borderRadius: '8px' 
-                  }} 
-                />
-                <Bar dataKey="players" radius={[0, 4, 4, 0]}>
-                  {playerDistribution.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            <Suspense fallback={<div className="chart-placeholder" style={{ height: 240 }} />}>
+              <ProtocolDistributionChart data={playerDistribution} />
+            </Suspense>
           </div>
         </div>
 
         {/* System Operations Logs */}
         <div className="glass-card system-logs-card">
-          <h3 className="card-heading">Security Operations Audit Log</h3>
+          <h2 className="card-heading">Security Operations Audit Log</h2>
           <div className="logs-container">
             {isDdosActive && (
               <div className="log-item animate-pulse" style={{ borderLeftColor: 'var(--danger)' }}>
