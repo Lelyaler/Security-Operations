@@ -1335,6 +1335,7 @@ body {
   gap: 8px;
 }
 
+.sim-title h2,
 .sim-title h3 {
   font-size: 1.05rem;
   font-weight: 700;
@@ -1375,6 +1376,7 @@ body {
   gap: 10px;
 }
 
+.sim-card-info h3,
 .sim-card-info h4 {
   font-size: 0.85rem;
   font-weight: 700;
@@ -1887,4 +1889,18 @@ body {
   font-size: 0.95rem;
   letter-spacing: 0.5px;
 }
+
+.chart-placeholder {
+  width: 100%;
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.02) 25%, rgba(255, 255, 255, 0.06) 50%, rgba(255, 255, 255, 0.02) 75%);
+  background-size: 200% 100%;
+  animation: chart-shimmer 1.8s ease-in-out infinite;
+}
+
+@keyframes chart-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 

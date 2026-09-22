@@ -6,6 +6,11 @@ export default defineConfig({
   base: '/Security-Operations/',
   plugins: [react()],
   build: {
+    modulePreload: {
+      resolveDependencies(_filename, deps) {
+        return deps.filter(dep => !dep.includes('vendor-charts'));
+      }
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

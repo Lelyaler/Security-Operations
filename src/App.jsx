@@ -179,7 +179,7 @@ function App() {
             <div className="jackpot-message">
               <h2 className="text-danger">SECURITY BREACH DETECTED!</h2>
               <p>Unauthorized attempt to read root shell files</p>
-              <h1 className="jackpot-win-amount text-danger" style={{ textShadow: '0 0 25px var(--danger)' }}>CRITICAL EXPLOIT</h1>
+              <div className="jackpot-win-amount text-danger" style={{ textShadow: '0 0 25px var(--danger)' }}>CRITICAL EXPLOIT</div>
               <p className="jackpot-game-meta">Source IP: <strong>{jackpotEvent.player}</strong> | Target Path: <strong>{jackpotEvent.game}</strong> | Signature: <strong>{jackpotEvent.multiplier}</strong></p>
             </div>
           </div>

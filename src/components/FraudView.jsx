@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldAlert, ShieldCheck, UserX, AlertOctagon, X, Terminal, Globe, Calendar } from 'lucide-react';
-import { mockFraudAlerts } from '../utils/mockData';
+import { ShieldAlert, ShieldCheck, UserX, AlertOctagon, X, Terminal, Globe } from 'lucide-react';
 
 export default function FraudView({ alerts, setAlerts }) {
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -128,9 +127,9 @@ export default function FraudView({ alerts, setAlerts }) {
             <div className="modal-header">
               <div className="modal-title-group">
                 <ShieldAlert className="text-danger" size={22} />
-                <h3>Investigation File: {selectedAlert.id}</h3>
+                <h2>Investigation File: {selectedAlert.id}</h2>
               </div>
-              <button className="modal-close-btn" onClick={() => setSelectedAlert(null)}>
+              <button className="modal-close-btn" onClick={() => setSelectedAlert(null)} aria-label="Close Investigation Details">
                 <X size={18} />
               </button>
             </div>

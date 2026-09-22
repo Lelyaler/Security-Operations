@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Filter, Info, Users, Sparkles, AlertCircle } from 'lucide-react';
+import { Search, Info, Users, AlertCircle } from 'lucide-react';
 import { mockGamesList } from '../utils/mockData';
 
 export default function GamesView() {
@@ -60,7 +60,7 @@ export default function GamesView() {
                   
                   <div className="game-card-info">
                     <div className="game-card-header-row">
-                      <h4 className="game-card-title">{game.name}</h4>
+                      <h3 className="game-card-title">{game.name}</h3>
                       <span className="game-card-provider">{game.provider}</span>
                     </div>
 
@@ -96,11 +96,11 @@ export default function GamesView() {
         {/* Selected Game Sidebar details */}
         {selectedGame && (
           <div className="game-details-sidebar glass-card animate-slide-left">
-            <h3 className="card-heading">Server Node Profile</h3>
+            <h2 className="card-heading">Server Node Profile</h2>
             <div className="detail-hero-card">
               <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" loading="lazy" />
               <div className="detail-hero-info">
-                <h4>{selectedGame.name}</h4>
+                <h3>{selectedGame.name}</h3>
                 <span className="badge badge-success">{selectedGame.provider}</span>
               </div>
             </div>

@@ -15,7 +15,7 @@ export default function SimulatorDeck({
     <>
       {/* Floating Toggle Button */}
       <button 
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)} 
         className="simulator-toggle-btn pulse-primary"
         title="Open Simulation Controller"
       >
@@ -29,9 +29,9 @@ export default function SimulatorDeck({
           <div className="simulator-header">
             <div className="sim-title">
               <Sliders size={18} className="text-primary animate-pulse" />
-              <h3>Simulation Deck</h3>
+              <h2>Simulation Deck</h2>
             </div>
-            <button className="sim-close-btn" onClick={() => setIsOpen(false)}>
+            <button className="sim-close-btn" onClick={() => setIsOpen(false)} aria-label="Close Simulation Deck">
               <X size={16} />
             </button>
           </div>
@@ -44,7 +44,7 @@ export default function SimulatorDeck({
             {/* Action 1: Trigger Security Exploit */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Trigger Security Exploit</h4>
+                <h3>Trigger Security Exploit</h3>
                 <p>Simulates a critical file path access attempt. Triggers a red intrusion banner and injects a blocked query in the feed.</p>
               </div>
               <button onClick={onTriggerJackpot} className="btn btn-primary btn-sim-action">
@@ -55,7 +55,7 @@ export default function SimulatorDeck({
             {/* Action 2: Simulate DDoS Attack */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Simulate DDoS Attack</h4>
+                <h3>Simulate DDoS Attack</h3>
                 <p>Forces system status to RED, spikes latency to 820ms, and updates header to display warnings.</p>
               </div>
               <button 
@@ -70,7 +70,7 @@ export default function SimulatorDeck({
             {/* Action 3: Inject Threat Alert */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Inject Threat Alert</h4>
+                <h3>Inject Threat Alert</h3>
                 <p>Injects a new High-Risk port scan or SQL injection alert. Spikes alert badge count instantly.</p>
               </div>
               <button onClick={onInjectFraud} className="btn btn-secondary btn-sim-action text-warning">
@@ -81,7 +81,7 @@ export default function SimulatorDeck({
             {/* Action 4: Freeze Live Traffic */}
             <div className="sim-action-card">
               <div className="sim-card-info">
-                <h4>Live Traffic Stream</h4>
+                <h3>Live Traffic Stream</h3>
                 <p>Pause or play the background packet logs generated every 3 seconds.</p>
               </div>
               <button 

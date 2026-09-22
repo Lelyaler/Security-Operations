@@ -24,6 +24,7 @@ export default function Header({ activeTab, isDdosActive, setIsMobileOpen }) {
           onClick={() => setIsMobileOpen(true)} 
           className="mobile-menu-trigger-btn"
           title="Open Menu"
+          aria-label="Open Menu"
         >
           <Menu size={20} />
         </button>

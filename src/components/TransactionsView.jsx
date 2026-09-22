@@ -61,6 +61,7 @@ export default function TransactionsView() {
           <input
             type="text"
             placeholder="Search by User or Log ID..."
+            aria-label="Search by User or Log ID"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -68,7 +69,7 @@ export default function TransactionsView() {
 
         <div className="filter-group">
           <div className="select-wrapper">
-            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
+            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} aria-label="Filter by log type">
               <option value="All">All Types</option>
               <option value="File Write">File Write</option>
               <option value="SSH Access">SSH Access</option>
@@ -77,7 +78,7 @@ export default function TransactionsView() {
           </div>
 
           <div className="select-wrapper">
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} aria-label="Filter by status">
               <option value="All">All Statuses</option>
               <option value="success">Success</option>
               <option value="pending">Pending</option>

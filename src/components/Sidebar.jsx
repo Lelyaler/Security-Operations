@@ -42,6 +42,7 @@ export default function Sidebar({
             onClick={() => setIsCollapsed(!isCollapsed)} 
             className="sidebar-toggle-action-btn"
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
             {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
           </button>
@@ -51,6 +52,7 @@ export default function Sidebar({
             onClick={() => setIsMobileOpen(false)} 
             className="sidebar-close-mobile-btn"
             title="Close Menu"
+            aria-label="Close Menu"
           >
             <X size={18} />
           </button>
