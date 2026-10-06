@@ -1,15 +1,19 @@
-import React, { useEffect, lazy, Suspense } from 'react';
-import { TrendingUp, TrendingDown, Users, Activity, ShieldAlert, AlertCircle } from 'lucide-react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { TrendingUp, TrendingDown, Users, Activity, ShieldAlert, AlertCircle, Play, Pause } from 'lucide-react';
 import { kpiStats, revenueHistory, playerDistribution, liveGamesList } from '../utils/mockData';
 
 const NetworkTrafficChart = lazy(() => import('./NetworkTrafficChart'));
 const ProtocolDistributionChart = lazy(() => import('./ProtocolDistributionChart'));
 
 export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isDdosActive, alertsCount }) {
-  // Live simulation of network sockets and traffic
-  useEffect(() => {
-    if (isFeedFrozen) return;
+  const [streamSpeed, setStreamSpeed] = useState(1);
+  const [trafficFilter, setTrafficFilter] = useState('all');
 
+  // Live simulation of network sockets and traffic with dynamic speed
+  useEffect(() => {
+    if (isFeedFrozen || streamSpeed === 0) return;
+
+    const intervalTime = Math.max(400, Math.round(3000 / streamSpeed));
     const interval = setInterval(() => {
       const isSuccess = Math.random() > 0.15;
       const bytes = Math.floor(Math.random() * 1400) + 64;
@@ -29,10 +33,16 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
       };
 
       setLiveBets(prev => [newBet, ...prev.slice(0, 4)]);
-    }, 3000);
+    }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [isFeedFrozen, setLiveBets]);
+  }, [isFeedFrozen, streamSpeed, setLiveBets]);
+
+  const filteredBets = liveBets.filter((bet) => {
+    if (trafficFilter === 'blocked') return bet.type === 'loss';
+    if (trafficFilter === 'allowed') return bet.type === 'win';
+    return true;
+  });
 
   return (
     <div className="dashboard-view animate-fade-in">
@@ -109,32 +119,101 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
 
         {/* Live Feed Panel */}
         <div className="glass-card live-feed-card">
-          <div className="live-feed-header">
+          <div className="live-feed-header" style={{ flexWrap: 'wrap', gap: '8px' }}>
             <div className="live-pulse-container">
-              <span className="live-dot pulse-primary"></span>
+              <span className={`live-dot ${streamSpeed === 0 ? '' : 'pulse-primary'}`}></span>
               <h2 className="card-heading">Live Network Traffic Logs</h2>
             </div>
-            <span className="badge badge-success">Simulated Feed</span>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ display: 'inline-flex', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '2px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                <button
+                  type="button"
+                  title={streamSpeed === 0 ? 'Resume stream' : 'Pause stream'}
+                  onClick={() => setStreamSpeed(streamSpeed === 0 ? 1 : 0)}
+                  style={{
+                    background: streamSpeed === 0 ? 'rgba(239, 68, 68, 0.25)' : 'transparent',
+                    border: 'none',
+                    color: streamSpeed === 0 ? '#ef4444' : 'var(--text-muted, #94a3b8)',
+                    borderRadius: '6px',
+                    padding: '3px 8px',
+                    cursor: 'pointer',
+                    fontSize: '11px',
+                    fontWeight: 600,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px'
+                  }}
+                >
+                  {streamSpeed === 0 ? <Play size={10} /> : <Pause size={10} />}
+                  {streamSpeed === 0 ? 'Paused' : 'Live'}
+                </button>
+                {[1, 2, 5].map((speed) => (
+                  <button
+                    key={speed}
+                    type="button"
+                    onClick={() => setStreamSpeed(speed)}
+                    style={{
+                      background: streamSpeed === speed ? 'rgba(16, 185, 129, 0.25)' : 'transparent',
+                      border: 'none',
+                      color: streamSpeed === speed ? '#10b981' : 'var(--text-muted, #94a3b8)',
+                      borderRadius: '6px',
+                      padding: '3px 7px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      fontWeight: 600
+                    }}
+                  >
+                    {speed}x
+                  </button>
+                ))}
+              </div>
+
+              <select
+                aria-label="Filter traffic logs"
+                value={trafficFilter}
+                onChange={(e) => setTrafficFilter(e.target.value)}
+                style={{
+                  background: 'rgba(0,0,0,0.4)',
+                  color: 'var(--text-color, #e2e8f0)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  borderRadius: '6px',
+                  padding: '3px 6px',
+                  fontSize: '11px',
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="all">All Traffic</option>
+                <option value="allowed">Allowed (200)</option>
+                <option value="blocked">Blocked (403/401)</option>
+              </select>
+            </div>
           </div>
 
           <div className="live-bets-container">
-            {liveBets.map((bet) => (
-              <div key={bet.id} className={`live-bet-row ${bet.type} animate-slide-in`}>
-                <div className="bet-row-left">
-                  <span className="bet-player">{bet.player}</span>
-                  <span className="bet-game text-muted">{bet.game}</span>
-                </div>
-                <div className="bet-row-center">
-                  <span className="bet-amount">{bet.amount}</span>
-                  <span className="bet-multiplier badge">Port {bet.multiplier}</span>
-                </div>
-                <div className="bet-row-right">
-                  <span className={`bet-win ${bet.type === 'win' ? 'text-success' : 'text-danger font-bold'}`}>
-                    {bet.win}
-                  </span>
-                </div>
+            {filteredBets.length === 0 ? (
+              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--text-muted, #64748b)', fontSize: '13px' }}>
+                No packets matching current filter
               </div>
-            ))}
+            ) : (
+              filteredBets.map((bet) => (
+                <div key={bet.id} className={`live-bet-row ${bet.type} animate-slide-in`}>
+                  <div className="bet-row-left">
+                    <span className="bet-player">{bet.player}</span>
+                    <span className="bet-game text-muted">{bet.game}</span>
+                  </div>
+                  <div className="bet-row-center">
+                    <span className="bet-amount">{bet.amount}</span>
+                    <span className="bet-multiplier badge">Port {bet.multiplier}</span>
+                  </div>
+                  <div className="bet-row-right">
+                    <span className={`bet-win ${bet.type === 'win' ? 'text-success' : 'text-danger font-bold'}`}>
+                      {bet.win}
+                    </span>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
