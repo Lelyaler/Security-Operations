@@ -2,7 +2,7 @@
 
 A premium, interactive real-time security analytics console built with **React** and **Vite**, designed for security analysts and operations center teams. The dashboard features real-time network traffic logs, server infrastructure matrices, a threat intelligence hub with intrusion detection systems (IDS), and interactive audit log ledgers.
 
-🚀 **Live Site URL**: [https://lelyaler.github.io/project/](https://lelyaler.github.io/project/)
+🚀 **Live Site URL**: [https://lelyaler.github.io/Security-Operations/](https://lelyaler.github.io/Security-Operations/)
 
 ---
 
@@ -67,8 +67,8 @@ To run this dashboard project locally:
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/Lelyaler/project.git
-   cd project
+   git clone https://github.com/Lelyaler/Security-Operations.git
+   cd Security-Operations
    ```
 
 2. **Install all package dependencies**:
@@ -81,4 +81,4 @@ To run this dashboard project locally:
    npm run dev
    ```
 
-4. Open [http://localhost:5173/project/](http://localhost:5173/project/) in your web browser.
+4. Open [http://localhost:5173/Security-Operations/](http://localhost:5173/Security-Operations/) in your web browser.
