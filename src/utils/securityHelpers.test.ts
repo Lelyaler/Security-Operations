@@ -125,7 +125,6 @@ describe('securityHelpers', () => {
       }
     ];
 
-    // Average popularity: 95. Penalty for 2 alerts: 5. Expected: 90.
     const score = calculateInfrastructureHealth(nodes, 2);
     expect(score).toBe(90);
   });

@@ -7,27 +7,28 @@ export default function NetworkTrafficChart({ data }) {
       <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
         <defs>
           <linearGradient id="colorTraffic" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.4} />
-            <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
           </linearGradient>
           <linearGradient id="colorThreats" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--secondary)" stopOpacity={0.4} />
-            <stop offset="95%" stopColor="var(--secondary)" stopOpacity={0} />
+            <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
-        <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} tickLine={false} />
-        <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.04)" />
+        <XAxis dataKey="name" stroke="#64748b" fontSize={11} tickLine={false} />
+        <YAxis stroke="#64748b" fontSize={11} tickLine={false} />
         <Tooltip
           contentStyle={{
-            background: 'var(--bg-dark)',
-            border: '1px solid var(--card-border)',
+            background: '#1a202e',
+            border: 'none',
             borderRadius: '8px',
-            color: 'var(--text-main)'
+            color: '#f8fafc',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
           }}
         />
-        <Area type="monotone" dataKey="Traffic" stroke="var(--primary)" strokeWidth={2} fillOpacity={1} fill="url(#colorTraffic)" />
-        <Area type="monotone" dataKey="Threats" stroke="var(--secondary)" strokeWidth={2} fillOpacity={1} fill="url(#colorThreats)" />
+        <Area type="monotone" dataKey="Traffic" stroke="#3b82f6" strokeWidth={2} fillOpacity={1} fill="url(#colorTraffic)" />
+        <Area type="monotone" dataKey="Threats" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorThreats)" />
       </AreaChart>
     </ResponsiveContainer>
   );

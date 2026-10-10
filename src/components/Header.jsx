@@ -35,38 +35,38 @@ export default function Header({ activeTab, isDdosActive, setIsMobileOpen }) {
       </div>
 
       <div className="header-widgets">
-        <div className="widget-item glass-card">
-          <Users size={16} className={isDdosActive ? 'text-danger' : 'text-primary'} />
+        <div className="widget-item">
+          <Users size={15} className={isDdosActive ? 'text-danger' : 'text-muted'} />
           <div className="widget-content">
-            <span className="widget-value pulse-text">{isDdosActive ? '184' : '3,284'}</span>
+            <span className="widget-value">{isDdosActive ? '184' : '3,284'}</span>
             <span className="widget-label">Active Sockets</span>
           </div>
         </div>
 
-        <div className={`widget-item glass-card ${isDdosActive ? 'border-danger-glow' : ''}`}>
+        <div className={`widget-item ${isDdosActive ? 'widget-item-danger' : ''}`}>
           {isDdosActive ? (
-            <AlertTriangle size={16} className="text-danger animate-pulse" />
+            <AlertTriangle size={15} className="text-danger" />
           ) : (
-            <Server size={16} className="text-secondary" />
+            <Server size={15} className="text-muted" />
           )}
           <div className="widget-content">
             <span className={`widget-value ${isDdosActive ? 'text-danger' : ''}`}>
-              {isDdosActive ? 'ANOMALY DETECTED' : 'EU-WEST-1'}
+              {isDdosActive ? 'Anomaly Detected' : 'EU-WEST-1'}
             </span>
             <span className="widget-label">
-              {isDdosActive ? 'Latency Warning' : 'Primary Node'}
+              {isDdosActive ? 'High Latency' : 'Primary Node'}
             </span>
           </div>
         </div>
 
-        <div className="notification-bell glass-card">
-          <Bell size={18} className={isDdosActive ? 'text-danger animate-bounce-slow' : 'text-accent animate-bounce-slow'} />
-          <span className={`bell-badge ${isDdosActive ? 'bg-danger' : 'bg-accent'}`}></span>
+        <div className="notification-bell" title="System alerts">
+          <Bell size={16} className={isDdosActive ? 'text-danger' : 'text-muted'} />
+          <span className={`bell-badge ${isDdosActive ? 'bell-badge-danger' : ''}`}></span>
         </div>
 
-        <div className="admin-profile glass-card">
+        <div className="admin-profile">
           <div className="profile-avatar">
-            <UserCheck size={18} className="text-primary" />
+            <UserCheck size={16} className="text-muted" />
           </div>
           <div className="profile-info">
             <span className="profile-name">Alexander K.</span>

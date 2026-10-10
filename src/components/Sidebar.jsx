@@ -27,27 +27,30 @@ export default function Sidebar({
 
   return (
     <>
-      {/* Backdrop overlay for mobile */}
       {isMobileOpen && (
         <div className="sidebar-backdrop" onClick={() => setIsMobileOpen(false)} />
       )}
 
       <aside className={`sidebar ${isCollapsed && !isMobileOpen ? 'collapsed' : ''} ${isMobileOpen ? 'mobile-open' : ''}`}>
         <div className="sidebar-logo">
-          <ShieldCheck className={`logo-icon ${isDdosActive ? 'text-danger animate-pulse' : 'text-primary animate-pulse'}`} size={28} />
-          {showFullMenu && <span className="logo-text">SECURE<span className={isDdosActive ? 'text-danger' : 'text-primary'}>NODE</span></span>}
+          <div className="logo-badge-wrap">
+            <ShieldCheck className={`logo-icon ${isDdosActive ? 'text-danger' : 'text-primary'}`} size={24} />
+            {showFullMenu && (
+              <span className="logo-text">
+                SECURE<span className={isDdosActive ? 'text-danger' : 'text-primary'}>NODE</span>
+              </span>
+            )}
+          </div>
           
-          {/* Collapse/Expand toggle for desktop */}
           <button 
             onClick={() => setIsCollapsed(!isCollapsed)} 
             className="sidebar-toggle-action-btn"
             title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
             aria-label={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
           >
-            {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+            {isCollapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
           </button>
 
-          {/* Close button for mobile */}
           <button 
             onClick={() => setIsMobileOpen(false)} 
             className="sidebar-close-mobile-btn"
@@ -67,15 +70,15 @@ export default function Sidebar({
                 key={item.id}
                 onClick={() => {
                   setActiveTab(item.id);
-                  setIsMobileOpen(false); // Auto close sidebar on mobile navigation
+                  setIsMobileOpen(false);
                 }}
                 className={`nav-item ${isActive ? 'active' : ''}`}
                 title={isCollapsed && !isMobileOpen ? item.label : undefined}
               >
-                <Icon size={20} className="nav-icon" />
+                <Icon size={18} className="nav-icon" />
                 {showFullMenu && <span className="nav-label">{item.label}</span>}
                 {item.badge && (
-                  <span className={`nav-badge ${isDdosActive ? 'bg-danger text-white' : 'pulse-primary'} ${isCollapsed && !isMobileOpen ? 'collapsed-badge' : ''}`}>
+                  <span className={`nav-badge ${isDdosActive ? 'bg-danger text-white' : ''} ${isCollapsed && !isMobileOpen ? 'collapsed-badge' : ''}`}>
                     {item.badge}
                   </span>
                 )}
@@ -86,21 +89,21 @@ export default function Sidebar({
 
         {showFullMenu && (
           <div className="sidebar-footer">
-            <div className={`system-status glass-card ${isDdosActive ? 'border-danger' : ''}`}>
+            <div className={`system-status ${isDdosActive ? 'status-danger' : ''}`}>
               <div className="status-header">
                 {isDdosActive ? (
-                  <AlertTriangle size={14} className="text-danger animate-bounce-slow" />
+                  <AlertTriangle size={14} className="text-danger" />
                 ) : (
-                  <Terminal size={14} className="text-primary" />
+                  <Terminal size={14} className="text-muted" />
                 )}
                 <span className={isDdosActive ? 'text-danger font-bold' : 'status-title'}>
-                  {isDdosActive ? 'DDoS ANOMALY' : 'System Status'}
+                  {isDdosActive ? 'DDoS Anomaly' : 'System Status'}
                 </span>
               </div>
               <div className="status-indicator">
                 <span className={`status-dot ${isDdosActive ? 'bg-danger' : 'bg-success'}`}></span>
                 <span className={`status-label ${isDdosActive ? 'text-danger font-bold' : ''}`}>
-                  {isDdosActive ? 'ATTACK IN PROGRESS' : 'API Gateway Online'}
+                  {isDdosActive ? 'Attack in progress' : 'Gateway operational'}
                 </span>
               </div>
               <div className="system-meta">

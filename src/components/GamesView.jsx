@@ -18,9 +18,9 @@ export default function GamesView() {
 
   return (
     <div className="games-view animate-fade-in">
-      <div className="games-controls glass-card">
+      <div className="games-controls card">
         <div className="search-bar">
-          <Search size={18} className="text-muted" />
+          <Search size={16} className="text-muted" />
           <input
             type="text"
             placeholder="Search nodes or regions..."
@@ -43,7 +43,6 @@ export default function GamesView() {
       </div>
 
       <div className="games-content-layout">
-        {/* Visual Cards Grid */}
         <div className="games-grid-container">
           <div className="games-cards-grid">
             {filteredGames.length > 0 ? (
@@ -51,7 +50,7 @@ export default function GamesView() {
                 <div 
                   key={game.id} 
                   onClick={() => setSelectedGame(game)}
-                  className={`game-item-card glass-card ${selectedGame && selectedGame.id === game.id ? 'active' : ''}`}
+                  className={`game-item-card card ${selectedGame && selectedGame.id === game.id ? 'active' : ''}`}
                 >
                   <div className="game-card-image-wrapper">
                     <img src={game.image} alt={game.name} className="game-card-img" loading="lazy" />
@@ -71,21 +70,21 @@ export default function GamesView() {
                       </div>
                       <div className="card-stat">
                         <span className="card-stat-lbl">Threads</span>
-                        <span className="card-stat-val text-accent" style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
-                          <span className="status-dot bg-success" style={{ width: '6px', height: '6px', margin: 0 }}></span>
+                        <span className="card-stat-val text-muted" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <span className="status-dot bg-success"></span>
                           {game.activePlayers}
                         </span>
                       </div>
                       <div className="card-stat">
                         <span className="card-stat-lbl">Data Sent</span>
-                        <span className="card-stat-val text-success">{game.ggr.toLocaleString()} GB</span>
+                        <span className="card-stat-val text-muted">{game.ggr.toLocaleString()} GB</span>
                       </div>
                     </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="no-results-box glass-card">
+              <div className="no-results-box card">
                 <AlertCircle size={24} className="text-muted" />
                 <p>No infrastructure nodes found matching your search criteria.</p>
               </div>
@@ -93,9 +92,8 @@ export default function GamesView() {
           </div>
         </div>
 
-        {/* Selected Game Sidebar details */}
         {selectedGame && (
-          <div className="game-details-sidebar glass-card animate-slide-left">
+          <div className="game-details-sidebar card">
             <h2 className="card-heading">Server Node Profile</h2>
             <div className="detail-hero-card">
               <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" loading="lazy" />
@@ -112,7 +110,7 @@ export default function GamesView() {
               </div>
               <div className="detail-stat-card">
                 <span className="stat-label">Total Traffic</span>
-                <span className="stat-val text-success">{selectedGame.ggr.toLocaleString()} GB</span>
+                <span className="stat-val">{selectedGame.ggr.toLocaleString()} GB</span>
               </div>
               <div className="detail-stat-card">
                 <span className="stat-label">HTTP/TCP Requests</span>
@@ -125,15 +123,15 @@ export default function GamesView() {
             </div>
 
             <div className="detail-alert-box">
-              <Info size={16} className="text-accent" />
-              <p>Server load and error rates are within normal operational limits (+0.12% deviation).</p>
+              <Info size={16} className="text-muted" />
+              <p>Operational health is nominal (+0.12% variance relative to weekly baseline).</p>
             </div>
 
             <div className="detail-charts-panel">
               <span className="panel-title">Active Threads (24h)</span>
               <div className="dummy-chart-placeholder">
-                <Users size={24} className="text-primary animate-pulse" />
-                <span className="text-muted">High connection density registered: {selectedGame.activePlayers} threads processing.</span>
+                <Users size={20} className="text-muted" />
+                <span className="text-muted">{selectedGame.activePlayers} active thread handles monitored.</span>
               </div>
             </div>
           </div>
