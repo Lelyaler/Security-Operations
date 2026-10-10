@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Search, Download, CheckCircle, Clock, AlertTriangle, FileSpreadsheet } from 'lucide-react';
 import { mockTransactions } from '../utils/mockData';
+import { exportLogsToCsv } from '../utils/securityHelpers';
 
 export default function TransactionsView() {
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   
-  // Export states
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [exportComplete, setExportComplete] = useState(false);
@@ -30,14 +30,25 @@ export default function TransactionsView() {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
+            const csvContent = exportLogsToCsv(filteredTransactions);
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `access_audit_log_${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
             setIsExporting(false);
             setExportComplete(true);
-          }, 600);
+          }, 300);
           return 100;
         }
         return prev + 25;
       });
-    }, 300);
+    }, 150);
   };
 
   const getStatusIcon = (status) => {
@@ -45,7 +56,7 @@ export default function TransactionsView() {
       case 'success':
         return <CheckCircle size={14} className="text-success" />;
       case 'pending':
-        return <Clock size={14} className="text-warning animate-spin-slow" />;
+        return <Clock size={14} className="text-warning" />;
       case 'failed':
         return <AlertTriangle size={14} className="text-danger" />;
       default:
@@ -55,9 +66,9 @@ export default function TransactionsView() {
 
   return (
     <div className="transactions-view animate-fade-in">
-      <div className="ledger-controls glass-card">
+      <div className="ledger-controls card">
         <div className="search-bar">
-          <Search size={18} className="text-muted" />
+          <Search size={16} className="text-muted" />
           <input
             type="text"
             placeholder="Search by User or Log ID..."
@@ -91,17 +102,17 @@ export default function TransactionsView() {
             disabled={isExporting}
             className="btn btn-primary"
           >
-            <Download size={16} />
-            {isExporting ? `Exporting (${exportProgress}%)` : 'Export Log Ledger'}
+            <Download size={15} />
+            {isExporting ? `Exporting (${exportProgress}%)` : 'Export CSV'}
           </button>
         </div>
       </div>
 
       {isExporting && (
-        <div className="export-progress-container glass-card animate-slide-in">
+        <div className="export-progress-container card animate-slide-in">
           <div className="progress-bar-label">
             <FileSpreadsheet size={16} className="text-primary" />
-            <span>Compiling access audit logs into CSV format...</span>
+            <span>Generating audit log CSV export...</span>
           </div>
           <div className="progress-track">
             <div className="progress-fill" style={{ width: `${exportProgress}%` }}></div>
@@ -110,14 +121,14 @@ export default function TransactionsView() {
       )}
 
       {exportComplete && (
-        <div className="export-complete-alert glass-card animate-slide-in">
+        <div className="export-complete-alert card animate-slide-in">
           <CheckCircle size={16} className="text-success" />
-          <span>Success! <strong>access_audit_log_{new Date().toISOString().slice(0,10)}.csv</strong> downloaded to virtual disk.</span>
+          <span>Export generated and file downloaded.</span>
           <button className="dismiss-alert-btn" onClick={() => setExportComplete(false)}>Dismiss</button>
         </div>
       )}
 
-      <div className="ledger-table-container glass-card">
+      <div className="ledger-table-container card">
         <table className="ledger-table">
           <thead>
             <tr>
@@ -144,9 +155,9 @@ export default function TransactionsView() {
                     </span>
                   </td>
                   <td>
-                    <strong className="text-primary">
+                    <span className="payload-size-val">
                       {tx.amount.toLocaleString()} B
-                    </strong>
+                    </span>
                   </td>
                   <td>
                     <div className="status-cell">

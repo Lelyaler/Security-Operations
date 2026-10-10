@@ -1,14 +1,28 @@
 import React, { useState } from 'react';
-import { ShieldAlert, ShieldCheck, UserX, AlertOctagon, X, Terminal, Globe } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, UserX, AlertOctagon, X, Terminal, Globe, Check } from 'lucide-react';
 
 export default function FraudView({ alerts, setAlerts }) {
   const [selectedAlert, setSelectedAlert] = useState(null);
+  const [notification, setNotification] = useState(null);
+
+  const showNotification = (msg) => {
+    setNotification(msg);
+    setTimeout(() => {
+      setNotification(null);
+    }, 4000);
+  };
 
   const handleAction = (id, newStatus) => {
     setAlerts(prev => prev.map(alert => alert.id === id ? { ...alert, status: newStatus } : alert));
     if (selectedAlert && selectedAlert.id === id) {
       setSelectedAlert(prev => ({ ...prev, status: newStatus }));
     }
+  };
+
+  const handleQuarantine = (alert) => {
+    handleAction(alert.id, 'resolved');
+    setSelectedAlert(null);
+    showNotification(`IP address ${alert.player} has been quarantined. Active sessions terminated.`);
   };
 
   const getRiskColor = (risk) => {
@@ -21,25 +35,33 @@ export default function FraudView({ alerts, setAlerts }) {
 
   return (
     <div className="fraud-view animate-fade-in">
+      {notification && (
+        <div className="fraud-notification animate-slide-in">
+          <Check size={16} className="text-success" />
+          <span>{notification}</span>
+          <button className="dismiss-alert-btn" onClick={() => setNotification(null)}>Dismiss</button>
+        </div>
+      )}
+
       <div className="fraud-summary-grid">
-        <div className="glass-card summary-card danger">
-          <AlertOctagon size={24} className="text-danger" />
+        <div className="card summary-card danger">
+          <AlertOctagon size={22} className="text-danger" />
           <div className="summary-info">
             <span className="summary-val">{alerts.filter(a => a.risk === 'high' && a.status !== 'resolved').length}</span>
             <span className="summary-label">High-Risk Cases</span>
           </div>
         </div>
 
-        <div className="glass-card summary-card warning">
-          <ShieldAlert size={24} className="text-warning" />
+        <div className="card summary-card warning">
+          <ShieldAlert size={22} className="text-warning" />
           <div className="summary-info">
             <span className="summary-val">{alerts.filter(a => a.status === 'investigating').length}</span>
             <span className="summary-label">Under Investigation</span>
           </div>
         </div>
 
-        <div className="glass-card summary-card success">
-          <ShieldCheck size={24} className="text-success" />
+        <div className="card summary-card success">
+          <ShieldCheck size={22} className="text-success" />
           <div className="summary-info">
             <span className="summary-val">{alerts.filter(a => a.status === 'resolved').length}</span>
             <span className="summary-label">Cases Resolved Today</span>
@@ -47,7 +69,7 @@ export default function FraudView({ alerts, setAlerts }) {
         </div>
       </div>
 
-      <div className="alerts-table-container glass-card">
+      <div className="alerts-table-container card">
         <table className="alerts-table">
           <thead>
             <tr>
@@ -95,22 +117,25 @@ export default function FraudView({ alerts, setAlerts }) {
                             handleAction(alert.id, 'investigating');
                             setSelectedAlert(alert);
                           }}
-                          className="btn btn-secondary btn-table-action text-warning"
+                          className="btn btn-secondary btn-table-action"
                           title="Investigate Details"
                         >
                           Investigate
                         </button>
                         <button 
-                          onClick={() => handleAction(alert.id, 'resolved')}
-                          className="btn btn-secondary btn-table-action text-success"
-                          title="Approve / Dismiss Flag"
+                          onClick={() => {
+                            handleAction(alert.id, 'resolved');
+                            showNotification(`Case ${alert.id} marked as resolved.`);
+                          }}
+                          className="btn btn-secondary btn-table-action"
+                          title="Dismiss Flag"
                         >
                           Dismiss
                         </button>
                       </>
                     )}
                     {alert.status === 'resolved' && (
-                      <span className="text-success-muted font-sm">Closed File</span>
+                      <span className="text-muted font-sm">Closed</span>
                     )}
                   </div>
                 </td>
@@ -120,13 +145,12 @@ export default function FraudView({ alerts, setAlerts }) {
         </table>
       </div>
 
-      {/* Investigation Details Modal */}
       {selectedAlert && (
         <div className="modal-overlay">
-          <div className="modal-content glass-card animate-zoom-in">
+          <div className="modal-content card animate-zoom-in">
             <div className="modal-header">
               <div className="modal-title-group">
-                <ShieldAlert className="text-danger" size={22} />
+                <ShieldAlert className="text-danger" size={20} />
                 <h2>Investigation File: {selectedAlert.id}</h2>
               </div>
               <button className="modal-close-btn" onClick={() => setSelectedAlert(null)} aria-label="Close Investigation Details">
@@ -137,7 +161,7 @@ export default function FraudView({ alerts, setAlerts }) {
             <div className="modal-body">
               <div className="player-meta-box">
                 <div className="meta-item">
-                  <span className="label">Intrusion Source:</span>
+                  <span className="label">Source IP:</span>
                   <span className="val">{selectedAlert.player} ({selectedAlert.country})</span>
                 </div>
                 <div className="meta-item">
@@ -152,21 +176,21 @@ export default function FraudView({ alerts, setAlerts }) {
 
               <div className="suspect-logs">
                 <div className="logs-header">
-                  <Terminal size={14} className="text-primary" />
-                  <span>Audit Logs & Trigger Signatures</span>
+                  <Terminal size={14} className="text-muted" />
+                  <span>Audit Logs & Signatures</span>
                 </div>
                 <div className="logs-body">
                   <div className="log-line">
-                    <span className="time">[13:41:05]</span> <span className="msg">Login initiated from unauthorized proxy server.</span>
+                    <span className="time">[13:41:05]</span> <span className="msg">Authentication attempt originating from unverified proxy endpoint.</span>
                   </div>
                   <div className="log-line text-warning">
-                    <span className="time">[13:42:19]</span> <span className="msg">Anomaly: Request density increased by 1500% over baseline.</span>
+                    <span className="time">[13:42:19]</span> <span className="msg">Request frequency exceeds standard threshold (+1500%).</span>
                   </div>
                   <div className="log-line">
-                    <span className="time">[13:43:01]</span> <span className="msg">Triggered pattern match: <em>{selectedAlert.reason}</em>.</span>
+                    <span className="time">[13:43:01]</span> <span className="msg">Pattern match: <em>{selectedAlert.reason}</em>.</span>
                   </div>
                   <div className="log-line text-danger">
-                    <span className="time">[13:44:00]</span> <span className="msg">Data transfer threshold exceeded. Automated rate-limiting active.</span>
+                    <span className="time">[13:44:00]</span> <span className="msg">Threshold reached. Rate-limiter applied.</span>
                   </div>
                 </div>
               </div>
@@ -177,21 +201,17 @@ export default function FraudView({ alerts, setAlerts }) {
                     onClick={() => {
                       handleAction(selectedAlert.id, 'resolved');
                       setSelectedAlert(null);
+                      showNotification(`Case ${selectedAlert.id} closed.`);
                     }}
                     className="btn btn-primary"
                   >
-                    <ShieldCheck size={16} /> Resolve & Close Ticket
+                    <ShieldCheck size={16} /> Resolve Case
                   </button>
                 </div>
                 <div className="right-actions">
                   <button 
-                    onClick={() => {
-                      // Simulating lock account
-                      alert(`Session for IP ${selectedAlert.player} has been revoked and quarantined.`);
-                      handleAction(selectedAlert.id, 'resolved');
-                      setSelectedAlert(null);
-                    }}
-                    className="btn btn-secondary text-danger"
+                    onClick={() => handleQuarantine(selectedAlert)}
+                    className="btn btn-danger"
                   >
                     <UserX size={16} /> Quarantine IP
                   </button>

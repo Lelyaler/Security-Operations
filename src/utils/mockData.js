@@ -1,11 +1,9 @@
-// Mock Data Service for Cybersecurity Operations Center (SOC Dashboard)
-
 export const kpiStats = {
-  ggr: { value: "12.4M", change: "+14.2%", isPositive: true }, // Total network packets
-  ngr: { value: "98.4K", change: "+12.8%", isPositive: true }, // Blocked threats
-  activePlayers: { value: "3,284", change: "+8.4%", isPositive: true }, // Active socket connections
-  vipBetsCount: { value: "148", change: "+24.1%", isPositive: true }, // Security audits
-  pendingAlerts: { value: "7", change: "-2", isPositive: false, isWarning: true } // Intrusion alerts
+  ggr: { value: "12.4M", change: "+14.2%", isPositive: true },
+  ngr: { value: "98.4K", change: "+12.8%", isPositive: true },
+  activePlayers: { value: "3,284", change: "+8.4%", isPositive: true },
+  vipBetsCount: { value: "148", change: "+24.1%", isPositive: true },
+  pendingAlerts: { value: "7", change: "-2", isPositive: false, isWarning: true }
 };
 
 export const revenueHistory = [
@@ -31,11 +29,11 @@ export const mockGamesList = [
     name: "Auth Node-01", 
     category: "Microservice", 
     provider: "EU-WEST", 
-    rtp: "14.20%", // CPU load
-    spins: 423900, // Total Requests
-    ggr: 124, // Data Sent (GB)
-    popularity: 98, // Health status
-    activePlayers: 480, // Active threads
+    rtp: "14.20%",
+    spins: 423900,
+    ggr: 124,
+    popularity: 98,
+    activePlayers: 480,
     image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&auto=format&fit=crop&q=80" 
   },
   { 
@@ -191,8 +189,8 @@ export const mockTransactions = [
 ];
 
 export const initialLiveBets = [
-  { id: 1, player: "185.90.11.23", game: "/api/v1/auth/login", amount: "142", multiplier: "443", win: "200 OK", type: "win" }, // allowed
-  { id: 2, player: "92.140.231.8", game: "/wp-admin/login.php", amount: "89", multiplier: "80", win: "403 Blocked", type: "loss" }, // blocked
+  { id: 1, player: "185.90.11.23", game: "/api/v1/auth/login", amount: "142", multiplier: "443", win: "200 OK", type: "win" },
+  { id: 2, player: "92.140.231.8", game: "/wp-admin/login.php", amount: "89", multiplier: "80", win: "403 Blocked", type: "loss" },
   { id: 3, player: "10.0.8.22", game: "/gateway/queries", amount: "524", multiplier: "443", win: "200 OK", type: "win" },
   { id: 4, player: "77.202.94.18", game: "/api/v2/billing", amount: "1124", multiplier: "443", win: "200 OK", type: "win" },
   { id: 5, player: "185.220.101.9", game: "/etc/passwd", amount: "20", multiplier: "22", win: "401 Blocked", type: "loss" }

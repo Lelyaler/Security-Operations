@@ -10,14 +10,11 @@ const GamesView = lazy(() => import('./components/GamesView'));
 const FraudView = lazy(() => import('./components/FraudView'));
 const TransactionsView = lazy(() => import('./components/TransactionsView'));
 
-function App() {
+export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  
-  // Sidebar State (Desktop Collapse & Mobile Swipe Open)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  // Auto collapse sidebar on tablet/smaller screens (<= 1056px)
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1056) {
@@ -27,51 +24,44 @@ function App() {
       }
     };
     
-    // Set initial collapse state based on window size
     handleResize();
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Shared Simulator States
   const [isDdosActive, setIsDdosActive] = useState(false);
   const [isFeedFrozen, setIsFeedFrozen] = useState(false);
   const [alerts, setAlerts] = useState(mockFraudAlerts);
   const [liveBets, setLiveBets] = useState(initialLiveBets);
-  const [jackpotEvent, setJackpotEvent] = useState(null);
+  const [breachEvent, setBreachEvent] = useState(null);
   const [simDeckOpen, setSimDeckOpen] = useState(false);
 
-  const handleTriggerJackpot = () => {
-    const breachEvent = {
-      id: Date.now(),
+  const handleTriggerBreach = () => {
+    const newBreach = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       player: `185.220.101.${Math.floor(Math.random() * 80) + 10}`,
       game: '/etc/passwd',
       amount: '24 KB',
       multiplier: 'CVE-2026-0928',
       win: 'CRITICAL BLOCK',
-      type: 'loss' // blocked
+      type: 'loss'
     };
     
-    // Inject immediately into live traffic feed
-    setLiveBets(prev => [breachEvent, ...prev.slice(0, 4)]);
-    
-    // Trigger overlay banner
-    setJackpotEvent(breachEvent);
+    setLiveBets(prev => [newBreach, ...prev.slice(0, 5)]);
+    setBreachEvent(newBreach);
     setSimDeckOpen(false);
 
-    // Auto close after 5 seconds
     setTimeout(() => {
-      setJackpotEvent(null);
-    }, 5000);
+      setBreachEvent(null);
+    }, 6000);
   };
 
   const handleInjectFraud = () => {
     const customReasons = [
-      'Port scanning detected: 50+ connections/sec',
+      'Port scan sweep detected: 50+ probes/sec',
       'Credential stuffing: 4 failed OAuth attempts',
-      'Geo-IP mismatch: Suspicious routing bypass',
-      'Remote Code Execution signature detected'
+      'Geo-IP mismatch: Suspicious proxy tunnel',
+      'Remote code execution signature detected'
     ];
     
     const randomIP = [
@@ -102,6 +92,8 @@ function App() {
     setAlerts(prev => [newAlert, ...prev]);
   };
 
+  const unresolvedAlertsCount = alerts.filter(a => a.status !== 'resolved').length;
+
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
@@ -121,11 +113,17 @@ function App() {
       case 'transactions':
         return <TransactionsView />;
       default:
-        return <DashboardView liveBets={liveBets} setLiveBets={setLiveBets} isFeedFrozen={isFeedFrozen} isDdosActive={isDdosActive} />;
+        return (
+          <DashboardView 
+            liveBets={liveBets} 
+            setLiveBets={setLiveBets} 
+            isFeedFrozen={isFeedFrozen} 
+            isDdosActive={isDdosActive} 
+            alertsCount={unresolvedAlertsCount}
+          />
+        );
     }
   };
-
-  const unresolvedAlertsCount = alerts.filter(a => a.status !== 'resolved').length;
 
   return (
     <div className={`app-container ${isSidebarCollapsed ? 'sidebar-collapsed' : ''} ${isMobileSidebarOpen ? 'mobile-sidebar-open' : ''}`}>
@@ -154,7 +152,6 @@ function App() {
         </main>
       </div>
 
-      {/* Persistent Simulator Control Deck */}
       <SimulatorDeck 
         isOpen={simDeckOpen}
         setIsOpen={setSimDeckOpen}
@@ -162,25 +159,31 @@ function App() {
         setIsDdosActive={setIsDdosActive}
         isFeedFrozen={isFeedFrozen}
         setIsFeedFrozen={setIsFeedFrozen}
-        onTriggerJackpot={handleTriggerJackpot}
+        onTriggerJackpot={handleTriggerBreach}
+        onTriggerBreach={handleTriggerBreach}
         onInjectFraud={handleInjectFraud}
       />
 
-      {/* Global Security Breach Overlay */}
-      {jackpotEvent && (
-        <div className="jackpot-overlay animate-zoom-in" style={{ zIndex: 1100 }}>
-          <div className="jackpot-banner glass-card border-danger" style={{ boxShadow: 'var(--card-shadow), 0 0 50px rgba(239, 68, 68, 0.4)' }}>
-            <button className="jackpot-close-btn" onClick={() => setJackpotEvent(null)}>
+      {breachEvent && (
+        <div className="breach-overlay animate-zoom-in">
+          <div className="breach-modal card">
+            <button className="breach-close-btn" onClick={() => setBreachEvent(null)} aria-label="Dismiss security notice">
               <X size={16} />
             </button>
-            <div className="jackpot-icon-wrapper">
-              <ShieldAlert className="jackpot-crown animate-bounce-slow text-danger" style={{ filter: 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.6))' }} size={48} />
+            <div className="breach-icon-wrapper">
+              <ShieldAlert className="text-danger" size={40} />
             </div>
-            <div className="jackpot-message">
-              <h2 className="text-danger">SECURITY BREACH DETECTED!</h2>
-              <p>Unauthorized attempt to read root shell files</p>
-              <div className="jackpot-win-amount text-danger" style={{ textShadow: '0 0 25px var(--danger)' }}>CRITICAL EXPLOIT</div>
-              <p className="jackpot-game-meta">Source IP: <strong>{jackpotEvent.player}</strong> | Target Path: <strong>{jackpotEvent.game}</strong> | Signature: <strong>{jackpotEvent.multiplier}</strong></p>
+            <div className="breach-message">
+              <h2>Security Breach Intercepted</h2>
+              <p>Unauthorized attempt to read sensitive system file was blocked by intrusion detection.</p>
+              <div className="breach-details-pill">
+                CRITICAL INTRUSION PREVENTED
+              </div>
+              <div className="breach-meta">
+                <span>Source: <strong>{breachEvent.player}</strong></span>
+                <span>Path: <strong>{breachEvent.game}</strong></span>
+                <span>Rule: <strong>{breachEvent.multiplier}</strong></span>
+              </div>
             </div>
           </div>
         </div>
@@ -188,5 +191,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
