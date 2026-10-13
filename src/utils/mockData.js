@@ -3,7 +3,11 @@ export const kpiStats = {
   ngr: { value: "98.4K", change: "+12.8%", isPositive: true },
   activePlayers: { value: "3,284", change: "+8.4%", isPositive: true },
   vipBetsCount: { value: "148", change: "+24.1%", isPositive: true },
-  pendingAlerts: { value: "7", change: "-2", isPositive: false, isWarning: true }
+  pendingAlerts: { value: "7", change: "-2", isPositive: false, isWarning: true },
+  totalPackets: { value: "12.4M", change: "+14.2%", isPositive: true },
+  blockedThreats: { value: "98.4K", change: "+12.8%", isPositive: true },
+  activeSockets: { value: "3,284", change: "+8.4%", isPositive: true },
+  inspectedPayloads: { value: "148 GB", change: "+24.1%", isPositive: true }
 };
 
 export const revenueHistory = [
@@ -23,6 +27,25 @@ export const playerDistribution = [
   { name: "SSH Terminal", players: 234, share: "7%" }
 ];
 
+const createNodeIcon = (type, color) => {
+  const encoded = encodeURIComponent(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="400" height="220" viewBox="0 0 400 220" fill="none">
+      <rect width="400" height="220" fill="#14171d"/>
+      <rect x="1" y="1" width="398" height="218" stroke="rgba(255,255,255,0.08)" stroke-width="2"/>
+      <g opacity="0.15">
+        <path d="M0 40H400M0 80H400M0 120H400M0 160H400M0 200H400" stroke="${color}" stroke-dasharray="4 4"/>
+        <path d="M40 0V220M80 0V220M120 0V220M160 0V220M200 0V220M240 0V220M280 0V220M320 0V220M360 0V220" stroke="${color}" stroke-dasharray="4 4"/>
+      </g>
+      <rect x="150" y="60" width="100" height="100" rx="16" fill="#1f232b" stroke="${color}" stroke-width="2.5"/>
+      <circle cx="200" cy="110" r="28" fill="${color}" fill-opacity="0.15" stroke="${color}" stroke-width="2"/>
+      <text x="200" y="115" font-family="monospace" font-size="14" font-weight="bold" fill="#f4f4f5" text-anchor="middle" dominant-baseline="middle">${type}</text>
+      <circle cx="360" cy="30" r="4" fill="${color}"/>
+      <circle cx="360" cy="30" r="8" fill="${color}" fill-opacity="0.25"/>
+    </svg>
+  `);
+  return `data:image/svg+xml;utf8,${encoded}`;
+};
+
 export const mockGamesList = [
   { 
     id: 1, 
@@ -34,7 +57,7 @@ export const mockGamesList = [
     ggr: 124,
     popularity: 98,
     activePlayers: 480,
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("AUTH", "#f59e0b")
   },
   { 
     id: 2, 
@@ -46,7 +69,7 @@ export const mockGamesList = [
     ggr: 381, 
     popularity: 99, 
     activePlayers: 820,
-    image: "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("GATEWAY", "#10b981")
   },
   { 
     id: 3, 
@@ -58,7 +81,7 @@ export const mockGamesList = [
     ggr: 249, 
     popularity: 97, 
     activePlayers: 340,
-    image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("DB-SQL", "#f97316")
   },
   { 
     id: 4, 
@@ -70,7 +93,7 @@ export const mockGamesList = [
     ggr: 182, 
     popularity: 95, 
     activePlayers: 290,
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("CACHE", "#eab308")
   },
   { 
     id: 5, 
@@ -82,7 +105,7 @@ export const mockGamesList = [
     ggr: 142, 
     popularity: 94, 
     activePlayers: 210,
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("CDN", "#10b981")
   },
   { 
     id: 6, 
@@ -94,7 +117,7 @@ export const mockGamesList = [
     ggr: 341, 
     popularity: 96, 
     activePlayers: 540,
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("BILLING", "#f59e0b")
   },
   { 
     id: 7, 
@@ -106,7 +129,7 @@ export const mockGamesList = [
     ggr: 154, 
     popularity: 88, 
     activePlayers: 90,
-    image: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("LOAD-BAL", "#f97316")
   },
   { 
     id: 8, 
@@ -118,7 +141,7 @@ export const mockGamesList = [
     ggr: 89, 
     popularity: 85, 
     activePlayers: 120,
-    image: "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("QUEUE", "#f59e0b")
   },
   { 
     id: 9, 
@@ -130,7 +153,7 @@ export const mockGamesList = [
     ggr: 954, 
     popularity: 82, 
     activePlayers: 75,
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("VAULT", "#d97706")
   },
   { 
     id: 10, 
@@ -142,7 +165,7 @@ export const mockGamesList = [
     ggr: 72, 
     popularity: 80, 
     activePlayers: 85,
-    image: "https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("DNS", "#10b981")
   },
   { 
     id: 11, 
@@ -154,7 +177,7 @@ export const mockGamesList = [
     ggr: 312, 
     popularity: 91, 
     activePlayers: 190,
-    image: "https://images.unsplash.com/photo-1624969862644-791f3dc98927?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("WEB-SRV", "#f59e0b")
   },
   { 
     id: 12, 
@@ -166,7 +189,7 @@ export const mockGamesList = [
     ggr: 114, 
     popularity: 89, 
     activePlayers: 230,
-    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&auto=format&fit=crop&q=80" 
+    image: createNodeIcon("CACHE", "#eab308")
   }
 ];
 
