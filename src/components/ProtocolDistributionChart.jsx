@@ -12,11 +12,11 @@ export default function ProtocolDistributionChart({ data }) {
         <YAxis dataKey="name" type="category" stroke="#a1a1aa" fontSize={11} tickLine={false} width={100} />
         <Tooltip
           contentStyle={{
-            background: '#1f232b',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#191d27',
+            border: 'none',
             borderRadius: '8px',
             color: '#f4f4f5',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)'
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)'
           }}
         />
         <Bar dataKey="players" radius={[0, 4, 4, 0]} name="Active Sockets">

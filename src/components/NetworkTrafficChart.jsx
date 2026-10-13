@@ -20,11 +20,11 @@ export default function NetworkTrafficChart({ data }) {
         <YAxis stroke="#71717a" fontSize={11} tickLine={false} />
         <Tooltip
           contentStyle={{
-            background: '#1f232b',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            background: '#191d27',
+            border: 'none',
             borderRadius: '8px',
             color: '#f4f4f5',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.5)'
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)'
           }}
         />
         <Area type="monotone" dataKey="Traffic" stroke="#f59e0b" strokeWidth={2} fillOpacity={1} fill="url(#colorTraffic)" name="Network Packets" />

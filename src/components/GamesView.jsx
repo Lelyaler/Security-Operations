@@ -50,17 +50,28 @@ export default function GamesView() {
                 <div 
                   key={game.id} 
                   onClick={() => setSelectedGame(game)}
-                  className={`game-item-card card ${selectedGame && selectedGame.id === game.id ? 'active' : ''}`}
+                  className={`game-item-card ${selectedGame && selectedGame.id === game.id ? 'active' : ''}`}
                 >
                   <div className="game-card-image-wrapper">
                     <img src={game.image} alt={game.name} className="game-card-img" loading="lazy" />
+                    <div className="game-card-scrim"></div>
+                    <div className="game-card-top-badges">
+                      <span className="node-status-pill">
+                        <span className="status-dot bg-success"></span>
+                        ONLINE
+                      </span>
+                      <span className="node-region-pill">{game.provider}</span>
+                    </div>
                     <span className="game-card-badge-floating">{game.category}</span>
                   </div>
                   
                   <div className="game-card-info">
                     <div className="game-card-header-row">
-                      <h3 className="game-card-title">{game.name}</h3>
-                      <span className="game-card-provider">{game.provider}</span>
+                      <div>
+                        <h3 className="game-card-title">{game.name}</h3>
+                        <span className="game-card-ip">10.240.{game.id}.18 &bull; Port 443</span>
+                      </div>
+                      <span className="health-score-pill">{game.popularity}% SLA</span>
                     </div>
 
                     <div className="game-card-stats-row">
@@ -69,15 +80,12 @@ export default function GamesView() {
                         <span className="card-stat-val text-primary">{game.rtp}</span>
                       </div>
                       <div className="card-stat">
-                        <span className="card-stat-lbl">Threads</span>
-                        <span className="card-stat-val text-muted" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                          <span className="status-dot bg-success"></span>
-                          {game.activePlayers}
-                        </span>
+                        <span className="card-stat-lbl">Active Threads</span>
+                        <span className="card-stat-val text-main">{game.activePlayers}</span>
                       </div>
                       <div className="card-stat">
-                        <span className="card-stat-lbl">Data Sent</span>
-                        <span className="card-stat-val text-muted">{game.ggr.toLocaleString()} GB</span>
+                        <span className="card-stat-lbl">Data Egress</span>
+                        <span className="card-stat-val text-main">{game.ggr.toLocaleString()} GB</span>
                       </div>
                     </div>
                   </div>
@@ -93,13 +101,23 @@ export default function GamesView() {
         </div>
 
         {selectedGame && (
-          <div className="game-details-sidebar card">
+          <div className="game-details-sidebar">
             <h2 className="card-heading">Server Node Profile</h2>
             <div className="detail-hero-card">
               <img src={selectedGame.image} alt={selectedGame.name} className="detail-hero-img" loading="lazy" />
+              <div className="detail-hero-scrim"></div>
+              <div className="detail-hero-overlay-tags">
+                <span className="node-status-pill">
+                  <span className="status-dot bg-success"></span>
+                  99.98% UPTIME
+                </span>
+                <span className="node-region-pill">{selectedGame.provider}</span>
+              </div>
               <div className="detail-hero-info">
-                <h3>{selectedGame.name}</h3>
-                <span className="badge badge-success">{selectedGame.provider}</span>
+                <div>
+                  <h3>{selectedGame.name}</h3>
+                  <span className="detail-hero-meta">{selectedGame.category} Node &bull; Rack #{selectedGame.id.toString().padStart(2, '0')}</span>
+                </div>
               </div>
             </div>
 
@@ -123,15 +141,15 @@ export default function GamesView() {
             </div>
 
             <div className="detail-alert-box">
-              <Info size={16} className="text-muted" />
+              <Info size={16} className="text-primary" />
               <p>Operational health is nominal (+0.12% variance relative to weekly baseline).</p>
             </div>
 
             <div className="detail-charts-panel">
-              <span className="panel-title">Active Threads (24h)</span>
+              <span className="panel-title">Active Sockets & Threads (24h)</span>
               <div className="dummy-chart-placeholder">
-                <Users size={20} className="text-muted" />
-                <span className="text-muted">{selectedGame.activePlayers} active thread handles monitored.</span>
+                <Users size={18} className="text-primary" />
+                <span className="text-main font-mono">{selectedGame.activePlayers} active thread handles monitored</span>
               </div>
             </div>
           </div>
