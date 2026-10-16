@@ -1,7 +1,7 @@
 import { ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
 import type { ProtocolShare } from '../types/security';
 
-const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#6366f1'];
+const COLORS = ['#a82d46', '#c06c4b', '#9f1239', '#d97706'];
 
 interface ProtocolDistributionChartProps {
   data: ProtocolShare[];
@@ -11,15 +11,15 @@ export default function ProtocolDistributionChart({ data }: ProtocolDistribution
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data} layout="vertical" barSize={12}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.04)" horizontal={false} />
-        <XAxis type="number" stroke="#64748b" fontSize={11} tickLine={false} />
-        <YAxis dataKey="name" type="category" stroke="#94a3b8" fontSize={11} tickLine={false} width={100} />
+        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 235, 240, 0.05)" horizontal={false} />
+        <XAxis type="number" stroke="#826f75" fontSize={11} tickLine={false} />
+        <YAxis dataKey="name" type="category" stroke="#b59da3" fontSize={11} tickLine={false} width={100} />
         <Tooltip
           contentStyle={{
-            background: '#1a202e',
+            background: '#281b20',
             border: 'none',
             borderRadius: '8px',
-            color: '#f8fafc',
+            color: '#fdf2f4',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
           }}
           formatter={(value: any) => [`${Number(value).toLocaleString()} active sockets`, 'Connections']}

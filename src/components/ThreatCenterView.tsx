@@ -102,7 +102,7 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
         </div>
       </div>
 
-      <div className="threat-content-layout">
+      <div className={`threat-content-layout ${selectedIncident ? 'has-inspector' : ''}`}>
         <div className="threat-table-card card">
           <div className="threat-table-header">
             <div>
