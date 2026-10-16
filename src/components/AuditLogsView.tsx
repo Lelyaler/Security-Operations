@@ -1,10 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Download, CheckCircle, Clock, AlertTriangle, FileSpreadsheet, Terminal } from 'lucide-react';
+import { socApi } from '../services/socApi';
 import { mockAuditLogs } from '../utils/mockData';
 import { exportLogsToCsv, filterAuditLogs } from '../utils/securityHelpers';
-import type { AuditLogStatus } from '../types/security';
+import type { AuditLog, AuditLogStatus } from '../types/security';
 
 export default function AuditLogsView() {
+  const [logs, setLogs] = useState<AuditLog[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState<AuditLogStatus | 'all'>('all');
@@ -13,7 +16,27 @@ export default function AuditLogsView() {
   const [exportProgress, setExportProgress] = useState(0);
   const [exportComplete, setExportComplete] = useState(false);
 
-  const filteredLogs = filterAuditLogs(mockAuditLogs, typeFilter, statusFilter, searchTerm);
+  useEffect(() => {
+    let mounted = true;
+    socApi.getAuditLogs()
+      .then((data) => {
+        if (mounted) {
+          setLogs(data);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setLogs(mockAuditLogs);
+          setLoading(false);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const filteredLogs = filterAuditLogs(logs, typeFilter, statusFilter, searchTerm);
 
   const handleExport = () => {
     setIsExporting(true);
@@ -155,7 +178,13 @@ export default function AuditLogsView() {
               </tr>
             </thead>
             <tbody>
-              {filteredLogs.length > 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={8} className="empty-table-state font-mono">
+                    Loading security audit telemetry...
+                  </td>
+                </tr>
+              ) : filteredLogs.length > 0 ? (
                 filteredLogs.map((log) => (
                   <tr key={log.id}>
                     <td className="font-mono text-muted">{log.id}</td>

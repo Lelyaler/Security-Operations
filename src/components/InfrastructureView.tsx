@@ -1,16 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Server, Cpu, HardDrive, Network, Activity, CheckCircle, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { socApi } from '../services/socApi';
 import { mockInfrastructureNodes } from '../utils/mockData';
 import type { InfrastructureNode } from '../types/security';
 
 export default function InfrastructureView() {
+  const [nodes, setNodes] = useState<InfrastructureNode[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedNode, setSelectedNode] = useState<InfrastructureNode>(mockInfrastructureNodes[0]);
+  const [selectedNode, setSelectedNode] = useState<InfrastructureNode | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    socApi.getInfrastructureNodes()
+      .then((data) => {
+        if (mounted) {
+          setNodes(data);
+          setSelectedNode(data[0] || null);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setNodes(mockInfrastructureNodes);
+          setSelectedNode(mockInfrastructureNodes[0]);
+          setLoading(false);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const categories = ['All', 'Microservice', 'Gateway', 'Database', 'Caching', 'Load Balancer', 'Backup'];
 
-  const filteredNodes = mockInfrastructureNodes.filter((node) => {
+  const filteredNodes = nodes.filter((node) => {
     const matchesSearch =
       node.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
       node.region.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -62,7 +87,12 @@ export default function InfrastructureView() {
       <div className="infra-content-layout">
         <div className="infra-grid-container">
           <div className="infra-nodes-grid">
-            {filteredNodes.length > 0 ? (
+            {loading ? (
+              <div className="no-results-box card">
+                <Activity size={24} className="text-primary animate-pulse" />
+                <p>Loading cluster node telemetry...</p>
+              </div>
+            ) : filteredNodes.length > 0 ? (
               filteredNodes.map((node) => {
                 const isSelected = selectedNode && selectedNode.id === node.id;
                 const cpuVal = parseFloat(node.cpuLoad);
