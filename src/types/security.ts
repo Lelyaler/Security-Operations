@@ -1,7 +1,7 @@
-export type RiskLevel = 'low' | 'medium' | 'high';
-export type AlertStatus = 'pending' | 'investigating' | 'resolved';
-export type LogStatus = 'success' | 'failed' | 'pending';
-export type PacketType = 'win' | 'loss';
+export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+export type IncidentStatus = 'pending' | 'investigating' | 'resolved';
+export type AuditLogStatus = 'success' | 'failed' | 'pending';
+export type PacketType = 'allowed' | 'blocked';
 
 export interface KpiMetric {
   value: string;
@@ -11,10 +11,10 @@ export interface KpiMetric {
 }
 
 export interface KpiStats {
-  ggr: KpiMetric;
-  ngr: KpiMetric;
-  activePlayers: KpiMetric;
-  vipBetsCount: KpiMetric;
+  totalPackets: KpiMetric;
+  blockedThreats: KpiMetric;
+  activeSockets: KpiMetric;
+  inspectedPayloads: KpiMetric;
   pendingAlerts: KpiMetric;
 }
 
@@ -27,50 +27,71 @@ export interface TrafficDataPoint {
 
 export interface ProtocolShare {
   name: string;
-  players: number;
+  connections: number;
   share: string;
 }
 
-export interface ServerNode {
+export interface InfrastructureNode {
   id: number;
   name: string;
   category: 'Microservice' | 'Gateway' | 'Database' | 'Caching' | 'Load Balancer' | 'Backup' | string;
-  provider: string;
-  rtp: string; // CPU load %
-  spins: number; // Total requests
-  ggr: number; // Data Sent in GB
-  popularity: number; // Health %
-  activePlayers: number; // Active threads
-  image: string;
+  region: string;
+  ipAddress: string;
+  cpuLoad: string;
+  memoryUsage: string;
+  threads: number;
+  dataTransferred: string;
+  uptime: string;
+  status: 'healthy' | 'warning' | 'degraded';
+  requestsPerSec: number;
 }
 
-export interface SecurityAlert {
+export interface MitreTechnique {
   id: string;
-  player: string; // Malicious or source IP
-  country: string; // Target node/service
+  name: string;
+  tactic: string;
+}
+
+export interface SecurityIncident {
+  id: string;
+  sourceIp: string;
+  targetService: string;
   risk: RiskLevel;
   reason: string;
-  amount: string; // Payload size
-  time: string;
-  status: AlertStatus;
+  payloadSize: string;
+  timestamp: string;
+  status: IncidentStatus;
+  cve?: string;
+  mitre?: MitreTechnique;
+  sha256?: string;
+  rawEvent?: string;
+  destinationPort?: number;
+  protocol?: string;
+  userAgent?: string;
 }
 
 export interface AuditLog {
   id: string;
-  player: string; // Principal / User / Daemon
+  principal: string;
   type: 'File Write' | 'SSH Access' | 'API Call' | string;
-  amount: number; // Payload size (bytes/tokens)
+  payloadSize: number;
   method: 'REST' | 'SSH' | 'HTTPS' | 'gRPC' | string;
-  time: string;
-  status: LogStatus;
+  timestamp: string;
+  status: AuditLogStatus;
+  details?: string;
+  clientIp?: string;
 }
 
 export interface NetworkPacket {
-  id: number;
-  player: string; // Source IP
-  game: string; // Target endpoint
-  amount: string; // Payload KB
-  multiplier: string; // Port
-  win: string; // Response status (e.g. '200 OK', '403 Blocked')
-  type: PacketType; // 'win' (allowed) | 'loss' (blocked)
+  id: string | number;
+  sourceIp: string;
+  endpoint: string;
+  payloadSize: string;
+  port: number | string;
+  statusText: string;
+  type: PacketType;
+  timestamp?: string;
+  latencyMs?: number;
+  protocol?: string;
+  method?: string;
 }

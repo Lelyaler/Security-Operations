@@ -1,25 +1,38 @@
-import type { SecurityAlert, AuditLog, NetworkPacket, RiskLevel, AlertStatus, LogStatus, ServerNode } from '../types/security';
+import type {
+  SecurityIncident,
+  AuditLog,
+  NetworkPacket,
+  RiskLevel,
+  IncidentStatus,
+  AuditLogStatus,
+  InfrastructureNode
+} from '../types/security';
+
+const STORAGE_KEY_INCIDENTS = 'securenode_incidents_v1';
+const STORAGE_KEY_LOGS = 'securenode_audit_logs_v1';
 
 /**
- * Filter security alerts by risk level, status, and query term
+ * Filter security incidents by risk level, status, and query term
  */
-export function filterAlerts(
-  alerts: SecurityAlert[],
+export function filterIncidents(
+  incidents: SecurityIncident[],
   riskFilter: RiskLevel | 'all',
-  statusFilter: AlertStatus | 'all',
+  statusFilter: IncidentStatus | 'all',
   query = ''
-): SecurityAlert[] {
+): SecurityIncident[] {
   const normalizedQuery = query.trim().toLowerCase();
 
-  return alerts.filter((alert) => {
-    const matchesRisk = riskFilter === 'all' || alert.risk === riskFilter;
-    const matchesStatus = statusFilter === 'all' || alert.status === statusFilter;
+  return incidents.filter((incident) => {
+    const matchesRisk = riskFilter === 'all' || incident.risk === riskFilter;
+    const matchesStatus = statusFilter === 'all' || incident.status === statusFilter;
     const matchesQuery =
       !normalizedQuery ||
-      alert.id.toLowerCase().includes(normalizedQuery) ||
-      alert.player.toLowerCase().includes(normalizedQuery) ||
-      alert.country.toLowerCase().includes(normalizedQuery) ||
-      alert.reason.toLowerCase().includes(normalizedQuery);
+      incident.id.toLowerCase().includes(normalizedQuery) ||
+      incident.sourceIp.toLowerCase().includes(normalizedQuery) ||
+      incident.targetService.toLowerCase().includes(normalizedQuery) ||
+      incident.reason.toLowerCase().includes(normalizedQuery) ||
+      (incident.mitre && (incident.mitre.id.toLowerCase().includes(normalizedQuery) || incident.mitre.name.toLowerCase().includes(normalizedQuery))) ||
+      (incident.cve && incident.cve.toLowerCase().includes(normalizedQuery));
 
     return matchesRisk && matchesStatus && matchesQuery;
   });
@@ -31,7 +44,7 @@ export function filterAlerts(
 export function filterAuditLogs(
   logs: AuditLog[],
   typeFilter: string | 'all',
-  statusFilter: LogStatus | 'all',
+  statusFilter: AuditLogStatus | 'all',
   query = ''
 ): AuditLog[] {
   const normalizedQuery = query.trim().toLowerCase();
@@ -42,8 +55,10 @@ export function filterAuditLogs(
     const matchesQuery =
       !normalizedQuery ||
       log.id.toLowerCase().includes(normalizedQuery) ||
-      log.player.toLowerCase().includes(normalizedQuery) ||
-      log.method.toLowerCase().includes(normalizedQuery);
+      log.principal.toLowerCase().includes(normalizedQuery) ||
+      log.method.toLowerCase().includes(normalizedQuery) ||
+      (log.details && log.details.toLowerCase().includes(normalizedQuery)) ||
+      (log.clientIp && log.clientIp.toLowerCase().includes(normalizedQuery));
 
     return matchesType && matchesStatus && matchesQuery;
   });
@@ -53,28 +68,36 @@ export function filterAuditLogs(
  * Generates an RFC-compliant CSV string from audit logs
  */
 export function exportLogsToCsv(logs: AuditLog[]): string {
-  const headers = ['Log ID', 'Principal', 'Event Type', 'Payload (Bytes)', 'Protocol', 'Timestamp', 'Status'];
+  const headers = ['Log ID', 'Principal', 'Event Type', 'Client IP', 'Payload (Bytes)', 'Protocol', 'Timestamp', 'Status', 'Details'];
   const rows = logs.map((log) => [
     log.id,
-    `"${log.player.replace(/"/g, '""')}"`,
+    `"${log.principal.replace(/"/g, '""')}"`,
     `"${log.type.replace(/"/g, '""')}"`,
-    log.amount.toString(),
+    log.clientIp || 'N/A',
+    log.payloadSize.toString(),
     log.method,
-    log.time,
-    log.status
+    log.timestamp,
+    log.status,
+    `"${(log.details || '').replace(/"/g, '""')}"`
   ]);
 
   return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
 }
 
 /**
- * Computes overall infrastructure health score (0-100) based on nodes and pending alerts
+ * Computes overall infrastructure health score (0-100) based on nodes and pending incidents
  */
-export function calculateInfrastructureHealth(nodes: ServerNode[], pendingAlertCount: number): number {
+export function calculateInfrastructureHealth(nodes: InfrastructureNode[], pendingAlertCount: number): number {
   if (nodes.length === 0) return 100;
-  const avgPopularity = nodes.reduce((acc, curr) => acc + curr.popularity, 0) / nodes.length;
+  
+  const scoreSum = nodes.reduce((acc, curr) => {
+    const statusScore = curr.status === 'healthy' ? 100 : curr.status === 'warning' ? 75 : 50;
+    return acc + statusScore;
+  }, 0);
+
+  const avgScore = scoreSum / nodes.length;
   const penalty = Math.min(pendingAlertCount * 2.5, 30);
-  return Math.max(0, Math.round(avgPopularity - penalty));
+  return Math.max(0, Math.round(avgScore - penalty));
 }
 
 const mockEndpoints = [
@@ -88,21 +111,114 @@ const mockEndpoints = [
   '/db/healthcheck'
 ];
 
+const protocols = ['TLS 1.3', 'HTTP/2', 'HTTPS', 'gRPC', 'TCP'];
+const methods = ['GET', 'POST', 'HEAD', 'PUT', 'CONNECT'];
+
 /**
  * Creates a synthetic network socket packet
  */
-export function generateSyntheticPacket(id: number, forceBlocked = false): NetworkPacket {
+export function generateSyntheticPacket(id: string | number, forceBlocked = false): NetworkPacket {
   const randomIp = `${Math.floor(Math.random() * 200 + 20)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
   const endpoint = mockEndpoints[Math.floor(Math.random() * mockEndpoints.length)];
-  const isLoss = forceBlocked || Math.random() < 0.25;
+  const isBlocked = forceBlocked || Math.random() < 0.25;
+  const bytes = Math.floor(Math.random() * 1400) + 64;
+  const ports = [443, 80, 22, 8080, 3306, 5432];
+  const port = isBlocked ? (Math.random() > 0.5 ? 22 : 80) : ports[Math.floor(Math.random() * ports.length)];
+  const statusText = isBlocked
+    ? (Math.random() > 0.5 ? '403 Blocked' : '401 Unauthorized')
+    : '200 OK';
+
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+  const latency = Math.floor(Math.random() * 42) + 4;
+  const protocol = protocols[Math.floor(Math.random() * protocols.length)];
+  const method = isBlocked && port === 22 ? 'SSH' : methods[Math.floor(Math.random() * methods.length)];
 
   return {
     id,
-    player: randomIp,
-    game: endpoint,
-    amount: Math.floor(Math.random() * 950 + 50).toString(),
-    multiplier: isLoss ? '80' : '443',
-    win: isLoss ? '403 Blocked' : '200 OK',
-    type: isLoss ? 'loss' : 'win'
+    sourceIp: randomIp,
+    endpoint,
+    payloadSize: bytes >= 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${bytes} B`,
+    port,
+    statusText,
+    type: isBlocked ? 'blocked' : 'allowed',
+    timestamp: timeStr,
+    latencyMs: latency,
+    protocol,
+    method
   };
 }
+
+let memoryStorage: Record<string, string> = {};
+
+function getStorageItem(key: string): string | null {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch {
+      return memoryStorage[key] || null;
+    }
+  }
+  return memoryStorage[key] || null;
+}
+
+function setStorageItem(key: string, value: string): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch {
+      // Storage quota or security restriction
+    }
+  }
+  memoryStorage[key] = value;
+}
+
+function removeStorageItem(key: string): void {
+  if (typeof window !== 'undefined' && window.localStorage) {
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // ignore
+    }
+  }
+  delete memoryStorage[key];
+}
+
+/**
+ * Load persisted incidents from browser storage or return fallback
+ */
+export function loadPersistedIncidents(fallback: SecurityIncident[]): SecurityIncident[] {
+  try {
+    const raw = getStorageItem(STORAGE_KEY_INCIDENTS);
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) && parsed.length > 0 ? parsed : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+/**
+ * Save incidents to browser storage
+ */
+export function savePersistedIncidents(incidents: SecurityIncident[]): void {
+  try {
+    setStorageItem(STORAGE_KEY_INCIDENTS, JSON.stringify(incidents));
+  } catch {
+    // Storage quota or private mode restriction
+  }
+}
+
+/**
+ * Clear persisted telemetry data to reset to factory defaults
+ */
+export function clearPersistedData(): void {
+  try {
+    removeStorageItem(STORAGE_KEY_INCIDENTS);
+    removeStorageItem(STORAGE_KEY_LOGS);
+    memoryStorage = {};
+  } catch {
+    // ignore
+  }
+}
+

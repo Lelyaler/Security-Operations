@@ -1,0 +1,382 @@
+import { useState, type Dispatch, type SetStateAction } from 'react';
+import { ShieldAlert, ShieldCheck, AlertOctagon, X, Terminal, Globe, Check, ShieldOff, Search, Copy, CheckCheck, FileCode, Info } from 'lucide-react';
+import { filterIncidents } from '../utils/securityHelpers';
+import type { SecurityIncident, RiskLevel, IncidentStatus } from '../types/security';
+
+interface ThreatCenterViewProps {
+  incidents: SecurityIncident[];
+  setIncidents: Dispatch<SetStateAction<SecurityIncident[]>>;
+}
+
+export default function ThreatCenterView({ incidents, setIncidents }: ThreatCenterViewProps) {
+  const [selectedIncident, setSelectedIncident] = useState<SecurityIncident | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
+  const [riskFilter, setRiskFilter] = useState<RiskLevel | 'all'>('all');
+  const [statusFilter, setStatusFilter] = useState<IncidentStatus | 'all'>('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [inspectorTab, setInspectorTab] = useState<'overview' | 'raw'>('overview');
+  const [copiedRaw, setCopiedRaw] = useState(false);
+
+  const showNotification = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => {
+      setNotification(null);
+    }, 4000);
+  };
+
+  const handleAction = (id: string, newStatus: IncidentStatus) => {
+    setIncidents((prev) =>
+      prev.map((inc) => (inc.id === id ? { ...inc, status: newStatus } : inc))
+    );
+    if (selectedIncident && selectedIncident.id === id) {
+      setSelectedIncident((prev) => (prev ? { ...prev, status: newStatus } : null));
+    }
+  };
+
+  const handleQuarantine = (incident: SecurityIncident) => {
+    handleAction(incident.id, 'resolved');
+    setSelectedIncident(null);
+    showNotification(`Host IP ${incident.sourceIp} isolated: null-route rule committed to edge firewall.`);
+  };
+
+  const handleCopyRaw = (text: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedRaw(true);
+    setTimeout(() => setCopiedRaw(false), 2000);
+  };
+
+  const getRiskColor = (risk: RiskLevel) => {
+    switch (risk) {
+      case 'critical':
+      case 'high':
+        return 'badge-danger';
+      case 'medium':
+        return 'badge-warning';
+      default:
+        return 'badge-success';
+    }
+  };
+
+  const filteredIncidents = filterIncidents(incidents, riskFilter, statusFilter, searchTerm);
+
+  return (
+    <div className="threat-view animate-fade-in">
+      {notification && (
+        <div className="threat-notification animate-slide-in">
+          <Check size={16} className="text-success" />
+          <span>{notification}</span>
+          <button className="dismiss-alert-btn" onClick={() => setNotification(null)}>Dismiss</button>
+        </div>
+      )}
+
+      <div className="threat-summary-grid">
+        <div className="card summary-card danger">
+          <AlertOctagon size={22} className="text-danger" />
+          <div className="summary-info">
+            <span className="summary-val font-mono">
+              {incidents.filter((a) => (a.risk === 'high' || a.risk === 'critical') && a.status !== 'resolved').length}
+            </span>
+            <span className="summary-label">High-Risk Incidents</span>
+          </div>
+        </div>
+
+        <div className="card summary-card warning">
+          <ShieldAlert size={22} className="text-warning" />
+          <div className="summary-info">
+            <span className="summary-val font-mono">
+              {incidents.filter((a) => a.status === 'investigating').length}
+            </span>
+            <span className="summary-label">Under Investigation</span>
+          </div>
+        </div>
+
+        <div className="card summary-card success">
+          <ShieldCheck size={22} className="text-success" />
+          <div className="summary-info">
+            <span className="summary-val font-mono">
+              {incidents.filter((a) => a.status === 'resolved').length}
+            </span>
+            <span className="summary-label">Mitigated Threats</span>
+          </div>
+        </div>
+      </div>
+
+      <div className={`threat-content-layout ${selectedIncident ? 'has-inspector' : ''}`}>
+        <div className="threat-table-card card">
+          <div className="threat-table-header">
+            <div>
+              <h2 className="card-heading">Active Threat Stream (IDS / IPS)</h2>
+              <p className="card-subheading">Rule-based intrusion detection events requiring SOC analyst review</p>
+            </div>
+            
+            <div className="threat-filters-row">
+              <div className="search-bar threat-search-bar">
+                <Search size={14} className="text-muted" />
+                <input
+                  type="text"
+                  placeholder="Filter by IP, CVE, MITRE ID, or reason..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Filter incidents by query"
+                />
+              </div>
+
+              <select 
+                value={riskFilter} 
+                onChange={(e) => setRiskFilter(e.target.value as RiskLevel | 'all')}
+                className="threat-select"
+                aria-label="Filter by Risk"
+              >
+                <option value="all">All Severities</option>
+                <option value="high">High & Critical</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+
+              <select 
+                value={statusFilter} 
+                onChange={(e) => setStatusFilter(e.target.value as IncidentStatus | 'all')}
+                className="threat-select"
+                aria-label="Filter by Status"
+              >
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="investigating">Investigating</option>
+                <option value="resolved">Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="threat-table-responsive">
+            <table className="threat-table">
+              <thead>
+                <tr>
+                  <th>Incident ID</th>
+                  <th>Source IP</th>
+                  <th>Target Node</th>
+                  <th>MITRE / CVE</th>
+                  <th>Severity</th>
+                  <th>Detection Reason</th>
+                  <th>Payload</th>
+                  <th>Timestamp</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredIncidents.length > 0 ? (
+                  filteredIncidents.map((inc) => (
+                    <tr 
+                      key={inc.id}
+                      className={`threat-row ${selectedIncident && selectedIncident.id === inc.id ? 'active' : ''}`}
+                      onClick={() => setSelectedIncident(inc)}
+                    >
+                      <td className="font-mono text-muted">{inc.id}</td>
+                      <td className="font-mono font-medium">{inc.sourceIp}</td>
+                      <td className="text-muted font-mono">{inc.targetService}</td>
+                      <td>
+                        {inc.mitre ? (
+                          <span className="mitre-badge font-mono" title={`${inc.mitre.name} (${inc.mitre.tactic})`}>
+                            {inc.mitre.id}
+                          </span>
+                        ) : inc.cve ? (
+                          <span className="cve-badge font-mono">{inc.cve}</span>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
+                      <td>
+                        <span className={`badge ${getRiskColor(inc.risk)}`}>
+                          {inc.risk.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="threat-reason-cell" title={inc.reason}>{inc.reason}</td>
+                      <td className="font-mono text-muted">{inc.payloadSize}</td>
+                      <td className="text-muted">{inc.timestamp}</td>
+                      <td>
+                        <span className={`status-pill status-${inc.status}`}>
+                          {inc.status}
+                        </span>
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <button
+                          onClick={() => setSelectedIncident(inc)}
+                          className="btn btn-xs btn-secondary"
+                        >
+                          Inspect
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={10} className="empty-table-state">
+                      No security incidents match the active filter criteria.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {selectedIncident && (
+          <div className="threat-inspector-sidebar card animate-slide-left">
+            <div className="inspector-header">
+              <div className="inspector-title">
+                <ShieldAlert size={18} className="text-danger" />
+                <h3>Incident Investigation</h3>
+              </div>
+              <button 
+                className="btn-icon-close" 
+                onClick={() => setSelectedIncident(null)}
+                aria-label="Close Inspector"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div className="inspector-tabs-nav">
+              <button
+                type="button"
+                className={`inspector-tab-btn ${inspectorTab === 'overview' ? 'active' : ''}`}
+                onClick={() => setInspectorTab('overview')}
+              >
+                <Info size={13} /> Overview
+              </button>
+              <button
+                type="button"
+                className={`inspector-tab-btn ${inspectorTab === 'raw' ? 'active' : ''}`}
+                onClick={() => setInspectorTab('raw')}
+              >
+                <FileCode size={13} /> Raw SIEM Event
+              </button>
+            </div>
+
+            <div className="inspector-body">
+              {inspectorTab === 'overview' ? (
+                <>
+                  <div className="inspector-meta-box">
+                    <div className="meta-field">
+                      <span className="field-lbl">Tracking ID</span>
+                      <span className="field-val font-mono">{selectedIncident.id}</span>
+                    </div>
+                    <div className="meta-field">
+                      <span className="field-lbl">Source IP</span>
+                      <span className="field-val font-mono">{selectedIncident.sourceIp}</span>
+                    </div>
+                    <div className="meta-field">
+                      <span className="field-lbl">Target Service</span>
+                      <span className="field-val font-mono">{selectedIncident.targetService}</span>
+                    </div>
+                    <div className="meta-field">
+                      <span className="field-lbl">Severity</span>
+                      <span className={`badge ${getRiskColor(selectedIncident.risk)}`}>
+                        {selectedIncident.risk.toUpperCase()}
+                      </span>
+                    </div>
+                    {selectedIncident.cve && (
+                      <div className="meta-field">
+                        <span className="field-lbl">Vulnerability</span>
+                        <span className="field-val font-mono text-danger">{selectedIncident.cve}</span>
+                      </div>
+                    )}
+                    {selectedIncident.destinationPort && (
+                      <div className="meta-field">
+                        <span className="field-lbl">Destination</span>
+                        <span className="field-val font-mono">Port {selectedIncident.destinationPort} ({selectedIncident.protocol || 'TCP'})</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {selectedIncident.mitre && (
+                    <div className="mitre-info-box">
+                      <span className="mitre-box-title">MITRE ATT&CK Mapping</span>
+                      <div className="mitre-box-content font-mono">
+                        <span className="mitre-code">{selectedIncident.mitre.id}</span>
+                        <span className="mitre-name">{selectedIncident.mitre.name}</span>
+                        <span className="mitre-tactic">Tactic: {selectedIncident.mitre.tactic}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="threat-details-block">
+                    <h4>Signature Analysis</h4>
+                    <p className="analysis-text">{selectedIncident.reason}</p>
+                    {selectedIncident.userAgent && (
+                      <div className="user-agent-block font-mono">
+                        <span className="text-muted">User-Agent: </span>{selectedIncident.userAgent}
+                      </div>
+                    )}
+                    <div className="telemetry-chip-row">
+                      <span className="chip"><Globe size={13} /> External Network</span>
+                      <span className="chip"><Terminal size={13} /> Payload: {selectedIncident.payloadSize}</span>
+                    </div>
+                  </div>
+
+                  {selectedIncident.sha256 && (
+                    <div className="sha256-block">
+                      <span className="sha-label font-mono">SHA-256 Signature Hash:</span>
+                      <code className="sha-code font-mono">{selectedIncident.sha256}</code>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="raw-siem-view">
+                  <div className="raw-siem-header">
+                    <span className="font-mono text-muted text-xs">Common Event Format (CEF) Record</span>
+                    <button
+                      type="button"
+                      className="btn btn-xs btn-secondary"
+                      onClick={() => handleCopyRaw(selectedIncident.rawEvent || '')}
+                      title="Copy raw log string"
+                    >
+                      {copiedRaw ? <CheckCheck size={12} className="text-success" /> : <Copy size={12} />}
+                      <span>{copiedRaw ? 'Copied' : 'Copy CEF'}</span>
+                    </button>
+                  </div>
+                  <pre className="raw-code-block font-mono">
+                    {selectedIncident.rawEvent || `CEF:0|SecureNode|Sensor|1.0|${selectedIncident.id}|${selectedIncident.reason}|${selectedIncident.risk}|src=${selectedIncident.sourceIp} dst=${selectedIncident.targetService}`}
+                  </pre>
+                </div>
+              )}
+
+              <div className="inspector-action-buttons">
+                {selectedIncident.status !== 'resolved' ? (
+                  <>
+                    <button 
+                      onClick={() => handleQuarantine(selectedIncident)} 
+                      className="btn btn-danger btn-block"
+                    >
+                      <ShieldOff size={15} /> Quarantine & Drop IP
+                    </button>
+                    {selectedIncident.status !== 'investigating' && (
+                      <button 
+                        onClick={() => handleAction(selectedIncident.id, 'investigating')} 
+                        className="btn btn-secondary btn-block"
+                      >
+                        Assign to Analyst
+                      </button>
+                    )}
+                    <button 
+                      onClick={() => handleAction(selectedIncident.id, 'resolved')} 
+                      className="btn btn-outline btn-block"
+                    >
+                      Mark Mitigated
+                    </button>
+                  </>
+                ) : (
+                  <div className="mitigated-box text-success">
+                    <ShieldCheck size={18} />
+                    <span>Incident successfully mitigated and closed.</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

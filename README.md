@@ -1,84 +1,37 @@
-# SecureNode SOC — Cybersecurity Operations Center Dashboard
+# SecureNode SOC Dashboard
 
-A premium, interactive real-time security analytics console built with **React** and **Vite**, designed for security analysts and operations center teams. The dashboard features real-time network traffic logs, server infrastructure matrices, a threat intelligence hub with intrusion detection systems (IDS), and interactive audit log ledgers.
+> **Live Demo:** [https://lelyaler.github.io/Security-Operations/](https://lelyaler.github.io/Security-Operations/)
 
-🚀 **Live Site URL**: [https://lelyaler.github.io/Security-Operations/](https://lelyaler.github.io/Security-Operations/)
+Интерактивная консоль центра мониторинга кибербезопасности (Security Operations Center / IDS) для анализа сетевого трафика, расследования инцидентов по матрице MITRE ATT&CK, контроля состояния кластерной инфраструктуры и аудита доступа.
 
----
+## Возможности
 
-## ✨ Features
+- **Операционный мониторинг (SOC)**:
+  - Живой поток сетевых сокет-пакетов с фильтрацией по статусам (200 OK / 403 Blocked / 401 Unauthorized) и управлением скоростью инжеста.
+  - Визуализация динамики сетевой активности и заблокированных угроз.
+  - Распределение активных сокетов по протоколам (HTTPS, API Gateway, DB, SSH).
 
-### 📊 Real-Time Operations Console
-- **KPI Metrics Grid**: Track Total Network Packets, Blocked Threats, Active Socket Connections, and Intrusion Alerts with growth and warning indicators.
-- **Dynamic Charting**: Interactive area charts comparing traffic throughput vs. blocked anomalies over time, built using **Recharts**.
-- **Live Network Feed**: A simulated real-time feed displaying socket requests, payload size, ports, and server response codes with smooth animations.
+- **Центр реагирования на угрозы (Threat Intelligence & IDS)**:
+  - Реестр алертов с классификацией по матрице MITRE ATT&CK (Credential Access, Initial Access, Defense Evasion, Execution) и CVE.
+  - Инспектор инцидентов с просмотром сырых записей в формате Common Event Format (CEF) и вычислением контрольных сумм SHA-256.
+  - Управление жизненным циклом инцидента: перевод в расследование, изоляция источника угрозы (null-route firewall drop) и персистентное сохранение состояния в локальном хранилище.
 
-### 🖥️ Server Infrastructure Matrix
-- Comprehensive health and performance logs for various microservices, database clusters, caching nodes, load balancers, and edge gateways.
-- Visual statistics detailing CPU Load, Active Processing Threads, and Transferred Data volumes.
-- Full-text search and category filtering with detail profile drawers.
+- **Матрица серверной инфраструктуры**:
+  - Карточки узлов кластера (микросервисы, шлюзы, базы данных, кэш-ноды) с отображением утилизации CPU, распределения памяти и потоков.
+  - Фильтрация по типам компонентов и полнотекстовый поиск по IP/хостнеймам.
 
-### 🛡️ Threat Intelligence & IDS
-- Case management center to quarantine malicious IPs, audit attack vectors, and resolve security incident alerts.
-- High, Medium, and Low risk classification indicators.
-- Detailed intrusion logs tracing request patterns, routing signatures, and malicious queries.
+- **Журнал аудита доступа (Access Audit Trail)**:
+  - Реестр административных сессий и системных вызовов (SSH, REST, gRPC).
+  - Поиск по пользователям и IP, фильтрация по статусам и экспорт выборки в файл CSV.
 
-### ⚙️ System Access Audit Logs
-- Comprehensive ledger tracking administrative access, script executions, API queries, and server file writes.
-- Advanced filters for log types (File Write, SSH Access, API Call) and execution statuses.
-- Interactive export module to compile server log reports into CSV formats.
+- **Панель диагностики (SOC Diagnostics)**:
+  - Встроенный инструмент самотестирования для эмуляции всплесков нагрузки (DDoS Congestion), инжеста тестовых CVE-событий и заморозки потока пакетов для отладки.
 
----
+## Стек технологий
 
-## 🛠️ Technology Stack
-
-- **Framework**: [React 19](https://react.dev/)
-- **Bundler**: [Vite](https://vite.dev/)
-- **Charts**: [Recharts](https://recharts.org/) (Responsive SVG Graphs)
-- **Icons**: [Lucide React](https://lucide.dev/)
-- **Styling**: Vanilla CSS (Custom properties, Flexbox/Grid layouts, Glassmorphic filters, Keyframe transitions)
-- **Deployment**: [gh-pages](https://www.npmjs.com/package/gh-pages)
-
----
-
-## 📁 Project Structure
-
-```text
-src/
-├── components/
-│   ├── DashboardView.jsx      # KPI statistics, Recharts graphs, and live socket feed
-│   ├── GamesView.jsx          # Server list matrix cards and detail profiles drawer
-│   ├── FraudView.jsx          # Security alerts center, IP quarantine, and logs audit modal
-│   ├── TransactionsView.jsx   # System access logs and interactive CSV exporter
-│   ├── Sidebar.jsx            # Left navigation bar and system status indicators
-│   └── Header.jsx             # Top widgets, active connection counter, and analyst profile
-├── utils/
-│   └── mockData.js            # Offline database structure
-├── App.jsx                    # Root layout and tab router
-├── index.css                  # Global CSS variables, reset styles, and glassmorphic utility classes
-└── main.jsx                   # Entry point
-```
-
----
-
-## 💻 Local Development Setup
-
-To run this dashboard project locally:
-
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/Lelyaler/Security-Operations.git
-   cd Security-Operations
-   ```
-
-2. **Install all package dependencies**:
-   ```bash
-   npm install
-   ```
-
-3. **Start the local development server**:
-   ```bash
-   npm run dev
-   ```
-
-4. Open [http://localhost:5173/Security-Operations/](http://localhost:5173/Security-Operations/) in your web browser.
+- **Фреймворк**: React 19 + TypeScript (строгий режим)
+- **Сборка**: Vite
+- **Графики**: Recharts
+- **Иконки**: Lucide React
+- **Тестирование и линтинг**: Vitest, Oxlint
+- **Стилизация**: CSS Custom Properties, адаптивная вёрстка под десктоп и мобильные экраны
