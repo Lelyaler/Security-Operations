@@ -1,19 +1,30 @@
-import React from 'react';
-import { Users, Server, Bell, UserCheck, AlertTriangle, Menu } from 'lucide-react';
+import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, Sliders } from 'lucide-react';
 
-export default function Header({ activeTab, isDdosActive, setIsMobileOpen }) {
+interface HeaderProps {
+  activeTab: string;
+  isDdosActive: boolean;
+  setIsMobileOpen: (open: boolean) => void;
+  onOpenDiagnostics: () => void;
+}
+
+export default function Header({
+  activeTab,
+  isDdosActive,
+  setIsMobileOpen,
+  onOpenDiagnostics
+}: HeaderProps) {
   const getTitle = () => {
     switch (activeTab) {
       case 'dashboard':
         return 'Security Operations Center (SOC)';
-      case 'games':
+      case 'infrastructure':
         return 'Server Infrastructure Matrix';
-      case 'fraud':
+      case 'threats':
         return 'Threat Intelligence & IDS';
-      case 'transactions':
+      case 'logs':
         return 'System Access Audit Logs';
       default:
-        return 'Dashboard';
+        return 'Security Operations Center (SOC)';
     }
   };
 
@@ -35,6 +46,15 @@ export default function Header({ activeTab, isDdosActive, setIsMobileOpen }) {
       </div>
 
       <div className="header-widgets">
+        <button
+          onClick={onOpenDiagnostics}
+          className="header-diagnostics-btn"
+          title="Open SOC Telemetry & Diagnostics Console"
+        >
+          <Sliders size={14} />
+          <span>Diagnostics</span>
+        </button>
+
         <div className="widget-item">
           <Users size={15} className={isDdosActive ? 'text-danger' : 'text-muted'} />
           <div className="widget-content">

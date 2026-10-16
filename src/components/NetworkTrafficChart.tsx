@@ -1,7 +1,11 @@
-import React from 'react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import type { TrafficDataPoint } from '../types/security';
 
-export default function NetworkTrafficChart({ data }) {
+interface NetworkTrafficChartProps {
+  data: TrafficDataPoint[];
+}
+
+export default function NetworkTrafficChart({ data }: NetworkTrafficChartProps) {
   return (
     <ResponsiveContainer width="100%" height={320}>
       <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>

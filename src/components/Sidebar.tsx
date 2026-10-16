@@ -1,26 +1,36 @@
-import React from 'react';
 import { LayoutDashboard, Server, ShieldAlert, Terminal, ShieldCheck, AlertTriangle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 
-export default function Sidebar({ 
-  activeTab, 
-  setActiveTab, 
-  alertsCount, 
+interface SidebarProps {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+  alertsCount: number;
+  isDdosActive: boolean;
+  isCollapsed: boolean;
+  setIsCollapsed: (collapsed: boolean | ((prev: boolean) => boolean)) => void;
+  isMobileOpen: boolean;
+  setIsMobileOpen: (open: boolean) => void;
+}
+
+export default function Sidebar({
+  activeTab,
+  setActiveTab,
+  alertsCount,
   isDdosActive,
   isCollapsed,
   setIsCollapsed,
   isMobileOpen,
   setIsMobileOpen
-}) {
+}: SidebarProps) {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'games', label: 'Server Matrix', icon: Server },
+    { id: 'dashboard', label: 'SOC Dashboard', icon: LayoutDashboard },
+    { id: 'infrastructure', label: 'Infrastructure', icon: Server },
     { 
-      id: 'fraud', 
+      id: 'threats', 
       label: 'Threat Center', 
       icon: ShieldAlert, 
       badge: alertsCount > 0 ? alertsCount : null 
     },
-    { id: 'transactions', label: 'Access Logs', icon: Terminal }
+    { id: 'logs', label: 'Audit Logs', icon: Terminal }
   ];
 
   const showFullMenu = !isCollapsed || isMobileOpen;

@@ -1,9 +1,13 @@
-import React from 'react';
 import { ResponsiveContainer, BarChart, Bar, Cell, CartesianGrid, XAxis, YAxis, Tooltip } from 'recharts';
+import type { ProtocolShare } from '../types/security';
 
 const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#6366f1'];
 
-export default function ProtocolDistributionChart({ data }) {
+interface ProtocolDistributionChartProps {
+  data: ProtocolShare[];
+}
+
+export default function ProtocolDistributionChart({ data }: ProtocolDistributionChartProps) {
   return (
     <ResponsiveContainer width="100%" height={240}>
       <BarChart data={data} layout="vertical" barSize={12}>
@@ -18,9 +22,10 @@ export default function ProtocolDistributionChart({ data }) {
             color: '#f8fafc',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
           }}
+          formatter={(value: any) => [`${Number(value).toLocaleString()} active sockets`, 'Connections']}
         />
-        <Bar dataKey="players" radius={[0, 4, 4, 0]}>
-          {data.map((entry, index) => (
+        <Bar dataKey="connections" radius={[0, 4, 4, 0]}>
+          {data.map((_, index) => (
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
         </Bar>

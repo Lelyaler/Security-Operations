@@ -1,45 +1,49 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { TrendingUp, TrendingDown, Users, Activity, ShieldAlert, AlertCircle, Play, Pause } from 'lucide-react';
-import { kpiStats, revenueHistory, playerDistribution, liveGamesList } from '../utils/mockData';
+import { kpiStats, trafficHistory, protocolDistribution } from '../utils/mockData';
+import { generateSyntheticPacket } from '../utils/securityHelpers';
+import type { NetworkPacket } from '../types/security';
 
 const NetworkTrafficChart = lazy(() => import('./NetworkTrafficChart'));
 const ProtocolDistributionChart = lazy(() => import('./ProtocolDistributionChart'));
 
-export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isDdosActive, alertsCount = 0 }) {
-  const [streamSpeed, setStreamSpeed] = useState(1);
-  const [trafficFilter, setTrafficFilter] = useState('all');
+interface DashboardViewProps {
+  livePackets: NetworkPacket[];
+  setLivePackets: React.Dispatch<React.SetStateAction<NetworkPacket[]>>;
+  isFeedFrozen: boolean;
+  isDdosActive: boolean;
+  alertsCount?: number;
+}
+
+export default function DashboardView({
+  livePackets,
+  setLivePackets,
+  isFeedFrozen,
+  isDdosActive,
+  alertsCount = 0
+}: DashboardViewProps) {
+  const [streamSpeed, setStreamSpeed] = useState<number>(1);
+  const [trafficFilter, setTrafficFilter] = useState<'all' | 'allowed' | 'blocked'>('all');
 
   useEffect(() => {
     if (isFeedFrozen || streamSpeed === 0) return;
 
     const intervalTime = Math.max(400, Math.round(3000 / streamSpeed));
     const interval = setInterval(() => {
-      const isSuccess = Math.random() > 0.15;
-      const bytes = Math.floor(Math.random() * 1400) + 64;
-      const ports = [443, 80, 22, 8080, 3306, 5432];
-      const port = ports[Math.floor(Math.random() * ports.length)];
-      
-      const statusText = isSuccess ? "200 OK" : ["403 Blocked", "401 Unauthorized", "502 Bad Gateway"][Math.floor(Math.random() * 3)];
-      
-      const newPacket = {
-        id: `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        player: `185.90.11.${Math.floor(Math.random() * 240) + 10}`,
-        game: liveGamesList[Math.floor(Math.random() * liveGamesList.length)],
-        amount: bytes >= 1024 ? `${(bytes / 1024).toFixed(1)} KB` : `${bytes} B`,
-        multiplier: `${port}`,
-        win: statusText,
-        type: isSuccess ? 'win' : 'loss'
-      };
+      const newPacket = generateSyntheticPacket(
+        `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        isDdosActive && Math.random() < 0.6
+      );
 
-      setLiveBets(prev => [newPacket, ...prev.slice(0, 5)]);
+      setLivePackets((prev) => [newPacket, ...prev.slice(0, 5)]);
     }, intervalTime);
 
     return () => clearInterval(interval);
-  }, [isFeedFrozen, streamSpeed, setLiveBets]);
+  }, [isFeedFrozen, streamSpeed, setLivePackets, isDdosActive]);
 
-  const filteredBets = liveBets.filter((bet) => {
-    if (trafficFilter === 'blocked') return bet.type === 'loss';
-    if (trafficFilter === 'allowed') return bet.type === 'win';
+  const filteredPackets = livePackets.filter((packet) => {
+    if (trafficFilter === 'blocked') return packet.type === 'blocked';
+    if (trafficFilter === 'allowed') return packet.type === 'allowed';
     return true;
   });
 
@@ -51,10 +55,10 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             <span className="kpi-title">Total Network Packets</span>
             <Activity className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value">{kpiStats.ggr.value}</div>
+          <div className="kpi-value font-mono">{kpiStats.totalPackets.value}</div>
           <div className="kpi-footer">
             <span className="trend-badge positive">
-              <TrendingUp size={12} /> {kpiStats.ggr.change}
+              <TrendingUp size={12} /> {kpiStats.totalPackets.change}
             </span>
             <span className="trend-label">vs last week</span>
           </div>
@@ -65,10 +69,10 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             <span className="kpi-title">Blocked Threats</span>
             <ShieldAlert className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value">{kpiStats.ngr.value}</div>
+          <div className="kpi-value font-mono">{kpiStats.blockedThreats.value}</div>
           <div className="kpi-footer">
             <span className="trend-badge positive">
-              <TrendingUp size={12} /> {kpiStats.ngr.change}
+              <TrendingUp size={12} /> {kpiStats.blockedThreats.change}
             </span>
             <span className="trend-label">vs last week</span>
           </div>
@@ -79,10 +83,10 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             <span className="kpi-title">Active Sockets</span>
             <Users className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value">{isDdosActive ? '1,842' : kpiStats.activePlayers.value}</div>
+          <div className="kpi-value font-mono">{isDdosActive ? '1,842' : kpiStats.activeSockets.value}</div>
           <div className="kpi-footer">
             <span className={isDdosActive ? 'trend-badge negative' : 'trend-badge positive'}>
-              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-43.9%' : kpiStats.activePlayers.change}
+              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-43.9%' : kpiStats.activeSockets.change}
             </span>
             <span className="trend-label">vs yesterday</span>
           </div>
@@ -93,7 +97,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             <span className="kpi-title">Intrusion Alerts (IDS)</span>
             <AlertCircle className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value">{alertsCount}</div>
+          <div className="kpi-value font-mono">{alertsCount}</div>
           <div className="kpi-footer">
             <span className="trend-badge negative">
               {isDdosActive ? 'CRITICAL' : kpiStats.pendingAlerts.change}
@@ -108,7 +112,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
           <h2 className="card-heading">Network Traffic vs Blocked Threats</h2>
           <div className="chart-wrapper">
             <Suspense fallback={<div className="chart-placeholder" style={{ height: 320 }} />}>
-              <NetworkTrafficChart data={revenueHistory} />
+              <NetworkTrafficChart data={trafficHistory} />
             </Suspense>
           </div>
         </div>
@@ -146,7 +150,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
               <select
                 aria-label="Filter traffic logs"
                 value={trafficFilter}
-                onChange={(e) => setTrafficFilter(e.target.value)}
+                onChange={(e) => setTrafficFilter(e.target.value as 'all' | 'allowed' | 'blocked')}
                 className="traffic-filter-select"
               >
                 <option value="all">All Traffic</option>
@@ -156,25 +160,25 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
             </div>
           </div>
 
-          <div className="live-bets-container">
-            {filteredBets.length === 0 ? (
+          <div className="live-packets-container">
+            {filteredPackets.length === 0 ? (
               <div className="empty-feed-state">
                 No packets matching current filter
               </div>
             ) : (
-              filteredBets.map((bet) => (
-                <div key={bet.id} className={`live-bet-row ${bet.type}`}>
-                  <div className="bet-row-left">
-                    <span className="bet-player">{bet.player}</span>
-                    <span className="bet-game text-muted">{bet.game}</span>
+              filteredPackets.map((packet) => (
+                <div key={packet.id} className={`live-packet-row ${packet.type}`}>
+                  <div className="packet-row-left">
+                    <span className="packet-ip font-mono">{packet.sourceIp}</span>
+                    <span className="packet-endpoint text-muted font-mono">{packet.endpoint}</span>
                   </div>
-                  <div className="bet-row-center">
-                    <span className="bet-amount">{bet.amount}</span>
-                    <span className="bet-port-badge">Port {bet.multiplier}</span>
+                  <div className="packet-row-center">
+                    <span className="packet-payload font-mono">{packet.payloadSize}</span>
+                    <span className="packet-port-badge font-mono">Port {packet.port}</span>
                   </div>
-                  <div className="bet-row-right">
-                    <span className={`bet-win ${bet.type === 'win' ? 'text-success' : 'text-danger'}`}>
-                      {bet.win}
+                  <div className="packet-row-right">
+                    <span className={`packet-status font-mono ${packet.type === 'allowed' ? 'text-success' : 'text-danger'}`}>
+                      {packet.statusText}
                     </span>
                   </div>
                 </div>
@@ -189,7 +193,7 @@ export default function DashboardView({ liveBets, setLiveBets, isFeedFrozen, isD
           <h2 className="card-heading">Active Sockets by Protocol</h2>
           <div className="chart-wrapper">
             <Suspense fallback={<div className="chart-placeholder" style={{ height: 240 }} />}>
-              <ProtocolDistributionChart data={playerDistribution} />
+              <ProtocolDistributionChart data={protocolDistribution} />
             </Suspense>
           </div>
         </div>
