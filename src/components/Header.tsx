@@ -1,4 +1,4 @@
-import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, Sliders } from 'lucide-react';
+import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, Sliders, ShieldCheck } from 'lucide-react';
 
 interface HeaderProps {
   activeTab: string;
@@ -40,21 +40,18 @@ export default function Header({
           <Menu size={20} />
         </button>
         <div className="header-title-section">
-          <h1 className="header-title">{getTitle()}</h1>
-          <p className="header-subtitle">Real-time network security console</p>
+          <div className="header-title-row">
+            <h1 className="header-title">{getTitle()}</h1>
+            <div className={`env-pill ${isDdosActive ? 'env-pill-warning' : ''}`} title="Current Environment Cluster">
+              <span className="env-dot"></span>
+              <span className="env-name">{isDdosActive ? 'CONGESTION · EU-1' : 'PROD · SEC-EU-1'}</span>
+            </div>
+          </div>
+          <p className="header-subtitle">Real-time network security console & eBPF inspection</p>
         </div>
       </div>
 
       <div className="header-widgets">
-        <button
-          onClick={onOpenDiagnostics}
-          className="header-diagnostics-btn"
-          title="Open SOC Telemetry & Diagnostics Console"
-        >
-          <Sliders size={14} />
-          <span>Diagnostics</span>
-        </button>
-
         <div className="widget-item">
           <Users size={15} className={isDdosActive ? 'text-danger' : 'text-muted'} />
           <div className="widget-content">
@@ -71,15 +68,25 @@ export default function Header({
           )}
           <div className="widget-content">
             <span className={`widget-value ${isDdosActive ? 'text-danger' : ''}`}>
-              {isDdosActive ? 'Anomaly Detected' : 'EU-WEST-1'}
+              {isDdosActive ? 'Spike Anomaly' : 'EU-WEST-1'}
             </span>
             <span className="widget-label">
-              {isDdosActive ? 'High Latency' : 'Primary Node'}
+              {isDdosActive ? 'Elevated Drop' : 'Primary Node'}
             </span>
           </div>
         </div>
 
-        <div className="notification-bell" title="System alerts">
+        <button
+          onClick={onOpenDiagnostics}
+          className={`header-harness-btn ${isDdosActive ? 'active' : ''}`}
+          title="Telemetry Simulation & Fault Injection Harness"
+          aria-label="Simulation Harness"
+        >
+          <Sliders size={13} />
+          <span>Simulation Harness</span>
+        </button>
+
+        <div className="notification-bell" title="System security notifications">
           <Bell size={16} className={isDdosActive ? 'text-danger' : 'text-muted'} />
           <span className={`bell-badge ${isDdosActive ? 'bell-badge-danger' : ''}`}></span>
         </div>
@@ -90,7 +97,9 @@ export default function Header({
           </div>
           <div className="profile-info">
             <span className="profile-name">Alexander K.</span>
-            <span className="profile-role">Security Analyst</span>
+            <span className="profile-role">
+              <ShieldCheck size={11} className="role-icon" /> Tier 3 Analyst
+            </span>
           </div>
         </div>
       </div>

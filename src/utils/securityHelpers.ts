@@ -111,6 +111,9 @@ const mockEndpoints = [
   '/db/healthcheck'
 ];
 
+const protocols = ['TLS 1.3', 'HTTP/2', 'HTTPS', 'gRPC', 'TCP'];
+const methods = ['GET', 'POST', 'HEAD', 'PUT', 'CONNECT'];
+
 /**
  * Creates a synthetic network socket packet
  */
@@ -126,7 +129,10 @@ export function generateSyntheticPacket(id: string | number, forceBlocked = fals
     : '200 OK';
 
   const now = new Date();
-  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}.${String(now.getMilliseconds()).padStart(3, '0')}`;
+  const latency = Math.floor(Math.random() * 42) + 4;
+  const protocol = protocols[Math.floor(Math.random() * protocols.length)];
+  const method = isBlocked && port === 22 ? 'SSH' : methods[Math.floor(Math.random() * methods.length)];
 
   return {
     id,
@@ -136,7 +142,10 @@ export function generateSyntheticPacket(id: string | number, forceBlocked = fals
     port,
     statusText,
     type: isBlocked ? 'blocked' : 'allowed',
-    timestamp: timeStr
+    timestamp: timeStr,
+    latencyMs: latency,
+    protocol,
+    method
   };
 }
 

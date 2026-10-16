@@ -91,4 +91,7 @@ export interface NetworkPacket {
   statusText: string;
   type: PacketType;
   timestamp?: string;
+  latencyMs?: number;
+  protocol?: string;
+  method?: string;
 }
