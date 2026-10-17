@@ -24,12 +24,14 @@ export default function NetworkTrafficChart({ data }: NetworkTrafficChartProps) 
         <YAxis stroke="#826f75" fontSize={11} tickLine={false} />
         <Tooltip
           contentStyle={{
-            background: '#281b20',
-            border: 'none',
+            background: '#24171c',
+            border: '1px solid rgba(255, 235, 240, 0.14)',
             borderRadius: '8px',
             color: '#fdf2f4',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.4)'
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.65)'
           }}
+          labelStyle={{ color: '#fdf2f4', fontWeight: 600, marginBottom: '4px' }}
+          itemStyle={{ color: '#fdf2f4', fontSize: '0.78rem' }}
         />
         <Area type="monotone" dataKey="Traffic" stroke="#a82d46" strokeWidth={2} fillOpacity={1} fill="url(#colorTraffic)" />
         <Area type="monotone" dataKey="Threats" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorThreats)" />
