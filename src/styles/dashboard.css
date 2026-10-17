@@ -425,10 +425,6 @@
   background: var(--bg-surface-hover);
 }
 
-.live-packet-row.blocked {
-  border-left: 2px solid var(--danger);
-}
-
 .packet-col-time {
   font-size: 0.7rem;
   color: var(--text-subtle);

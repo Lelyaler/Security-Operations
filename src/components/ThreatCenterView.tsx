@@ -154,14 +154,14 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
                 <tr>
                   <th>Incident ID</th>
                   <th>Source IP</th>
-                  <th>Target Node</th>
-                  <th>MITRE / CVE</th>
+                  <th className="threat-col-optional">Target Node</th>
+                  <th className="threat-col-optional">MITRE / CVE</th>
                   <th>Severity</th>
-                  <th>Detection Reason</th>
-                  <th>Payload</th>
+                  <th className="threat-col-optional">Detection Reason</th>
+                  <th className="threat-col-optional">Payload</th>
                   <th>Timestamp</th>
                   <th>Status</th>
-                  <th>Actions</th>
+                  <th className="threat-col-optional">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -170,12 +170,12 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
                     <tr 
                       key={inc.id}
                       className={`threat-row ${selectedIncident && selectedIncident.id === inc.id ? 'active' : ''}`}
-                      onClick={() => setSelectedIncident(inc)}
+                      onClick={() => setSelectedIncident(selectedIncident?.id === inc.id ? null : inc)}
                     >
                       <td className="font-mono text-muted">{inc.id}</td>
                       <td className="font-mono font-medium">{inc.sourceIp}</td>
-                      <td className="text-muted font-mono">{inc.targetService}</td>
-                      <td>
+                      <td className="text-muted font-mono threat-col-optional">{inc.targetService}</td>
+                      <td className="threat-col-optional">
                         {inc.mitre ? (
                           <span className="mitre-badge font-mono" title={`${inc.mitre.name} (${inc.mitre.tactic})`}>
                             {inc.mitre.id}
@@ -191,17 +191,17 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
                           {inc.risk.toUpperCase()}
                         </span>
                       </td>
-                      <td className="threat-reason-cell" title={inc.reason}>{inc.reason}</td>
-                      <td className="font-mono text-muted">{inc.payloadSize}</td>
+                      <td className="threat-reason-cell threat-col-optional" title={inc.reason}>{inc.reason}</td>
+                      <td className="font-mono text-muted threat-col-optional">{inc.payloadSize}</td>
                       <td className="text-muted">{inc.timestamp}</td>
                       <td>
                         <span className={`status-pill status-${inc.status}`}>
                           {inc.status}
                         </span>
                       </td>
-                      <td onClick={(e) => e.stopPropagation()}>
+                      <td className="threat-col-optional" onClick={(e) => e.stopPropagation()}>
                         <button
-                          onClick={() => setSelectedIncident(inc)}
+                          onClick={() => setSelectedIncident(selectedIncident?.id === inc.id ? null : inc)}
                           className="btn btn-xs btn-secondary"
                         >
                           Inspect
