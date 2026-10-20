@@ -107,8 +107,8 @@ export default function InfrastructureView() {
                         <div className="node-icon-box">
                           <Server size={18} className="text-primary" />
                         </div>
-                        <div>
-                          <h3 className="node-hostname">{node.name}</h3>
+                        <div className="node-name-block">
+                          <h3 className="node-hostname" title={node.name}>{node.name}</h3>
                           <span className="node-ip text-muted font-mono">{node.ipAddress}</span>
                         </div>
                       </div>

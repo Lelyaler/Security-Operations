@@ -1,6 +1,4 @@
-/* ==========================================================================
-   Audit Logs View
-   ========================================================================== */
+
 
 .audit-logs-view {
   display: flex;
@@ -20,6 +18,12 @@
   .audit-controls {
     flex-direction: column;
     align-items: stretch;
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .table-heading-row {
+    padding: 14px 16px;
   }
 }
 
@@ -51,7 +55,8 @@
   gap: 10px;
   padding: 14px 18px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  border: none;
+  box-shadow: var(--card-shadow);
   border-radius: 8px;
   font-size: 0.82rem;
 }
@@ -114,7 +119,7 @@
 .audit-table td {
   padding: 12px 18px;
   font-size: 0.8rem;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-divider);
   vertical-align: middle;
   white-space: nowrap;
 }

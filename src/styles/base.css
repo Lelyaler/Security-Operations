@@ -72,7 +72,7 @@ body {
   align-items: center;
   gap: 10px;
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: none;
   border-radius: 8px;
   padding: 0 14px;
   height: 38px;
@@ -82,7 +82,7 @@ body {
 }
 
 .search-bar:focus-within {
-  border-color: rgba(168, 45, 70, 0.45);
+  box-shadow: 0 0 0 1.5px rgba(168, 45, 70, 0.5);
 }
 
 .search-bar input {
@@ -140,7 +140,7 @@ body {
 
 .select-wrapper select {
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: none;
   color: var(--text-main);
   border-radius: 6px;
   padding: 8px 12px;
@@ -152,7 +152,7 @@ body {
 }
 
 .select-wrapper select:focus {
-  border-color: rgba(168, 45, 70, 0.45);
+  box-shadow: 0 0 0 1.5px rgba(168, 45, 70, 0.5);
 }
 
 .btn {
@@ -185,7 +185,7 @@ body {
 
 .btn-secondary {
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: none;
   color: var(--text-main);
 }
 
@@ -205,7 +205,7 @@ body {
 
 .btn-outline {
   background: transparent;
-  border: 1px solid var(--border-divider);
+  border: none; background: rgba(255, 255, 255, 0.05);
   color: var(--text-main);
 }
 

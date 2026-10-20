@@ -19,7 +19,8 @@
   min-height: 148px;
   border-radius: 12px;
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  border: none;
+  box-shadow: var(--card-shadow);
   transition: var(--transition);
 }
 
@@ -343,7 +344,7 @@
 
 .feed-search-input {
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: none;
   border-radius: 6px;
   color: var(--text-main);
   padding: 4px 8px;
@@ -354,7 +355,7 @@
 }
 
 .feed-search-input:focus {
-  border-color: rgba(168, 45, 70, 0.5);
+  box-shadow: 0 0 0 1.5px rgba(168, 45, 70, 0.5);
   width: 180px;
 }
 
@@ -416,17 +417,13 @@
   padding: 8px 12px;
   border-radius: 6px;
   background: var(--bg-surface-elevated);
-  border: 1px solid transparent;
+  border: none;
   transition: var(--transition);
   gap: 10px;
 }
 
 .live-packet-row:hover {
   background: var(--bg-surface-hover);
-}
-
-.live-packet-row.blocked {
-  border-left: 2px solid var(--danger);
 }
 
 .packet-col-time {
@@ -554,6 +551,7 @@
 
   .kpi-card {
     padding: 14px;
+    min-height: 136px;
   }
 
   .kpi-value {
@@ -565,4 +563,89 @@
   .kpi-grid {
     grid-template-columns: 1fr;
   }
+
+  .feed-controls-group {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .feed-sub-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .feed-search-input {
+    width: 100%;
+  }
+
+  .feed-search-input:focus {
+    width: 100%;
+  }
+
+  .feed-status-stats {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .packet-col-meta {
+    display: none;
+  }
+
+  .live-packet-row {
+    padding: 7px 8px;
+    gap: 6px;
+  }
+}
+
+.protocol-chart-tooltip {
+  background: #24171c;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 170px;
+  pointer-events: none;
+}
+
+.protocol-tooltip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border-divider);
+}
+
+.protocol-tooltip-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #fdf2f4;
+}
+
+.protocol-tooltip-share {
+  font-size: 0.7rem;
+  font-weight: 600;
+  background: rgba(168, 45, 70, 0.25);
+  color: #f87171;
+  padding: 1px 6px;
+  border-radius: 4px;
+}
+
+.protocol-tooltip-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.protocol-tooltip-value {
+  font-weight: 600;
+  color: #fdf2f4;
 }

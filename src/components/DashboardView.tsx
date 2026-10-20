@@ -168,15 +168,17 @@ export default function DashboardView({
             ) : (
               filteredPackets.map((packet) => (
                 <div key={packet.id} className={`live-packet-row ${packet.type}`}>
-                  <div className="packet-row-left">
-                    <span className="packet-ip font-mono">{packet.sourceIp}</span>
-                    <span className="packet-endpoint text-muted font-mono">{packet.endpoint}</span>
+                  <div className="packet-col-target">
+                    <div className="packet-ip-row">
+                      <span className="packet-ip font-mono">{packet.sourceIp}</span>
+                    </div>
+                    <span className="packet-endpoint font-mono">{packet.endpoint}</span>
                   </div>
-                  <div className="packet-row-center">
+                  <div className="packet-col-meta">
                     <span className="packet-payload font-mono">{packet.payloadSize}</span>
                     <span className="packet-port-badge font-mono">Port {packet.port}</span>
                   </div>
-                  <div className="packet-row-right">
+                  <div className="packet-col-status">
                     <span className={`packet-status font-mono ${packet.type === 'allowed' ? 'text-success' : 'text-danger'}`}>
                       {packet.statusText}
                     </span>

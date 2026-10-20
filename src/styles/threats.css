@@ -1,6 +1,4 @@
-/* ==========================================================================
-   Threat Center View
-   ========================================================================== */
+
 
 .threat-view {
   display: flex;
@@ -13,7 +11,7 @@
   align-items: center;
   gap: 10px;
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: none;
   padding: 12px 16px;
   border-radius: 8px;
   font-size: 0.82rem;
@@ -30,7 +28,8 @@
   align-items: center;
   gap: 14px;
   padding: 18px 20px;
-  border: 1px solid var(--border-subtle);
+  border: none;
+  box-shadow: var(--card-shadow);
   border-radius: 10px;
   background: var(--bg-surface);
 }
@@ -62,9 +61,29 @@
   grid-template-columns: minmax(0, 1fr) 360px;
 }
 
+.has-inspector .threat-col-optional {
+  display: none;
+}
+
+.has-inspector .threat-table-card {
+  max-height: calc(100vh - 230px);
+  display: flex;
+  flex-direction: column;
+}
+
+.has-inspector .threat-table-responsive {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 @media (max-width: 1180px) {
   .threat-content-layout.has-inspector {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .has-inspector .threat-col-optional {
+    display: table-cell;
   }
 }
 
@@ -100,7 +119,7 @@
 
 .threat-select {
   background: var(--bg-surface-elevated);
-  border: 1px solid var(--border-subtle);
+  border: none;
   color: var(--text-main);
   border-radius: 6px;
   padding: 6px 10px;
@@ -111,7 +130,42 @@
 }
 
 .threat-select:focus {
-  border-color: rgba(168, 45, 70, 0.45);
+  box-shadow: 0 0 0 1.5px rgba(168, 45, 70, 0.5);
+}
+
+@media (max-width: 640px) {
+  .threat-summary-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .summary-card {
+    padding: 12px 14px;
+    gap: 10px;
+  }
+
+  .summary-val {
+    font-size: 1.2rem;
+  }
+
+  .threat-search-bar {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .threat-filters-row {
+    width: 100%;
+  }
+
+  .threat-select {
+    flex: 1;
+  }
+}
+
+@media (max-width: 440px) {
+  .threat-summary-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .threat-table-responsive {
@@ -142,7 +196,7 @@
 .threat-table td {
   padding: 12px 16px;
   font-size: 0.8rem;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-divider);
   vertical-align: middle;
   white-space: nowrap;
 }
@@ -177,6 +231,24 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  max-height: calc(100vh - 230px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-left {
+  animation: slideLeft 0.2s ease-out forwards;
 }
 
 .inspector-header {
