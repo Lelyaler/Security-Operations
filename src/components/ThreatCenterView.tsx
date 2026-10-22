@@ -1,21 +1,76 @@
-import { useState, type Dispatch, type SetStateAction } from 'react';
-import { ShieldAlert, ShieldCheck, AlertOctagon, X, Terminal, Globe, Check, ShieldOff, Search, Copy, CheckCheck, FileCode, Info } from 'lucide-react';
+import { useState, useEffect, type Dispatch, type SetStateAction } from 'react';
+import {
+  ShieldAlert,
+  ShieldCheck,
+  AlertOctagon,
+  X,
+  Terminal,
+  Globe,
+  Check,
+  ShieldOff,
+  Search,
+  Copy,
+  CheckCheck,
+  FileCode,
+  Info,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
+} from 'lucide-react';
 import { filterIncidents } from '../utils/securityHelpers';
-import type { SecurityIncident, RiskLevel, IncidentStatus } from '../types/security';
+import { socApi } from '../services/socApi';
+import { mockAuditLogs } from '../utils/mockData';
+import { useAuth } from '../context/useAuth';
+import { useDragScroll } from '../hooks/useDragScroll';
+import type { SecurityIncident, RiskLevel, IncidentStatus, AuditLog } from '../types/security';
 
 interface ThreatCenterViewProps {
   incidents: SecurityIncident[];
   setIncidents: Dispatch<SetStateAction<SecurityIncident[]>>;
+  params?: Record<string, string>;
+  onUpdateParams?: (newParams: Record<string, string | null>) => void;
 }
 
-export default function ThreatCenterView({ incidents, setIncidents }: ThreatCenterViewProps) {
-  const [selectedIncident, setSelectedIncident] = useState<SecurityIncident | null>(null);
+export default function ThreatCenterView({
+  incidents,
+  setIncidents,
+  params,
+  onUpdateParams
+}: ThreatCenterViewProps) {
+  const { operator } = useAuth();
+  const [selectedIncident, setSelectedIncident] = useState<SecurityIncident | null>(() => {
+    if (params?.id) {
+      return incidents.find((i) => i.id === params.id) || null;
+    }
+    return null;
+  });
+
   const [notification, setNotification] = useState<string | null>(null);
-  const [riskFilter, setRiskFilter] = useState<RiskLevel | 'all'>('all');
-  const [statusFilter, setStatusFilter] = useState<IncidentStatus | 'all'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [riskFilter, setRiskFilter] = useState<RiskLevel | 'all'>(
+    (params?.risk as RiskLevel) || 'all'
+  );
+  const [statusFilter, setStatusFilter] = useState<IncidentStatus | 'all'>(
+    (params?.status as IncidentStatus) || 'all'
+  );
+  const [searchTerm, setSearchTerm] = useState(params?.q || '');
   const [inspectorTab, setInspectorTab] = useState<'overview' | 'raw'>('overview');
   const [copiedRaw, setCopiedRaw] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(() => (params?.page ? Number(params.page) : 1));
+  const [pageSize, setPageSize] = useState(6);
+
+  const { ref: threatTableRef } = useDragScroll<HTMLDivElement>();
+
+  useEffect(() => {
+    if (params?.id) {
+      setSelectedIncident((current) => {
+        if (current?.id === params.id) return current;
+        const match = incidents.find((i) => i.id === params.id);
+        return match || current;
+      });
+    }
+  }, [params?.id, incidents]);
 
   const showNotification = (msg: string) => {
     setNotification(msg);
@@ -24,7 +79,13 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
     }, 4000);
   };
 
+  const handleSelectIncident = (inc: SecurityIncident | null) => {
+    setSelectedIncident(inc);
+    onUpdateParams?.({ id: inc ? inc.id : null });
+  };
+
   const handleAction = (id: string, newStatus: IncidentStatus) => {
+    socApi.mitigateIncident(id, newStatus).catch(() => {});
     setIncidents((prev) =>
       prev.map((inc) => (inc.id === id ? { ...inc, status: newStatus } : inc))
     );
@@ -35,8 +96,22 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
 
   const handleQuarantine = (incident: SecurityIncident) => {
     handleAction(incident.id, 'resolved');
-    setSelectedIncident(null);
-    showNotification(`Host IP ${incident.sourceIp} isolated: null-route rule committed to edge firewall.`);
+    handleSelectIncident(null);
+
+    const auditEntry: AuditLog = {
+      id: `LOG-${Math.floor(4120 + Math.random() * 500)}`,
+      principal: operator.name.toLowerCase().replace(/\s+/g, '_'),
+      type: 'SSH Access',
+      payloadSize: 180,
+      method: 'REST',
+      timestamp: new Date().toTimeString().slice(0, 8),
+      status: 'success',
+      clientIp: '192.168.10.45',
+      details: `SOAR Playbook executed: Null-route dropped host ${incident.sourceIp} via edge firewall rule`
+    };
+    mockAuditLogs.unshift(auditEntry);
+
+    showNotification(`SOAR Containment executed: Host IP ${incident.sourceIp} quarantined & logged to Audit Trail.`);
   };
 
   const handleCopyRaw = (text: string) => {
@@ -59,6 +134,16 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
   };
 
   const filteredIncidents = filterIncidents(incidents, riskFilter, statusFilter, searchTerm);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, riskFilter, statusFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredIncidents.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredIncidents.length);
+  const paginatedIncidents = filteredIncidents.slice(startIndex, endIndex);
 
   return (
     <div className="threat-view animate-fade-in">
@@ -148,7 +233,7 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
             </div>
           </div>
 
-          <div className="threat-table-responsive">
+          <div ref={threatTableRef} className="threat-table-responsive">
             <table className="threat-table">
               <thead>
                 <tr>
@@ -165,12 +250,12 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
                 </tr>
               </thead>
               <tbody>
-                {filteredIncidents.length > 0 ? (
-                  filteredIncidents.map((inc) => (
+                {paginatedIncidents.length > 0 ? (
+                  paginatedIncidents.map((inc) => (
                     <tr 
                       key={inc.id}
                       className={`threat-row ${selectedIncident && selectedIncident.id === inc.id ? 'active' : ''}`}
-                      onClick={() => setSelectedIncident(selectedIncident?.id === inc.id ? null : inc)}
+                      onClick={() => handleSelectIncident(selectedIncident?.id === inc.id ? null : inc)}
                     >
                       <td className="font-mono text-muted">{inc.id}</td>
                       <td className="font-mono font-medium">{inc.sourceIp}</td>
@@ -201,7 +286,7 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
                       </td>
                       <td className="threat-col-optional" onClick={(e) => e.stopPropagation()}>
                         <button
-                          onClick={() => setSelectedIncident(selectedIncident?.id === inc.id ? null : inc)}
+                          onClick={() => handleSelectIncident(selectedIncident?.id === inc.id ? null : inc)}
                           className="btn btn-xs btn-secondary"
                         >
                           Inspect
@@ -219,6 +304,91 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
               </tbody>
             </table>
           </div>
+
+          {/* Threat Incidents Pagination Bar */}
+          {filteredIncidents.length > 0 && (
+            <div className="table-pagination-bar">
+              <div className="pagination-info font-mono">
+                Showing <strong>{startIndex + 1}–{endIndex}</strong> of <strong>{filteredIncidents.length}</strong> incidents
+              </div>
+
+              <div className="pagination-actions">
+                <div className="pagination-page-size">
+                  <span className="page-size-label">Per page:</span>
+                  <select
+                    aria-label="Incidents per page"
+                    value={pageSize}
+                    onChange={(e) => {
+                      setPageSize(Number(e.target.value));
+                      setCurrentPage(1);
+                    }}
+                    className="page-size-select font-mono"
+                  >
+                    <option value={6}>6</option>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                  </select>
+                </div>
+
+                <div className="pagination-nav-buttons" role="navigation" aria-label="Incident Pagination">
+                  <button
+                    type="button"
+                    className="pagination-btn"
+                    onClick={() => setCurrentPage(1)}
+                    disabled={safePage <= 1}
+                    title="First Page"
+                    aria-label="First Page"
+                  >
+                    <ChevronsLeft size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    className="pagination-btn"
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={safePage <= 1}
+                    title="Previous Page"
+                    aria-label="Previous Page"
+                  >
+                    <ChevronLeft size={15} />
+                  </button>
+
+                  <div className="pagination-page-numbers">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                      <button
+                        key={pageNum}
+                        type="button"
+                        className={`pagination-num-btn font-mono ${pageNum === safePage ? 'active' : ''}`}
+                        onClick={() => setCurrentPage(pageNum)}
+                      >
+                        {pageNum}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="pagination-btn"
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={safePage >= totalPages}
+                    title="Next Page"
+                    aria-label="Next Page"
+                  >
+                    <ChevronRight size={15} />
+                  </button>
+                  <button
+                    type="button"
+                    className="pagination-btn"
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={safePage >= totalPages}
+                    title="Last Page"
+                    aria-label="Last Page"
+                  >
+                    <ChevronsRight size={15} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {selectedIncident && (
@@ -230,7 +400,7 @@ export default function ThreatCenterView({ incidents, setIncidents }: ThreatCent
               </div>
               <button 
                 className="btn-icon-close" 
-                onClick={() => setSelectedIncident(null)}
+                onClick={() => handleSelectIncident(null)}
                 aria-label="Close Inspector"
               >
                 <X size={16} />

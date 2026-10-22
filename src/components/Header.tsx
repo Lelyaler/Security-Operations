@@ -1,19 +1,26 @@
 import { useState, useRef, useEffect } from 'react';
-import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, Sliders, ShieldCheck, Key, LogOut } from 'lucide-react';
+import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, Sliders, ShieldCheck, Key, LogOut, Clock } from 'lucide-react';
+import { useAuth } from '../context/useAuth';
+import type { TimeRange } from '../context/AuthContext';
 
 interface HeaderProps {
   activeTab: string;
   isDdosActive: boolean;
   setIsMobileOpen: (open: boolean) => void;
   onOpenDiagnostics: () => void;
+  onOpenCredentials: (tab: 'clearance' | 'keys') => void;
+  onLockConsole: () => void;
 }
 
 export default function Header({
   activeTab,
   isDdosActive,
   setIsMobileOpen,
-  onOpenDiagnostics
+  onOpenDiagnostics,
+  onOpenCredentials,
+  onLockConsole
 }: HeaderProps) {
+  const { operator, timeRange, setTimeRange } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -113,6 +120,22 @@ export default function Header({
           </div>
         </div>
 
+        <div className="time-range-box" title="Global Telemetry Observation Window">
+          <Clock size={13} className="text-muted" />
+          <select
+            aria-label="Observation Time Window"
+            value={timeRange}
+            onChange={(e) => setTimeRange(e.target.value as TimeRange)}
+            className="time-range-select font-mono"
+          >
+            <option value="15m">Last 15m</option>
+            <option value="1h">Last 1h</option>
+            <option value="6h">Last 6h</option>
+            <option value="24h">Last 24h</option>
+            <option value="7d">Last 7d</option>
+          </select>
+        </div>
+
         <button
           onClick={onOpenDiagnostics}
           className={`header-harness-btn ${isDdosActive ? 'active' : ''}`}
@@ -171,31 +194,52 @@ export default function Header({
             <UserCheck size={16} className="text-muted" />
           </div>
           <div className="profile-info">
-            <span className="profile-name">Alexander K.</span>
+            <span className="profile-name">{operator.name}</span>
             <span className="profile-role">
-              <ShieldCheck size={11} className="role-icon" /> Tier 3 Analyst
+              <ShieldCheck size={11} className="role-icon" /> {operator.role}
             </span>
           </div>
 
           {isProfileOpen && (
             <div className="profile-menu-dropdown animate-fade-in" onClick={(e) => e.stopPropagation()}>
               <div className="profile-menu-header">
-                <span className="profile-menu-user">Alexander K.</span>
+                <span className="profile-menu-user">{operator.name}</span>
                 <div className="profile-menu-cluster">
                   <span className="cluster-status-dot"></span>
-                  <span>Cluster PROD · SEC-EU-1</span>
+                  <span>{operator.clusterRegion}</span>
                 </div>
               </div>
-              <button type="button" className="profile-menu-item" onClick={() => setIsProfileOpen(false)}>
-                <ShieldCheck size={14} className="menu-item-icon" />
+              <button
+                type="button"
+                className="profile-menu-item"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  onOpenCredentials('clearance');
+                }}
+              >
+                <ShieldCheck size={14} className="menu-item-icon text-success" />
                 <span>Security Clearance (Tier 3)</span>
               </button>
-              <button type="button" className="profile-menu-item" onClick={() => setIsProfileOpen(false)}>
-                <Key size={14} className="menu-item-icon" />
+              <button
+                type="button"
+                className="profile-menu-item"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  onOpenCredentials('keys');
+                }}
+              >
+                <Key size={14} className="menu-item-icon text-secondary" />
                 <span>Session Keys & Certificates</span>
               </button>
               <div className="profile-menu-divider"></div>
-              <button type="button" className="profile-menu-item text-muted" onClick={() => setIsProfileOpen(false)}>
+              <button
+                type="button"
+                className="profile-menu-item text-danger"
+                onClick={() => {
+                  setIsProfileOpen(false);
+                  onLockConsole();
+                }}
+              >
                 <LogOut size={14} className="menu-item-icon" />
                 <span>Lock Console</span>
               </button>

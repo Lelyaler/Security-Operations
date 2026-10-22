@@ -37,17 +37,20 @@
 .summary-info {
   display: flex;
   flex-direction: column;
+  gap: 4px;
 }
 
 .summary-val {
   font-size: 1.4rem;
   font-weight: 700;
   color: var(--text-title);
+  line-height: 1.25;
 }
 
 .summary-label {
   font-size: 0.75rem;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .threat-content-layout {
@@ -173,7 +176,32 @@
   min-width: 0;
   width: 100%;
   scrollbar-width: thin;
+  scrollbar-color: rgba(168, 45, 70, 0.45) rgba(25, 18, 22, 0.6);
   -webkit-overflow-scrolling: touch;
+}
+
+.threat-table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.threat-table-responsive::-webkit-scrollbar-track {
+  background: rgba(25, 18, 22, 0.6);
+  border-radius: 0 0 8px 8px;
+}
+
+.threat-table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(168, 45, 70, 0.45);
+  border-radius: 4px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.threat-table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+  box-shadow: 0 0 10px rgba(168, 45, 70, 0.6);
+}
+
+.threat-table-responsive::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .threat-table {
@@ -183,21 +211,23 @@
 }
 
 .threat-table th {
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-size: 0.72rem;
   text-transform: uppercase;
   color: var(--text-subtle);
   border-bottom: 1px solid var(--border-divider);
   font-weight: 600;
   letter-spacing: 0.5px;
+  line-height: 1.4;
   white-space: nowrap;
 }
 
 .threat-table td {
-  padding: 12px 16px;
+  padding: 14px 18px;
   font-size: 0.8rem;
   border-bottom: 1px solid var(--border-divider);
   vertical-align: middle;
+  line-height: 1.55;
   white-space: nowrap;
 }
 
@@ -217,6 +247,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--text-main);
+  line-height: 1.5;
 }
 
 .empty-table-state {
@@ -249,6 +280,8 @@
 
 .animate-slide-left {
   animation: slideLeft 0.2s ease-out forwards;
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
 .inspector-header {
@@ -299,25 +332,27 @@
 .meta-field {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .field-lbl {
   font-size: 0.68rem;
   color: var(--text-subtle);
   text-transform: uppercase;
+  line-height: 1.35;
 }
 
 .field-val {
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--text-title);
+  line-height: 1.35;
 }
 
 .threat-details-block {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .threat-details-block h4 {
@@ -325,14 +360,15 @@
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
+  line-height: 1.35;
 }
 
 .analysis-text {
   font-size: 0.78rem;
   color: var(--text-main);
-  line-height: 1.4;
+  line-height: 1.6;
   background: var(--bg-surface-elevated);
-  padding: 10px 12px;
+  padding: 12px 14px;
   border-radius: 6px;
 }
 

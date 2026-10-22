@@ -6,6 +6,8 @@ export default defineConfig({
   base: '/Security-Operations/',
   plugins: [react()],
   build: {
+    target: 'es2022',
+    cssCodeSplit: true,
     modulePreload: {
       resolveDependencies(_filename, deps) {
         return deps.filter(dep => !dep.includes('vendor-charts'));

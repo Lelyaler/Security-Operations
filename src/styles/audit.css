@@ -95,8 +95,35 @@
 
 .table-responsive {
   overflow-x: auto;
+  min-width: 0;
+  width: 100%;
   scrollbar-width: thin;
+  scrollbar-color: rgba(168, 45, 70, 0.45) rgba(25, 18, 22, 0.6);
   -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: rgba(25, 18, 22, 0.6);
+  border-radius: 0 0 8px 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(168, 45, 70, 0.45);
+  border-radius: 4px;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+  box-shadow: 0 0 10px rgba(168, 45, 70, 0.6);
+}
+
+.table-responsive::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .audit-table {
@@ -106,21 +133,23 @@
 }
 
 .audit-table th {
-  padding: 12px 18px;
+  padding: 14px 18px;
   font-size: 0.72rem;
   text-transform: uppercase;
   color: var(--text-subtle);
   border-bottom: 1px solid var(--border-divider);
   font-weight: 600;
   letter-spacing: 0.5px;
+  line-height: 1.4;
   white-space: nowrap;
 }
 
 .audit-table td {
-  padding: 12px 18px;
+  padding: 14px 18px;
   font-size: 0.8rem;
   border-bottom: 1px solid var(--border-divider);
   vertical-align: middle;
+  line-height: 1.55;
   white-space: nowrap;
 }
 
@@ -128,6 +157,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  line-height: 1.45;
 }
 
 .protocol-badge {
@@ -137,11 +167,13 @@
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: 600;
+  line-height: 1.35;
 }
 
 .event-type-tag {
   font-size: 0.75rem;
   color: var(--text-muted);
+  line-height: 1.45;
 }
 
 .header-diagnostics-btn {

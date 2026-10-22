@@ -3,8 +3,11 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './components/DashboardView';
 import DiagnosticsModal from './components/DiagnosticsModal';
+import OperatorCredentialsModal from './components/OperatorCredentialsModal';
+import LockScreen from './components/LockScreen';
 import { useIncidents } from './hooks/useIncidents';
 import { useTelemetry } from './hooks/useTelemetry';
+import { useNavigationState } from './hooks/useNavigationState';
 import { ShieldAlert, X } from 'lucide-react';
 
 const InfrastructureView = lazy(() => import('./components/InfrastructureView'));
@@ -12,10 +15,32 @@ const ThreatCenterView = lazy(() => import('./components/ThreatCenterView'));
 const AuditLogsView = lazy(() => import('./components/AuditLogsView'));
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const { tab: activeTab, params, navigateTab, updateParams } = useNavigationState();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+
+  const [credentialsModal, setCredentialsModal] = useState<{
+    isOpen: boolean;
+    tab: 'clearance' | 'keys';
+  }>({
+    isOpen: false,
+    tab: 'clearance'
+  });
+
+  const [isConsoleLocked, setIsConsoleLocked] = useState(() => {
+    return sessionStorage.getItem('soc_console_locked') === 'true';
+  });
+
+  const handleLockConsole = () => {
+    sessionStorage.setItem('soc_console_locked', 'true');
+    setIsConsoleLocked(true);
+  };
+
+  const handleUnlockConsole = () => {
+    sessionStorage.removeItem('soc_console_locked');
+    setIsConsoleLocked(false);
+  };
 
   const {
     incidents,
@@ -64,11 +89,18 @@ export default function App() {
           />
         );
       case 'infrastructure':
-        return <InfrastructureView />;
+        return <InfrastructureView params={params} onUpdateParams={updateParams} />;
       case 'threats':
-        return <ThreatCenterView incidents={incidents} setIncidents={setIncidents} />;
+        return (
+          <ThreatCenterView
+            incidents={incidents}
+            setIncidents={setIncidents}
+            params={params}
+            onUpdateParams={updateParams}
+          />
+        );
       case 'logs':
-        return <AuditLogsView />;
+        return <AuditLogsView params={params} onUpdateParams={updateParams} />;
       default:
         return (
           <DashboardView
@@ -90,7 +122,7 @@ export default function App() {
     >
       <Sidebar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={(t) => navigateTab(t as any)}
         alertsCount={unresolvedCount}
         isDdosActive={isDdosActive}
         isCollapsed={isSidebarCollapsed}
@@ -105,6 +137,8 @@ export default function App() {
           isDdosActive={isDdosActive}
           setIsMobileOpen={setIsMobileSidebarOpen}
           onOpenDiagnostics={() => setDiagnosticsOpen(true)}
+          onOpenCredentials={(tab) => setCredentialsModal({ isOpen: true, tab })}
+          onLockConsole={handleLockConsole}
         />
 
         <main className="content-area">
@@ -125,6 +159,16 @@ export default function App() {
         onInjectIncident={injectSyntheticIncident}
         onResetDefaults={resetToDefaults}
       />
+
+      <OperatorCredentialsModal
+        isOpen={credentialsModal.isOpen}
+        initialTab={credentialsModal.tab}
+        onClose={() => setCredentialsModal((prev) => ({ ...prev, isOpen: false }))}
+      />
+
+      {isConsoleLocked && (
+        <LockScreen onUnlock={handleUnlockConsole} />
+      )}
 
       {breachEvent && (
         <div className="breach-overlay animate-zoom-in">

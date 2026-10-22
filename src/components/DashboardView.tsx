@@ -1,8 +1,8 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import { TrendingUp, TrendingDown, Users, Activity, ShieldAlert, AlertCircle, Play, Pause } from 'lucide-react';
-import { kpiStats, trafficHistory, protocolDistribution } from '../utils/mockData';
-import { generateSyntheticPacket } from '../utils/securityHelpers';
-import type { NetworkPacket } from '../types/security';
+import { kpiStats as initialKpi, trafficHistory as initialTraffic, protocolDistribution as initialProtocols } from '../utils/mockData';
+import { socApi } from '../services/socApi';
+import type { NetworkPacket, KpiStats, TrafficDataPoint, ProtocolShare } from '../types/security';
 
 const NetworkTrafficChart = lazy(() => import('./NetworkTrafficChart'));
 const ProtocolDistributionChart = lazy(() => import('./ProtocolDistributionChart'));
@@ -24,18 +24,24 @@ export default function DashboardView({
 }: DashboardViewProps) {
   const [streamSpeed, setStreamSpeed] = useState<number>(1);
   const [trafficFilter, setTrafficFilter] = useState<'all' | 'allowed' | 'blocked'>('all');
+  const [kpi, setKpi] = useState<KpiStats>(initialKpi);
+  const [traffic, setTraffic] = useState<TrafficDataPoint[]>(initialTraffic);
+  const [protocols, setProtocols] = useState<ProtocolShare[]>(initialProtocols);
+
+  useEffect(() => {
+    socApi.getKpiMetrics().then(setKpi).catch(() => {});
+    socApi.getTrafficMetrics().then(setTraffic).catch(() => {});
+    socApi.getProtocolDistribution().then(setProtocols).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (isFeedFrozen || streamSpeed === 0) return;
 
     const intervalTime = Math.max(400, Math.round(3000 / streamSpeed));
     const interval = setInterval(() => {
-      const newPacket = generateSyntheticPacket(
-        `${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-        isDdosActive && Math.random() < 0.6
-      );
-
-      setLivePackets((prev) => [newPacket, ...prev.slice(0, 5)]);
+      socApi.fetchLivePacket(isDdosActive).then((newPacket) => {
+        setLivePackets((prev) => [newPacket, ...prev.slice(0, 5)]);
+      }).catch(() => {});
     }, intervalTime);
 
     return () => clearInterval(interval);
@@ -55,10 +61,10 @@ export default function DashboardView({
             <span className="kpi-title">Total Network Packets</span>
             <Activity className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value font-mono">{kpiStats.totalPackets.value}</div>
+          <div className="kpi-value font-mono">{kpi.totalPackets.value}</div>
           <div className="kpi-footer">
             <span className="trend-badge positive">
-              <TrendingUp size={12} /> {kpiStats.totalPackets.change}
+              <TrendingUp size={12} /> {kpi.totalPackets.change}
             </span>
             <span className="trend-label">vs last week</span>
           </div>
@@ -69,10 +75,10 @@ export default function DashboardView({
             <span className="kpi-title">Blocked Threats</span>
             <ShieldAlert className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value font-mono">{kpiStats.blockedThreats.value}</div>
+          <div className="kpi-value font-mono">{kpi.blockedThreats.value}</div>
           <div className="kpi-footer">
             <span className="trend-badge positive">
-              <TrendingUp size={12} /> {kpiStats.blockedThreats.change}
+              <TrendingUp size={12} /> {kpi.blockedThreats.change}
             </span>
             <span className="trend-label">vs last week</span>
           </div>
@@ -83,10 +89,10 @@ export default function DashboardView({
             <span className="kpi-title">Active Sockets</span>
             <Users className="kpi-icon text-muted" size={18} />
           </div>
-          <div className="kpi-value font-mono">{isDdosActive ? '1,842' : kpiStats.activeSockets.value}</div>
+          <div className="kpi-value font-mono">{isDdosActive ? '1,842' : kpi.activeSockets.value}</div>
           <div className="kpi-footer">
             <span className={isDdosActive ? 'trend-badge negative' : 'trend-badge positive'}>
-              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-43.9%' : kpiStats.activeSockets.change}
+              {isDdosActive ? <TrendingDown size={12} /> : <TrendingUp size={12} />} {isDdosActive ? '-43.9%' : kpi.activeSockets.change}
             </span>
             <span className="trend-label">vs yesterday</span>
           </div>
@@ -100,7 +106,7 @@ export default function DashboardView({
           <div className="kpi-value font-mono">{alertsCount}</div>
           <div className="kpi-footer">
             <span className="trend-badge negative">
-              {isDdosActive ? 'CRITICAL' : kpiStats.pendingAlerts.change}
+              {isDdosActive ? 'CRITICAL' : kpi.pendingAlerts.change}
             </span>
             <span className="trend-label">active alerts</span>
           </div>
@@ -112,7 +118,7 @@ export default function DashboardView({
           <h2 className="card-heading">Network Traffic vs Blocked Threats</h2>
           <div className="chart-wrapper">
             <Suspense fallback={<div className="chart-placeholder" style={{ height: 320 }} />}>
-              <NetworkTrafficChart data={trafficHistory} />
+              <NetworkTrafficChart data={traffic} />
             </Suspense>
           </div>
         </div>
@@ -195,7 +201,7 @@ export default function DashboardView({
           <h2 className="card-heading">Active Sockets by Protocol</h2>
           <div className="chart-wrapper">
             <Suspense fallback={<div className="chart-placeholder" style={{ height: 240 }} />}>
-              <ProtocolDistributionChart data={protocolDistribution} />
+              <ProtocolDistributionChart data={protocols} />
             </Suspense>
           </div>
         </div>

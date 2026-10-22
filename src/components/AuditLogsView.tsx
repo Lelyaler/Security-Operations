@@ -1,17 +1,42 @@
 import { useState, useEffect } from 'react';
-import { Search, Download, CheckCircle, Clock, AlertTriangle, FileSpreadsheet, Terminal } from 'lucide-react';
+import {
+  Search,
+  Download,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  FileSpreadsheet,
+  Terminal,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
+} from 'lucide-react';
 import { socApi } from '../services/socApi';
 import { mockAuditLogs } from '../utils/mockData';
 import { exportLogsToCsv, filterAuditLogs } from '../utils/securityHelpers';
+import { useDragScroll } from '../hooks/useDragScroll';
 import type { AuditLog, AuditLogStatus } from '../types/security';
 
-export default function AuditLogsView() {
+interface AuditLogsViewProps {
+  params?: Record<string, string>;
+  onUpdateParams?: (newParams: Record<string, string | null>) => void;
+}
+
+export default function AuditLogsView({ params, onUpdateParams }: AuditLogsViewProps = {}) {
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState<AuditLogStatus | 'all'>('all');
+  const [searchTerm, setSearchTerm] = useState(params?.q || '');
+  const [typeFilter, setTypeFilter] = useState(params?.type || 'all');
+  const [statusFilter, setStatusFilter] = useState<AuditLogStatus | 'all'>(
+    (params?.status as AuditLogStatus) || 'all'
+  );
   
+  const [currentPage, setCurrentPage] = useState(() => (params?.page ? Number(params.page) : 1));
+  const [pageSize, setPageSize] = useState(10);
+
+  const { ref: auditTableRef } = useDragScroll<HTMLDivElement>();
+
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
   const [exportComplete, setExportComplete] = useState(false);
@@ -37,6 +62,22 @@ export default function AuditLogsView() {
   }, []);
 
   const filteredLogs = filterAuditLogs(logs, typeFilter, statusFilter, searchTerm);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    onUpdateParams?.({
+      page: null,
+      type: typeFilter !== 'all' ? typeFilter : null,
+      status: statusFilter !== 'all' ? statusFilter : null,
+      q: searchTerm || null
+    });
+  }, [searchTerm, typeFilter, statusFilter, onUpdateParams]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredLogs.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredLogs.length);
+  const paginatedLogs = filteredLogs.slice(startIndex, endIndex);
 
   const handleExport = () => {
     setIsExporting(true);
@@ -163,7 +204,7 @@ export default function AuditLogsView() {
           <span className="record-count font-mono text-muted">{filteredLogs.length} events logged</span>
         </div>
 
-        <div className="table-responsive">
+        <div ref={auditTableRef} className="table-responsive">
           <table className="audit-table">
             <thead>
               <tr>
@@ -184,8 +225,8 @@ export default function AuditLogsView() {
                     Loading security audit telemetry...
                   </td>
                 </tr>
-              ) : filteredLogs.length > 0 ? (
-                filteredLogs.map((log) => (
+              ) : paginatedLogs.length > 0 ? (
+                paginatedLogs.map((log) => (
                   <tr key={log.id}>
                     <td className="font-mono text-muted">{log.id}</td>
                     <td>
@@ -223,6 +264,91 @@ export default function AuditLogsView() {
             </tbody>
           </table>
         </div>
+
+        {/* Audit Log Pagination Bar */}
+        {filteredLogs.length > 0 && (
+          <div className="table-pagination-bar">
+            <div className="pagination-info font-mono">
+              Showing <strong>{startIndex + 1}–{endIndex}</strong> of <strong>{filteredLogs.length}</strong> events
+            </div>
+
+            <div className="pagination-actions">
+              <div className="pagination-page-size">
+                <span className="page-size-label">Rows per page:</span>
+                <select
+                  aria-label="Rows per page"
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="page-size-select font-mono"
+                >
+                  <option value={10}>10</option>
+                  <option value={15}>15</option>
+                  <option value={25}>25</option>
+                </select>
+              </div>
+
+              <div className="pagination-nav-buttons" role="navigation" aria-label="Pagination">
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  onClick={() => setCurrentPage(1)}
+                  disabled={safePage <= 1}
+                  title="First Page"
+                  aria-label="First Page"
+                >
+                  <ChevronsLeft size={15} />
+                </button>
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  disabled={safePage <= 1}
+                  title="Previous Page"
+                  aria-label="Previous Page"
+                >
+                  <ChevronLeft size={15} />
+                </button>
+
+                <div className="pagination-page-numbers">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      type="button"
+                      className={`pagination-num-btn font-mono ${pageNum === safePage ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(pageNum)}
+                    >
+                      {pageNum}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={safePage >= totalPages}
+                  title="Next Page"
+                  aria-label="Next Page"
+                >
+                  <ChevronRight size={15} />
+                </button>
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  onClick={() => setCurrentPage(totalPages)}
+                  disabled={safePage >= totalPages}
+                  title="Last Page"
+                  aria-label="Last Page"
+                >
+                  <ChevronsRight size={15} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

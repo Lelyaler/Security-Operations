@@ -40,6 +40,7 @@
   font-weight: 500;
   color: var(--text-muted);
   letter-spacing: 0.3px;
+  line-height: 1.45;
 }
 
 .kpi-icon {
@@ -59,7 +60,7 @@
   font-weight: 700;
   color: var(--text-title);
   letter-spacing: -0.5px;
-  line-height: 1;
+  line-height: 1.25;
 }
 
 /* Sparkline in KPI 1 (Ingress Volume) */
@@ -526,12 +527,12 @@
 
 .log-item {
   display: flex;
-  gap: 10px;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 10px 14px;
   background: var(--bg-surface-elevated);
   border: none;
   border-radius: 6px;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 .log-danger {
@@ -541,6 +542,11 @@
 .log-time {
   color: var(--text-subtle);
   flex-shrink: 0;
+  line-height: 1.6;
+}
+
+.log-text {
+  line-height: 1.6;
 }
 
 @media (max-width: 768px) {
