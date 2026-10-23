@@ -1,6 +1,5 @@
 export type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
 export type IncidentStatus = 'pending' | 'investigating' | 'resolved';
-export type AuditLogStatus = 'success' | 'failed' | 'pending';
 export type PacketType = 'allowed' | 'blocked';
 
 export interface KpiMetric {
@@ -68,18 +67,6 @@ export interface SecurityIncident {
   destinationPort?: number;
   protocol?: string;
   userAgent?: string;
-}
-
-export interface AuditLog {
-  id: string;
-  principal: string;
-  type: 'File Write' | 'SSH Access' | 'API Call' | string;
-  payloadSize: number;
-  method: 'REST' | 'SSH' | 'HTTPS' | 'gRPC' | string;
-  timestamp: string;
-  status: AuditLogStatus;
-  details?: string;
-  clientIp?: string;
 }
 
 export interface NetworkPacket {

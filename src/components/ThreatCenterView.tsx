@@ -16,10 +16,8 @@ import {
 } from 'lucide-react';
 import { filterIncidents } from '../utils/securityHelpers';
 import { socApi } from '../services/socApi';
-import { mockAuditLogs } from '../utils/mockData';
-import { useAuth } from '../context/useAuth';
 import { useDragScroll } from '../hooks/useDragScroll';
-import type { SecurityIncident, RiskLevel, IncidentStatus, AuditLog } from '../types/security';
+import type { SecurityIncident, RiskLevel, IncidentStatus } from '../types/security';
 
 interface ThreatCenterViewProps {
   incidents: SecurityIncident[];
@@ -34,7 +32,6 @@ export default function ThreatCenterView({
   params,
   onUpdateParams
 }: ThreatCenterViewProps) {
-  const { operator } = useAuth();
   const [selectedIncident, setSelectedIncident] = useState<SecurityIncident | null>(() => {
     if (params?.id) {
       return incidents.find((i) => i.id === params.id) || null;
@@ -93,19 +90,6 @@ export default function ThreatCenterView({
   const handleQuarantine = (incident: SecurityIncident) => {
     handleAction(incident.id, 'resolved');
     handleSelectIncident(null);
-
-    const auditEntry: AuditLog = {
-      id: `LOG-${Math.floor(4120 + Math.random() * 500)}`,
-      principal: operator.name.toLowerCase().replace(/\s+/g, '_'),
-      type: 'SSH Access',
-      payloadSize: 180,
-      method: 'REST',
-      timestamp: new Date().toTimeString().slice(0, 8),
-      status: 'success',
-      clientIp: '192.168.10.45',
-      details: `Edge firewall policy applied: dropped traffic for host ${incident.sourceIp}`
-    };
-    mockAuditLogs.unshift(auditEntry);
 
     showNotification(`Perimeter containment active: Host ${incident.sourceIp} dropped via edge firewall rule.`);
   };

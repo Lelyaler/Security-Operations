@@ -55,11 +55,6 @@ export default function Header({
           title: 'Threat Intelligence & IDS',
           subtitle: 'Real-time anomaly detection, active mitigations & live packet inspection'
         };
-      case 'logs':
-        return {
-          title: 'System Access Audit Logs',
-          subtitle: 'eBPF kernel telemetry & immutable audit trail'
-        };
       default:
         return {
           title: 'Security Operations Center (SOC)',

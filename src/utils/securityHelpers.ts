@@ -1,10 +1,8 @@
 import type {
   SecurityIncident,
-  AuditLog,
   NetworkPacket,
   RiskLevel,
   IncidentStatus,
-  AuditLogStatus,
   InfrastructureNode
 } from '../types/security';
 
@@ -36,52 +34,6 @@ export function filterIncidents(
 
     return matchesRisk && matchesStatus && matchesQuery;
   });
-}
-
-/**
- * Filter administrative audit logs by type, status, and query
- */
-export function filterAuditLogs(
-  logs: AuditLog[],
-  typeFilter: string | 'all',
-  statusFilter: AuditLogStatus | 'all',
-  query = ''
-): AuditLog[] {
-  const normalizedQuery = query.trim().toLowerCase();
-
-  return logs.filter((log) => {
-    const matchesType = typeFilter === 'all' || log.type === typeFilter;
-    const matchesStatus = statusFilter === 'all' || log.status === statusFilter;
-    const matchesQuery =
-      !normalizedQuery ||
-      log.id.toLowerCase().includes(normalizedQuery) ||
-      log.principal.toLowerCase().includes(normalizedQuery) ||
-      log.method.toLowerCase().includes(normalizedQuery) ||
-      (log.details && log.details.toLowerCase().includes(normalizedQuery)) ||
-      (log.clientIp && log.clientIp.toLowerCase().includes(normalizedQuery));
-
-    return matchesType && matchesStatus && matchesQuery;
-  });
-}
-
-/**
- * Generates an RFC-compliant CSV string from audit logs
- */
-export function exportLogsToCsv(logs: AuditLog[]): string {
-  const headers = ['Log ID', 'Principal', 'Event Type', 'Client IP', 'Payload (Bytes)', 'Protocol', 'Timestamp', 'Status', 'Details'];
-  const rows = logs.map((log) => [
-    log.id,
-    `"${log.principal.replace(/"/g, '""')}"`,
-    `"${log.type.replace(/"/g, '""')}"`,
-    log.clientIp || 'N/A',
-    log.payloadSize.toString(),
-    log.method,
-    log.timestamp,
-    log.status,
-    `"${(log.details || '').replace(/"/g, '""')}"`
-  ]);
-
-  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
 }
 
 /**

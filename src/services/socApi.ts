@@ -4,7 +4,6 @@ import type {
   ProtocolShare,
   InfrastructureNode,
   SecurityIncident,
-  AuditLog,
   NetworkPacket,
   IncidentStatus
 } from '../types/security';
@@ -13,8 +12,7 @@ import {
   trafficHistory,
   protocolDistribution,
   mockInfrastructureNodes,
-  mockSecurityIncidents,
-  mockAuditLogs
+  mockSecurityIncidents
 } from '../utils/mockData';
 import { generateSyntheticPacket } from '../utils/securityHelpers';
 
@@ -86,10 +84,6 @@ export const socApi = {
         body: JSON.stringify({ id, status })
       }
     );
-  },
-
-  getAuditLogs(): Promise<AuditLog[]> {
-    return requestWithFallback<AuditLog[]>('/audit/logs', mockAuditLogs);
   },
 
   async fetchLivePacket(isDdos = false): Promise<NetworkPacket> {

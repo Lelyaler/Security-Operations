@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 export interface RouteState {
-  tab: 'dashboard' | 'infrastructure' | 'threats' | 'logs';
+  tab: 'dashboard' | 'infrastructure' | 'threats';
   params: Record<string, string>;
 }
 
@@ -9,7 +9,7 @@ function parseHash(hash: string): RouteState {
   const cleanHash = hash.replace(/^#\/?/, '');
   const [pathPart, queryPart] = cleanHash.split('?');
 
-  const validTabs: Array<RouteState['tab']> = ['dashboard', 'infrastructure', 'threats', 'logs'];
+  const validTabs: Array<RouteState['tab']> = ['dashboard', 'infrastructure', 'threats'];
   const tab = validTabs.includes(pathPart as RouteState['tab'])
     ? (pathPart as RouteState['tab'])
     : 'dashboard';

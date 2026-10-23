@@ -1,15 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   filterIncidents,
-  filterAuditLogs,
-  exportLogsToCsv,
   calculateInfrastructureHealth,
   generateSyntheticPacket,
   loadPersistedIncidents,
   savePersistedIncidents,
   clearPersistedData
 } from './securityHelpers';
-import type { SecurityIncident, AuditLog, InfrastructureNode } from '../types/security';
+import type { SecurityIncident, InfrastructureNode } from '../types/security';
 
 describe('securityHelpers', () => {
   const sampleIncidents: SecurityIncident[] = [
@@ -73,47 +71,6 @@ describe('securityHelpers', () => {
     const byCve = filterIncidents(sampleIncidents, 'all', 'all', 'CVE-2025');
     expect(byCve).toHaveLength(1);
     expect(byCve[0].id).toBe('SEC-101');
-  });
-
-  const sampleLogs: AuditLog[] = [
-    {
-      id: 'LOG-01',
-      principal: 'alex_admin',
-      type: 'SSH Access',
-      payloadSize: 1200,
-      method: 'SSH',
-      timestamp: '12:00:00',
-      status: 'success',
-      clientIp: '192.168.1.5',
-      details: 'Shell login ok'
-    },
-    {
-      id: 'LOG-02',
-      principal: 'guest_user',
-      type: 'API Call',
-      payloadSize: 400,
-      method: 'HTTPS',
-      timestamp: '12:05:00',
-      status: 'failed',
-      clientIp: '85.143.20.91',
-      details: 'Denied 403'
-    }
-  ];
-
-  it('filters audit logs by type and status', () => {
-    const sshLogs = filterAuditLogs(sampleLogs, 'SSH Access', 'all');
-    expect(sshLogs).toHaveLength(1);
-    expect(sshLogs[0].principal).toBe('alex_admin');
-
-    const failedLogs = filterAuditLogs(sampleLogs, 'all', 'failed');
-    expect(failedLogs).toHaveLength(1);
-    expect(failedLogs[0].id).toBe('LOG-02');
-  });
-
-  it('exports audit logs into valid CSV format', () => {
-    const csv = exportLogsToCsv(sampleLogs);
-    expect(csv).toContain('Log ID,Principal,Event Type');
-    expect(csv).toContain('LOG-01,"alex_admin","SSH Access"');
   });
 
   it('calculates infrastructure health score accurately', () => {

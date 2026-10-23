@@ -29,8 +29,7 @@ export default function Sidebar({
       label: 'Threat Center', 
       icon: ShieldAlert, 
       badge: alertsCount > 0 ? alertsCount : null 
-    },
-    { id: 'logs', label: 'Audit Logs', icon: Terminal }
+    }
   ];
 
   const showFullMenu = !isCollapsed || isMobileOpen;

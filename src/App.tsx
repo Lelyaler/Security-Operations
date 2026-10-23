@@ -10,7 +10,6 @@ import { useNavigationState } from './hooks/useNavigationState';
 
 const InfrastructureView = lazy(() => import('./components/InfrastructureView'));
 const ThreatCenterView = lazy(() => import('./components/ThreatCenterView'));
-const AuditLogsView = lazy(() => import('./components/AuditLogsView'));
 
 export default function App() {
   const { tab: activeTab, params, navigateTab, updateParams } = useNavigationState();
@@ -89,8 +88,6 @@ export default function App() {
             onUpdateParams={updateParams}
           />
         );
-      case 'logs':
-        return <AuditLogsView params={params} onUpdateParams={updateParams} />;
       default:
         return (
           <DashboardView
