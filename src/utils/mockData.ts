@@ -216,10 +216,10 @@ export const mockSecurityIncidents: SecurityIncident[] = [
     status: "pending",
     cve: "CVE-2025-2411",
     mitre: { id: "T1110.001", name: "Password Guessing", tactic: "Credential Access" },
-    sha256: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    sha256: "c7849e798f4803da966f91f253723bf22e39ec2f8b5a03e1b74a2ff4382572b9",
     destinationPort: 443,
     protocol: "HTTPS",
-    userAgent: "Hydra/9.5 (Linux; x86_64)",
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     rawEvent: `CEF:0|SecureNode|WAF-Sensor|3.4|1001|BRUTE_FORCE_BURST|8|src=185.220.101.42 dst=10.0.12.14 spt=51240 dpt=443 proto=TCP app=HTTPS request=/api/v1/auth/login cs1Label=AuthFailures cs1=42 cs2Label=Mitre cs2=T1110.001 msg="Consecutive invalid password attempts exceeded rate limit window (threshold=10/min)"`
   },
   {
@@ -236,7 +236,7 @@ export const mockSecurityIncidents: SecurityIncident[] = [
     sha256: "8f434346648f6b96df89dda901c5176b10a6d83961dd3c1ac88b59b2dc327aa4",
     destinationPort: 5432,
     protocol: "TCP",
-    userAgent: "sqlmap/1.7#stable",
+    userAgent: "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0",
     rawEvent: `CEF:0|SecureNode|DB-Firewall|2.1|4002|SQLI_PATTERN_MATCH|6|src=94.130.49.201 dst=10.0.40.5 spt=49221 dpt=5432 proto=TCP app=Postgres cs1Label=QuerySignature cs1="UNION SELECT null, username, password_hash FROM pg_shadow--" msg="Pattern match rule SQLI_UNION_EXTRACT detected"`
   },
   {
@@ -304,7 +304,6 @@ export const mockSecurityIncidents: SecurityIncident[] = [
     sha256: "3d9a19c501f2e8210375a004b38cf4826b52834b6562f798836ff7621980be12",
     destinationPort: 6379,
     protocol: "TCP",
-    userAgent: "redis-cli/7.2.4",
     rawEvent: `CEF:0|SecureNode|Redis-Firewall|2.0|7001|UNAUTHORIZED_LUA_EXEC|9|src=45.154.255.89 dst=10.0.80.3 spt=59812 dpt=6379 proto=TCP app=Redis cs1Label=ScriptSha cs1="c38b29..." msg="Blocked unauthenticated EVAL script containing os.execute hook"`
   },
   {
@@ -372,7 +371,6 @@ export const mockSecurityIncidents: SecurityIncident[] = [
     sha256: "a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3",
     destinationPort: 22,
     protocol: "SSH",
-    userAgent: "gdb/13.2",
     rawEvent: `CEF:0|SecureNode|eBPF-Sensor|1.4|3001|PTRACE_ATTACH_DENIED|10|src=185.191.171.18 dst=10.0.12.14 spt=51900 dpt=22 proto=TCP app=Kernel cs1Label=TargetPID cs1="1142" cs2Label=Binary cs2="/usr/sbin/sshd" msg="Blocked kernel ptrace capability escalation attempt on cryptographic daemon"`
   },
   {

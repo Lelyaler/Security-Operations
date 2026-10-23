@@ -2,9 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import {
   Lock,
   Unlock,
-  ShieldCheck,
   AlertTriangle,
-  Terminal,
   Clock,
   KeyRound,
   Eye,
@@ -68,7 +66,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
     setError(null);
 
     setTimeout(() => {
-      if (candidate === '1337' || candidate === '0000' || candidate === 'admin' || candidate.length >= 4) {
+      if (candidate === '4829' || candidate === '0000' || candidate === 'admin' || candidate.length >= 4) {
         setIsAuthenticating(false);
         onUnlock();
       } else {
@@ -82,20 +80,6 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
         inputRef.current?.focus();
       }
     }, 450);
-  };
-
-  const handleNumpadClick = (val: string) => {
-    if (val === 'C') {
-      setPin('');
-      setError(null);
-    } else if (val === 'ENTER') {
-      handleAttemptUnlock();
-    } else {
-      if (pin.length < 12) {
-        const nextPin = pin + val;
-        setPin(nextPin);
-      }
-    }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -115,9 +99,9 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
         <div className="lockscreen-topbar-left">
           <span className="station-badge">SEC-STATION-04</span>
           <span className="text-muted">·</span>
-          <span className="net-badge">VLAN-402 (DMZ AIR-GAP)</span>
+          <span className="net-badge">VLAN-402 (ISOLATED DMZ)</span>
           <span className="text-muted">·</span>
-          <span className="daemon-badge">eBPF-SEC-DAEMON v4.18</span>
+          <span className="daemon-badge">eBPF Sensor v4.18</span>
         </div>
         <div className="lockscreen-topbar-right">
           <Clock size={13} className="text-muted" />
@@ -137,9 +121,9 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
             <span className="status-dot-pulse" />
             CONSOLE LOCKED · PAM AUTH REQUIRED
           </div>
-          <h1 className="lockscreen-title">Workstation Suspended</h1>
+          <h1 className="lockscreen-title">Console Session Locked</h1>
           <p className="lockscreen-subtitle">
-            Cryptographic session state held securely in non-swappable memory
+            Enter operator PIN or security credentials to resume active session
           </p>
         </div>
 
@@ -151,7 +135,6 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
           <div className="operator-mini-info">
             <div className="operator-mini-name">{operator.name}</div>
             <div className="operator-mini-role font-mono">
-              <ShieldCheck size={11} className="text-success" />
               <span>Operator ID: {operator.callsign} · {operator.role}</span>
             </div>
           </div>
@@ -164,7 +147,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
             <input
               ref={inputRef}
               type={showPin ? 'text' : 'password'}
-              placeholder="Enter PIN (Demo: 1337)"
+              placeholder="Enter PIN (e.g. 4829)"
               value={pin}
               onChange={(e) => {
                 setPin(e.target.value);
@@ -204,7 +187,7 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
               {isAuthenticating ? (
                 <>
                   <span className="spinner-dots" />
-                  <span>Verifying PAM token...</span>
+                  <span>Verifying PAM credentials...</span>
                 </>
               ) : (
                 <>
@@ -213,55 +196,18 @@ export default function LockScreen({ onUnlock }: LockScreenProps) {
                 </>
               )}
             </button>
+          </div>
 
+          <div className="lockscreen-auth-hint font-mono">
+            <span>Operator PIN required to resume · Staging demo PIN: </span>
             <button
               type="button"
-              className="btn btn-secondary quick-unlock-btn font-mono"
-              onClick={() => handleAttemptUnlock('1337')}
+              className="hint-pin-link font-mono"
+              onClick={() => handleAttemptUnlock('4829')}
               disabled={isAuthenticating}
-              title="Quick unlock using master operator PIN"
             >
-              Demo PIN: 1337
+              4829
             </button>
-          </div>
-
-          {/* Minimal Operator Numpad */}
-          <div className="lockscreen-numpad font-mono">
-            {['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', 'ENTER'].map((key) => (
-              <button
-                key={key}
-                type="button"
-                className={`numpad-key ${key === 'ENTER' ? 'key-enter' : ''} ${
-                  key === 'C' ? 'key-clear' : ''
-                }`}
-                onClick={() => handleNumpadClick(key)}
-                disabled={isAuthenticating}
-              >
-                {key === 'ENTER' ? '↵' : key}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Security Daemon Live Status Feed */}
-        <div className="lockscreen-terminal">
-          <div className="terminal-bar font-mono">
-            <Terminal size={12} className="text-muted" />
-            <span>sys_auth.daemon_journal</span>
-          </div>
-          <div className="terminal-feed font-mono">
-            <div className="log-line text-muted">
-              <span className="log-tag">[OK]</span> PAM session suspended at {currentTime}
-            </div>
-            <div className="log-line text-muted">
-              <span className="log-tag">[OK]</span> Cryptographic keys pinned in memory (mlockall)
-            </div>
-            <div className="log-line text-muted">
-              <span className="log-tag">[NET]</span> Telemetry background sensor: ACTIVE (eBPF)
-            </div>
-            <div className="log-line text-secondary">
-              <span className="log-tag">[AUTH]</span> Awaiting PIN authentication challenge...
-            </div>
           </div>
         </div>
       </div>

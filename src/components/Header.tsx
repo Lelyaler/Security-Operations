@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, Sliders, ShieldCheck, Key, LogOut, Clock } from 'lucide-react';
+import { Users, Server, Bell, UserCheck, AlertTriangle, Menu, ShieldCheck, Key, LogOut, Clock } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 import type { TimeRange } from '../context/AuthContext';
 
@@ -7,7 +7,6 @@ interface HeaderProps {
   activeTab: string;
   isDdosActive: boolean;
   setIsMobileOpen: (open: boolean) => void;
-  onOpenDiagnostics: () => void;
   onOpenCredentials: (tab: 'clearance' | 'keys') => void;
   onLockConsole: () => void;
 }
@@ -16,7 +15,6 @@ export default function Header({
   activeTab,
   isDdosActive,
   setIsMobileOpen,
-  onOpenDiagnostics,
   onOpenCredentials,
   onLockConsole
 }: HeaderProps) {
@@ -88,7 +86,7 @@ export default function Header({
             <h1 className="header-title">{title}</h1>
             <div className={`env-pill ${isDdosActive ? 'env-pill-warning' : ''}`} title="Current Environment Cluster">
               <span className="env-dot"></span>
-              <span className="env-name">{isDdosActive ? 'CONGESTION · EU-1' : 'PROD · SEC-EU-1'}</span>
+              <span className="env-name">{isDdosActive ? 'ANOMALY · EU-1' : 'PROD · SEC-EU-1'}</span>
             </div>
           </div>
           <p className="header-subtitle">{subtitle}</p>
@@ -135,16 +133,6 @@ export default function Header({
             <option value="7d">Last 7d</option>
           </select>
         </div>
-
-        <button
-          onClick={onOpenDiagnostics}
-          className={`header-harness-btn ${isDdosActive ? 'active' : ''}`}
-          title="Telemetry Simulation & Fault Injection Harness"
-          aria-label="Simulation Harness"
-        >
-          <Sliders size={13} />
-          <span>Simulation Harness</span>
-        </button>
 
         <div 
           ref={bellRef}
@@ -195,9 +183,7 @@ export default function Header({
           </div>
           <div className="profile-info">
             <span className="profile-name">{operator.name}</span>
-            <span className="profile-role">
-              <ShieldCheck size={11} className="role-icon" /> {operator.role}
-            </span>
+            <span className="profile-role">{operator.role}</span>
           </div>
 
           {isProfileOpen && (
@@ -218,7 +204,7 @@ export default function Header({
                 }}
               >
                 <ShieldCheck size={14} className="menu-item-icon text-success" />
-                <span>Security Clearance (Tier 3)</span>
+                <span>Security Clearance & RBAC</span>
               </button>
               <button
                 type="button"
@@ -229,7 +215,7 @@ export default function Header({
                 }}
               >
                 <Key size={14} className="menu-item-icon text-secondary" />
-                <span>Session Keys & Certificates</span>
+                <span>Session Keys & mTLS</span>
               </button>
               <div className="profile-menu-divider"></div>
               <button

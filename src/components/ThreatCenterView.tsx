@@ -4,15 +4,11 @@ import {
   ShieldCheck,
   AlertOctagon,
   X,
-  Terminal,
-  Globe,
   Check,
   ShieldOff,
   Search,
   Copy,
   CheckCheck,
-  FileCode,
-  Info,
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -107,11 +103,11 @@ export default function ThreatCenterView({
       timestamp: new Date().toTimeString().slice(0, 8),
       status: 'success',
       clientIp: '192.168.10.45',
-      details: `SOAR Playbook executed: Null-route dropped host ${incident.sourceIp} via edge firewall rule`
+      details: `Edge firewall policy applied: dropped traffic for host ${incident.sourceIp}`
     };
     mockAuditLogs.unshift(auditEntry);
 
-    showNotification(`SOAR Containment executed: Host IP ${incident.sourceIp} quarantined & logged to Audit Trail.`);
+    showNotification(`Perimeter containment active: Host ${incident.sourceIp} dropped via edge firewall rule.`);
   };
 
   const handleCopyRaw = (text: string) => {
@@ -413,14 +409,14 @@ export default function ThreatCenterView({
                 className={`inspector-tab-btn ${inspectorTab === 'overview' ? 'active' : ''}`}
                 onClick={() => setInspectorTab('overview')}
               >
-                <Info size={13} /> Overview
+                Overview
               </button>
               <button
                 type="button"
                 className={`inspector-tab-btn ${inspectorTab === 'raw' ? 'active' : ''}`}
                 onClick={() => setInspectorTab('raw')}
               >
-                <FileCode size={13} /> Raw SIEM Event
+                Raw CEF Event
               </button>
             </div>
 
@@ -480,8 +476,8 @@ export default function ThreatCenterView({
                       </div>
                     )}
                     <div className="telemetry-chip-row">
-                      <span className="chip"><Globe size={13} /> External Network</span>
-                      <span className="chip"><Terminal size={13} /> Payload: {selectedIncident.payloadSize}</span>
+                      <span className="chip">External Ingress</span>
+                      <span className="chip">Payload: {selectedIncident.payloadSize}</span>
                     </div>
                   </div>
 

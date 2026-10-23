@@ -107,13 +107,13 @@ export default function Sidebar({
                   <Terminal size={14} className="text-muted" />
                 )}
                 <span className={isDdosActive ? 'text-danger font-bold' : 'status-title'}>
-                  {isDdosActive ? 'DDoS Anomaly' : 'System Status'}
+                  {isDdosActive ? 'Perimeter Alert' : 'System Status'}
                 </span>
               </div>
               <div className="status-indicator">
                 <span className={`status-dot ${isDdosActive ? 'bg-danger' : 'bg-success'}`}></span>
                 <span className={`status-label ${isDdosActive ? 'text-danger font-bold' : ''}`}>
-                  {isDdosActive ? 'Attack in progress' : 'Gateway operational'}
+                  {isDdosActive ? 'High ingress load' : 'Gateway operational'}
                 </span>
               </div>
               <div className="system-meta">

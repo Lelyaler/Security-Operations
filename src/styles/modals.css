@@ -945,10 +945,29 @@
   font-weight: 600;
 }
 
-.quick-unlock-btn {
-  font-size: 0.75rem;
-  padding: 8px 12px;
-  white-space: nowrap;
+.lockscreen-auth-hint {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  text-align: center;
+  margin-top: 2px;
+}
+
+.hint-pin-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-muted);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: var(--transition);
+}
+
+.hint-pin-link:hover {
+  color: var(--text-title);
 }
 
 .lockscreen-numpad {

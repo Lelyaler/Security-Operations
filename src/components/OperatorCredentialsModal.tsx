@@ -5,10 +5,9 @@ import {
   X,
   Copy,
   Check,
-  RefreshCw,
   Cpu,
   Lock,
-  FileCheck
+  UserCheck
 } from 'lucide-react';
 import { useAuth } from '../context/useAuth';
 
@@ -23,11 +22,9 @@ export default function OperatorCredentialsModal({
   initialTab = 'clearance',
   onClose
 }: OperatorCredentialsModalProps) {
-  const { operator, rotateSessionKey } = useAuth();
+  const { operator } = useAuth();
   const [activeTab, setActiveTab] = useState<'clearance' | 'keys'>(initialTab);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [isRotating, setIsRotating] = useState(false);
-  const [rotateSuccess, setRotateSuccess] = useState(false);
 
   if (!isOpen) return null;
 
@@ -36,27 +33,6 @@ export default function OperatorCredentialsModal({
     setCopiedKey(label);
     setTimeout(() => setCopiedKey(null), 2000);
   };
-
-  const handleRotateKey = async () => {
-    if (isRotating) return;
-    setIsRotating(true);
-    setRotateSuccess(false);
-
-    try {
-      await rotateSessionKey();
-      setIsRotating(false);
-      setRotateSuccess(true);
-      setTimeout(() => setRotateSuccess(false), 4000);
-    } catch {
-      setIsRotating(false);
-    }
-  };
-
-  const dummyJwt =
-    'eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6InNlYy1ldTEtMjAyNiJ9.eyJzdWIiOiJhbGV4YW5kZXIuayIsInJvbGVzIjpbInNlY29wcy5sZWFkIiwiaW5jaWRlbnQuY29tbWFuZGVyIl0sImNsZWFyYW5jZSI6IlRJRVItMyIsImlzcyI6ImF1dGguc2VjdXJlbm9kZS5pbnRlcm5hbCIsImV4cCI6MTc5Mjg1OTAwMCwiaWF0IjoxNzkyODIwNDAwfQ';
-
-  const dummySshKey =
-    'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG5YqZ89mXv10Qk27PLM44xL901eX17k2B14R89qZ21A ops@sec-ops-eu1';
 
   return (
     <div className="modal-backdrop animate-fade-in" onClick={onClose} role="dialog" aria-modal="true">
@@ -70,9 +46,9 @@ export default function OperatorCredentialsModal({
               {activeTab === 'clearance' ? <ShieldCheck size={20} /> : <Key size={20} />}
             </div>
             <div>
-              <h2 className="modal-title">Operator Identity & Security Keys</h2>
+              <h2 className="modal-title">Operator Profile & Security Context</h2>
               <p className="modal-subtitle">
-                Cryptographic authentication claims, clearance level, and ephemeral session certificates
+                Identity claims, RBAC permissions matrix, and active mutual TLS session credentials
               </p>
             </div>
           </div>
@@ -91,7 +67,7 @@ export default function OperatorCredentialsModal({
             onClick={() => setActiveTab('clearance')}
           >
             <ShieldCheck size={14} />
-            <span>Security Clearance (Tier 3)</span>
+            <span>Identity & RBAC Privileges</span>
           </button>
           <button
             type="button"
@@ -101,7 +77,7 @@ export default function OperatorCredentialsModal({
             onClick={() => setActiveTab('keys')}
           >
             <Key size={14} />
-            <span>Session Keys & Certificates</span>
+            <span>Mutual TLS & Connection</span>
           </button>
         </div>
 
@@ -129,10 +105,10 @@ export default function OperatorCredentialsModal({
               <div className="cred-card">
                 <div className="cred-card-hdr">
                   <Lock size={13} className="text-primary" />
-                  <span>Mandatory Access Control Level</span>
+                  <span>Access Control Policy</span>
                 </div>
                 <div className="cred-card-val font-mono">{operator.clearanceLevel}</div>
-                <span className="cred-card-sub">Granted by Central Security Council</span>
+                <span className="cred-card-sub">Granted via Enterprise IAM / IdP Federation Policy</span>
               </div>
 
               <div className="cred-card">
@@ -148,20 +124,15 @@ export default function OperatorCredentialsModal({
             <div className="token-claims-section">
               <div className="token-claims-header">
                 <div className="token-claims-title">
-                  <FileCheck size={13} className="text-secondary" />
-                  <span>Cryptographic Authorization Token (ES512 JWT)</span>
+                  <UserCheck size={13} className="text-secondary" />
+                  <span>Authentication & Session Details</span>
                 </div>
-                <button
-                  type="button"
-                  className="copy-token-btn"
-                  onClick={() => handleCopy(dummyJwt, 'jwt')}
-                >
-                  {copiedKey === 'jwt' ? <Check size={13} className="text-success" /> : <Copy size={13} />}
-                  <span>{copiedKey === 'jwt' ? 'Copied Token' : 'Copy Payload'}</span>
-                </button>
               </div>
-              <div className="token-claims-code font-mono" title={dummyJwt}>
-                {dummyJwt}
+              <div className="token-claims-code font-mono">
+                <div>Email: {operator.email}</div>
+                <div>Identity Provider: Enterprise SAML 2.0 / FIDO2 (Okta)</div>
+                <div>Session Established: {operator.sessionStarted}</div>
+                <div>Idle Policy: Enforced auto-lock after 15m inactivity</div>
               </div>
             </div>
 
@@ -181,13 +152,6 @@ export default function OperatorCredentialsModal({
         {/* Tab 2: Session Keys & Certificates */}
         {activeTab === 'keys' && (
           <div className="credentials-tab-content animate-fade-in">
-            {rotateSuccess && (
-              <div className="key-rotate-toast animate-slide-in">
-                <Check size={15} className="text-success" />
-                <span>New ephemeral session key generated & committed to cluster key-store.</span>
-              </div>
-            )}
-
             <div className="cert-info-card">
               <div className="cert-info-top">
                 <div className="cert-title-col">
@@ -195,15 +159,6 @@ export default function OperatorCredentialsModal({
                   <h3 className="cert-cn font-mono">{operator.activeCrtCn}</h3>
                   <span className="cert-ca font-mono text-muted">Issuer: SecureNode Internal Root CA EU-1</span>
                 </div>
-                <button
-                  type="button"
-                  className={`btn btn-secondary btn-sm ${isRotating ? 'loading' : ''}`}
-                  onClick={handleRotateKey}
-                  disabled={isRotating}
-                >
-                  <RefreshCw size={13} className={isRotating ? 'animate-spin' : ''} />
-                  <span>{isRotating ? 'Re-handshaking...' : 'Rotate Session Key'}</span>
-                </button>
               </div>
 
               <div className="cert-meta-grid">
@@ -236,21 +191,6 @@ export default function OperatorCredentialsModal({
                   </button>
                 </div>
                 <code className="key-code font-mono">{operator.sessionFingerprint}</code>
-              </div>
-
-              <div className="key-box">
-                <div className="key-box-hdr">
-                  <span className="key-box-title">Workstation Ed25519 Public Key:</span>
-                  <button
-                    type="button"
-                    className="key-copy-btn"
-                    onClick={() => handleCopy(dummySshKey, 'ssh')}
-                  >
-                    {copiedKey === 'ssh' ? <Check size={12} className="text-success" /> : <Copy size={12} />}
-                    <span>{copiedKey === 'ssh' ? 'Copied' : 'Copy'}</span>
-                  </button>
-                </div>
-                <code className="key-code font-mono">{dummySshKey}</code>
               </div>
             </div>
           </div>

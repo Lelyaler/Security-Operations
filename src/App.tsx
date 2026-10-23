@@ -2,13 +2,11 @@ import { useState, useEffect, Suspense, lazy } from 'react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import DashboardView from './components/DashboardView';
-import DiagnosticsModal from './components/DiagnosticsModal';
 import OperatorCredentialsModal from './components/OperatorCredentialsModal';
 import LockScreen from './components/LockScreen';
 import { useIncidents } from './hooks/useIncidents';
 import { useTelemetry } from './hooks/useTelemetry';
 import { useNavigationState } from './hooks/useNavigationState';
-import { ShieldAlert, X } from 'lucide-react';
 
 const InfrastructureView = lazy(() => import('./components/InfrastructureView'));
 const ThreatCenterView = lazy(() => import('./components/ThreatCenterView'));
@@ -18,7 +16,6 @@ export default function App() {
   const { tab: activeTab, params, navigateTab, updateParams } = useNavigationState();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
 
   const [credentialsModal, setCredentialsModal] = useState<{
     isOpen: boolean;
@@ -45,21 +42,14 @@ export default function App() {
   const {
     incidents,
     setIncidents,
-    injectSyntheticIncident,
-    resetToDefaults,
     unresolvedCount
   } = useIncidents();
 
   const {
     isDdosActive,
-    setIsDdosActive,
     isFeedFrozen,
-    setIsFeedFrozen,
     livePackets,
-    setLivePackets,
-    breachEvent,
-    triggerBreachSimulation,
-    dismissBreach
+    setLivePackets
   } = useTelemetry();
 
   useEffect(() => {
@@ -136,7 +126,6 @@ export default function App() {
           activeTab={activeTab}
           isDdosActive={isDdosActive}
           setIsMobileOpen={setIsMobileSidebarOpen}
-          onOpenDiagnostics={() => setDiagnosticsOpen(true)}
           onOpenCredentials={(tab) => setCredentialsModal({ isOpen: true, tab })}
           onLockConsole={handleLockConsole}
         />
@@ -148,18 +137,6 @@ export default function App() {
         </main>
       </div>
 
-      <DiagnosticsModal
-        isOpen={diagnosticsOpen}
-        onClose={() => setDiagnosticsOpen(false)}
-        isDdosActive={isDdosActive}
-        setIsDdosActive={setIsDdosActive}
-        isFeedFrozen={isFeedFrozen}
-        setIsFeedFrozen={setIsFeedFrozen}
-        onTriggerBreach={triggerBreachSimulation}
-        onInjectIncident={injectSyntheticIncident}
-        onResetDefaults={resetToDefaults}
-      />
-
       <OperatorCredentialsModal
         isOpen={credentialsModal.isOpen}
         initialTab={credentialsModal.tab}
@@ -168,42 +145,6 @@ export default function App() {
 
       {isConsoleLocked && (
         <LockScreen onUnlock={handleUnlockConsole} />
-      )}
-
-      {breachEvent && (
-        <div className="breach-overlay animate-zoom-in">
-          <div className="breach-modal card">
-            <button
-              className="breach-close-btn"
-              onClick={dismissBreach}
-              aria-label="Dismiss security notice"
-            >
-              <X size={16} />
-            </button>
-            <div className="breach-icon-wrapper">
-              <ShieldAlert className="text-danger" size={40} />
-            </div>
-            <div className="breach-message">
-              <h2>Security Breach Intercepted</h2>
-              <p>
-                Unauthorized attempt to read sensitive system configuration was blocked by intrusion
-                detection.
-              </p>
-              <div className="breach-details-pill">CRITICAL INTRUSION PREVENTED</div>
-              <div className="breach-meta font-mono">
-                <span>
-                  Source: <strong>{breachEvent.sourceIp}</strong>
-                </span>
-                <span>
-                  Target: <strong>{breachEvent.endpoint}</strong>
-                </span>
-                <span>
-                  Rule: <strong>{breachEvent.rule}</strong>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
     </div>
   );
