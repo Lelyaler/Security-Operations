@@ -1,0 +1,34 @@
+{
+  "name": "security-operations-console",
+  "private": true,
+  "version": "1.1.0",
+  "type": "module",
+  "description": "Security Operations Center (SOC) telemetry, traffic analysis, and incident mitigation console.",
+  "homepage": "https://Lelyaler.github.io/Security-Operations",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist --no-history -m 'release: v1.1.0'"
+  },
+  "dependencies": {
+    "lucide-react": "^1.21.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "recharts": "^3.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "gh-pages": "^6.3.0",
+    "oxlint": "^1.69.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.0",
+    "vitest": "^4.1.11"
+  }
+}
