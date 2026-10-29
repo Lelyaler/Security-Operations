@@ -99,8 +99,8 @@ export default function Sidebar({
                 <span className="status-label">Gateway operational</span>
               </div>
               <div className="system-meta">
-                <span>Ping: 14ms</span>
-                <span>Uptime: 99.98%</span>
+                <span>Region: eu-central-1</span>
+                <span>SLA: 99.98%</span>
               </div>
             </div>
           </div>

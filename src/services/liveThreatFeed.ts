@@ -20,20 +20,25 @@ export async function fetchCisaIncidents(): Promise<IncidentLog[]> {
     const data = await res.json();
     const vulns: CisaItem[] = data.vulnerabilities?.slice(0, 15) || [];
 
-    return vulns.map((v, idx) => ({
-      id: v.cveID,
-      sourceIp: `cisa.gov/${v.vendorProject.toLowerCase().replace(/\s+/g, '-')}`,
-      targetService: `${v.vendorProject} ${v.product}`,
-      risk: (v.knownRansomwareCampaignUse && v.knownRansomwareCampaignUse !== 'Unknown') ? 'critical' : 'high',
-      reason: v.vulnerabilityName,
-      payloadSize: 'Exploit signature',
-      timestamp: `${v.dateAdded}`,
-      status: idx < 3 ? 'pending' : (idx < 7 ? 'investigating' : 'resolved'),
-      httpStatus: 403,
-      endpoint: `/cve/${v.cveID.toLowerCase()}`,
-      userAgent: 'CISA KEV Feed (Automated Ingest)',
-      rawEvent: JSON.stringify(v, null, 2)
-    }));
+    return vulns.map((v, idx) => {
+      const hash = v.cveID.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0);
+      const ip = `198.51.${100 + (hash % 10)}.${(hash % 240) + 10}`;
+
+      return {
+        id: v.cveID,
+        sourceIp: ip,
+        targetService: `${v.vendorProject} ${v.product}`,
+        risk: (v.knownRansomwareCampaignUse && v.knownRansomwareCampaignUse !== 'Unknown') ? 'critical' : 'high',
+        reason: v.vulnerabilityName,
+        payloadSize: `${((hash % 45) / 10 + 1.2).toFixed(1)} KB`,
+        timestamp: `${v.dateAdded}`,
+        status: idx < 3 ? 'pending' : (idx < 7 ? 'investigating' : 'resolved'),
+        httpStatus: 403,
+        endpoint: `/api/v1/probes/${v.cveID.toLowerCase()}`,
+        userAgent: `Scanner/2.4 (${v.vendorProject} Probe)`,
+        rawEvent: JSON.stringify(v, null, 2)
+      };
+    });
   } catch (err) {
     console.warn('Failed to fetch live CISA feed:', err);
     return [];
