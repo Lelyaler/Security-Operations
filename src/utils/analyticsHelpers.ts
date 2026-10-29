@@ -42,27 +42,54 @@ export function formatClock(timestamp: number, mode: ClockMode = 'local'): strin
     : `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 }
 
-type PacketSample = Omit<NetworkPacket, 'id' | 'receivedAt'>;
+const SUBNETS = [
+  '185.12.94.',
+  '94.130.82.',
+  '77.88.55.',
+  '178.62.204.',
+  '142.250.180.',
+  '51.15.42.',
+  '89.208.29.',
+  '185.220.101.',
+  '109.236.85.'
+];
 
-const samples: PacketSample[] = [
-  { sourceIp: '185.12.94.14', endpoint: '/api/v1/telemetry', payloadSize: '1.4 KB', port: 443, statusText: '200 OK', type: 'allowed', latencyMs: 18, method: 'GET' },
-  { sourceIp: '94.130.82.110', endpoint: '/api/v2/products', payloadSize: '4.8 KB', port: 443, statusText: '200 OK', type: 'allowed', latencyMs: 34, method: 'GET' },
-  { sourceIp: '193.106.191.88', endpoint: '/wp-login.php', payloadSize: '0.8 KB', port: 443, statusText: '404 Not Found', type: 'blocked', latencyMs: 12, method: 'POST' },
-  { sourceIp: '77.88.55.66', endpoint: '/api/v1/auth/session', payloadSize: '2.2 KB', port: 443, statusText: '200 OK', type: 'allowed', latencyMs: 22, method: 'POST' },
-  { sourceIp: '185.220.101.42', endpoint: '/api/v1/auth/login', payloadSize: '1.9 KB', port: 443, statusText: '429 Too Many', type: 'blocked', latencyMs: 142, method: 'POST' },
-  { sourceIp: '109.236.85.12', endpoint: '/api/v2/checkout', payloadSize: '6.4 KB', port: 443, statusText: '504 Timeout', type: 'blocked', latencyMs: 3004, method: 'POST' },
-  { sourceIp: '178.62.204.81', endpoint: '/api/v1/catalog/search', payloadSize: '8.1 KB', port: 443, statusText: '200 OK', type: 'allowed', latencyMs: 45, method: 'GET' },
-  { sourceIp: '142.250.180.14', endpoint: '/health', payloadSize: '0.2 KB', port: 80, statusText: '200 OK', type: 'allowed', latencyMs: 8, method: 'GET' },
-  { sourceIp: '51.15.42.199', endpoint: '/api/v1/users/me', payloadSize: '3.1 KB', port: 443, statusText: '304 Not Modified', type: 'allowed', latencyMs: 15, method: 'GET' },
-  { sourceIp: '89.208.29.130', endpoint: '/api/v1/assets/upload', payloadSize: '28.4 MB', port: 443, statusText: '413 Too Large', type: 'blocked', latencyMs: 84, method: 'POST' }
+const ROUTE_DEFINITIONS = [
+  { endpoint: '/api/v1/telemetry', method: 'GET' as const, port: 443, statusText: '200 OK', type: 'allowed' as const, latency: 18, sizeKb: 1.4 },
+  { endpoint: '/api/v2/products', method: 'GET' as const, port: 443, statusText: '200 OK', type: 'allowed' as const, latency: 34, sizeKb: 4.8 },
+  { endpoint: '/wp-login.php', method: 'POST' as const, port: 443, statusText: '404 Not Found', type: 'blocked' as const, latency: 12, sizeKb: 0.8 },
+  { endpoint: '/api/v1/auth/session', method: 'POST' as const, port: 443, statusText: '200 OK', type: 'allowed' as const, latency: 22, sizeKb: 2.2 },
+  { endpoint: '/api/v1/auth/login', method: 'POST' as const, port: 443, statusText: '429 Too Many', type: 'blocked' as const, latency: 142, sizeKb: 1.9 },
+  { endpoint: '/api/v2/checkout', method: 'POST' as const, port: 443, statusText: '504 Timeout', type: 'blocked' as const, latency: 3004, sizeKb: 6.4 },
+  { endpoint: '/api/v1/catalog/search', method: 'GET' as const, port: 443, statusText: '200 OK', type: 'allowed' as const, latency: 45, sizeKb: 8.1 },
+  { endpoint: '/health', method: 'GET' as const, port: 80, statusText: '200 OK', type: 'allowed' as const, latency: 8, sizeKb: 0.2 },
+  { endpoint: '/api/v1/users/me', method: 'GET' as const, port: 443, statusText: '304 Not Modified', type: 'allowed' as const, latency: 15, sizeKb: 3.1 },
+  { endpoint: '/api/v1/assets/upload', method: 'POST' as const, port: 443, statusText: '413 Too Large', type: 'blocked' as const, latency: 84, sizeKb: 28.4 }
 ];
 
 let cursor = 0;
 
 export function nextPacket(receivedAt = Date.now()): NetworkPacket {
-  const sample = samples[cursor % samples.length];
+  const route = ROUTE_DEFINITIONS[cursor % ROUTE_DEFINITIONS.length];
+  const subnet = SUBNETS[cursor % SUBNETS.length];
+  const host = ((cursor * 19 + 7) % 245) + 1;
+  const jitter = Math.round(Math.sin(cursor) * (route.latency > 100 ? 15 : 4));
+  const latencyMs = Math.max(4, route.latency + jitter);
+  const sizeVariance = (route.sizeKb + (Math.cos(cursor) * 0.2)).toFixed(1);
+
   cursor++;
-  return { ...sample, id: `${receivedAt.toString(36)}-${cursor}`, receivedAt };
+  return {
+    id: `${receivedAt.toString(36)}-${cursor}`,
+    sourceIp: `${subnet}${host}`,
+    endpoint: route.endpoint,
+    payloadSize: `${sizeVariance} KB`,
+    port: route.port,
+    statusText: route.statusText,
+    type: route.type,
+    receivedAt,
+    latencyMs,
+    method: route.method
+  };
 }
 
 export function seedPackets(count: number, stepMs: number, now = Date.now()): NetworkPacket[] {

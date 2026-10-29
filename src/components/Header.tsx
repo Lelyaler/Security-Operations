@@ -96,11 +96,11 @@ export default function Header({ activeTab, setIsMobileOpen, onOpenSettings }: H
               </div>
               <div className="notification-dropdown-item">
                 <ShieldCheck size={14} className="text-success" />
-                <span>All gateways are healthy.</span>
+                <span>All edge gateways operational across 3 availability zones.</span>
               </div>
               <div className="notification-dropdown-item">
                 <Key size={14} className="text-muted" />
-                <span>TLS certificate for api.example.com renews in 12 days.</span>
+                <span>TLS wildcard cert (*.api.example.com) auto-renews in 12 days.</span>
               </div>
             </div>
           )}
