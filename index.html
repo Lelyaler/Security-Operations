@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/Security-Operations/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security Operations Console — Network &amp; Incident Telemetry</title>
+    <meta name="description" content="Security Operations Center (SOC) dashboard for real-time network traffic telemetry, latency percentiles, and incident mitigation." />
+    <meta name="theme-color" content="#f8fafc" />
+    <meta name="color-scheme" content="light" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      />
+    </noscript>
+
+    <style>
+      :root {
+        --bg-dark: #f8fafc;
+        --bg-surface: #ffffff;
+        --border-subtle: #e2e8f0;
+        --text-title: #0f172a;
+        --text-muted: #64748b;
+      }
+      body {
+        margin: 0;
+        background: #f8fafc;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        color: #334155;
+      }
+      .app-shell-pre {
+        display: flex;
+        min-height: 100vh;
+        background: #f8fafc;
+      }
+      .app-shell-side {
+        width: 250px;
+        background: #ffffff;
+        border-right: 1px solid #e2e8f0;
+        padding: 24px 20px;
+        box-sizing: border-box;
+      }
+      .app-shell-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .app-shell-hdr {
+        height: 72px;
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0 28px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .app-shell-cnt {
+        padding: 24px 28px;
+      }
+      .app-shell-kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 18px;
+      }
+      .app-shell-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 18px 20px;
+      }
+      @media (max-width: 900px) {
+        .app-shell-side { display: none; }
+      }
+    </style>
+    <script type="module" crossorigin src="/Security-Operations/assets/index-BC1dADCH.js"></script>
+    <link rel="modulepreload" crossorigin href="/Security-Operations/assets/rolldown-runtime-QTnfLwEv.js">
+    <link rel="modulepreload" crossorigin href="/Security-Operations/assets/vendor-core-DQGASXYM.js">
+    <link rel="modulepreload" crossorigin href="/Security-Operations/assets/vendor-icons-D09Sn5Fu.js">
+    <link rel="stylesheet" crossorigin href="/Security-Operations/assets/index-BZdqu4zO.css">
+  </head>
+  <body>
+    <div id="root">
+      <div class="app-shell-pre">
+        <aside class="app-shell-side">
+          <div style="font-weight: 700; font-size: 1.1rem; color: #0f172a; letter-spacing: 0.5px;">secops</div>
+        </aside>
+        <div class="app-shell-main">
+          <header class="app-shell-hdr">
+            <div>
+              <div style="font-size: 1.15rem; font-weight: 600; color: #0f172a;">Overview</div>
+              <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Gateway traffic, latency and response codes</div>
+            </div>
+            <div style="font-size: 0.72rem; font-family: monospace; color: #16a34a; font-weight: 600;">99.98% UPTIME</div>
+          </header>
+          <main class="app-shell-cnt">
+            <div class="app-shell-kpis">
+              <div class="app-shell-card">
+                <div style="font-size: 0.78rem; color: #64748b;">Requests</div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">14.8M</div>
+                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600;">+12.4% vs last week</div>
+              </div>
+              <div class="app-shell-card">
+                <div style="font-size: 0.78rem; color: #64748b;">Rejected (4xx/5xx)</div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">32.1K</div>
+                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600;">-8.3% vs last week</div>
+              </div>
+              <div class="app-shell-card">
+                <div style="font-size: 0.78rem; color: #64748b;">Active sockets</div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">4,190</div>
+                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600;">+5.1% vs yesterday</div>
+              </div>
+              <div class="app-shell-card">
+                <div style="font-size: 0.78rem; color: #64748b;">Open incidents</div>
+                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">5</div>
+                <div style="font-size: 0.74rem; color: #64748b;">need triage</div>
+              </div>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
