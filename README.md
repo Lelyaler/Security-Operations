@@ -31,40 +31,6 @@
 
 ---
 
-## Архитектура проекта
-
-```text
-src/
-├── components/
-│   ├── charts/            # Модульные графики на Recharts с единой темой токенов
-│   │   ├── LatencyChart.tsx
-│   │   ├── ProtocolChart.tsx
-│   │   ├── StatusCodesChart.tsx
-│   │   ├── TrafficChart.tsx
-│   │   └── chartTheme.ts
-│   ├── dashboard/         # Компоненты основного экрана
-│   │   ├── KpiGrid.tsx
-│   │   └── LiveFeedTable.tsx
-│   ├── incidents/         # Журнал инцидентов, фильтры, пагинатор и инспектор
-│   │   ├── IncidentFilters.tsx
-│   │   ├── IncidentInspector.tsx
-│   │   ├── IncidentMetricsCards.tsx
-│   │   ├── IncidentPagination.tsx
-│   │   └── IncidentTable.tsx
-│   ├── Header.tsx         # Шапка с профилем и переключателями
-│   ├── Panel.tsx          # Базовый контейнер с заголовком и слотами действий
-│   ├── SettingsModal.tsx  # Настройки оператора, частоты опроса и экспорт
-│   └── Sidebar.tsx        # Боковая навигация с авто-сворачиванием
-├── context/               # Контекст настроек оператора и формата времени
-├── hooks/                 # Кастомные хуки (useLiveFeed, useIncidents, useNavigationState)
-├── services/              # Клиенты сетевого API и внешней аналитики
-├── styles/                # Модульный CSS с дизайн-токенами
-├── types/                 # Строгие контракты данных
-└── utils/                 # Хелперы форматирования, тесты и генераторы
-```
-
----
-
 ## Стек технологий
 
 * **Фреймворк:** React 19
@@ -73,33 +39,3 @@ src/
 * **Графика и визуализация:** Recharts, Lucide Icons
 * **Тестирование:** Vitest
 * **Линтинг:** Oxlint
-
----
-
-## Локальный запуск
-
-```bash
-# Клонирование репозитория
-git clone https://github.com/Lelyaler/Security-Operations.git
-cd Security-Operations
-
-# Установка зависимостей
-npm install
-
-# Запуск dev-сервера
-npm run dev
-
-# Запуск тестов
-npm test
-
-# Сборка production-бандла
-npm run build
-```
-
----
-
-## Автор
-
-**Валерия Чернявская** — Frontend Developer  
-GitHub: [@Lelyaler](https://github.com/Lelyaler)  
-Portfolio: [lelyaler.github.io/Portfolio](https://lelyaler.github.io/Portfolio/)
