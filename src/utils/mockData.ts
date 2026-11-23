@@ -52,10 +52,10 @@ export const latencyHistory: LatencyDataPoint[] = [
 ];
 
 export const httpStatusDistribution: HttpStatusShare[] = [
-  { status: "200 OK", count: 10656000, share: "72%", color: "#0d9488" },
-  { status: "304 Not Modified", count: 2220000, share: "15%", color: "#94a3b8" },
-  { status: "4xx Client Error", count: 1332000, share: "9%", color: "#d97706" },
-  { status: "5xx Server Error", count: 592000, share: "4%", color: "#dc2626" }
+  { status: "200 OK", count: 10656000, share: "72%", color: "#326b54" },
+  { status: "304 Not Modified", count: 2220000, share: "15%", color: "#c2b59f" },
+  { status: "4xx Client Error", count: 1332000, share: "9%", color: "#ab8b68" },
+  { status: "5xx Server Error", count: 592000, share: "4%", color: "#b04a36" }
 ];
 
 export const protocolDistribution: ProtocolShare[] = [

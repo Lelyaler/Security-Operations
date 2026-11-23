@@ -1,17 +1,17 @@
 import type { CSSProperties } from 'react';
 
 export const palette = {
-  primary: '#0d9488',
-  primarySoft: '#5eead4',
-  slate: '#94a3b8',
-  danger: '#dc2626',
-  warning: '#d97706',
-  success: '#16a34a',
-  info: '#2563eb'
+  primary: '#326b54',
+  primarySoft: '#91d5b0',
+  slate: '#a99f8c',
+  danger: '#b04a36',
+  warning: '#ab8b68',
+  success: '#69876c',
+  info: '#4f6f8a'
 };
 
 export const axisProps = {
-  stroke: '#94a3b8',
+  stroke: '#6f7468',
   fontSize: 11,
   tickLine: false,
   axisLine: false
@@ -19,20 +19,21 @@ export const axisProps = {
 
 export const gridProps = {
   strokeDasharray: '3 3',
-  stroke: '#e2e8f0'
+  stroke: 'rgba(40, 59, 48, 0.14)'
 } as const;
 
 export const tooltipStyle: CSSProperties = {
-  background: '#ffffff',
-  border: '1px solid #e2e8f0',
-  borderRadius: 8,
-  color: '#0f172a',
+  background: 'rgba(245, 240, 233, 0.92)',
+  backdropFilter: 'blur(14px)',
+  border: '1px solid rgba(255, 255, 255, 0.7)',
+  borderRadius: 14,
+  color: '#242b27',
   fontSize: 12,
-  boxShadow: '0 8px 20px -6px rgba(15, 23, 42, 0.12)'
+  boxShadow: '0 16px 32px -12px rgba(19, 32, 23, 0.35)'
 };
 
 export const tooltipLabelStyle: CSSProperties = {
-  color: '#0f172a',
+  color: '#242b27',
   fontWeight: 600,
   marginBottom: 4
 };
