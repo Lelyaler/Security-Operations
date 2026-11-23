@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Security Operations Console - Network &amp; Incident Telemetry</title>
     <meta name="description" content="Security Operations Center (SOC) dashboard for real-time network traffic telemetry, latency percentiles, and incident mitigation." />
-    <meta name="theme-color" content="#f8fafc" />
+    <meta name="theme-color" content="#d6cebf" />
     <meta name="color-scheme" content="light" />
     <meta name="mobile-web-app-capable" content="yes" />
+
+    <link rel="preload" as="image" href="/Security-Operations/glass-bg-sm.webp" media="(max-width: 720px)" type="image/webp" />
+    <link rel="preload" as="image" href="/Security-Operations/glass-bg.webp" media="(min-width: 721px)" type="image/webp" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -32,27 +35,32 @@
 
     <style>
       :root {
-        --bg-dark: #f8fafc;
-        --bg-surface: #ffffff;
-        --border-subtle: #e2e8f0;
-        --text-title: #0f172a;
-        --text-muted: #64748b;
+        --bg-dark: #d6cebf;
+        --gw-ink: #242b27;
+        --gw-muted: #5b6458;
       }
       body {
         margin: 0;
-        background: #f8fafc;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        color: #334155;
+        background-color: #d6cebf;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        color: #242b27;
+        overflow-x: hidden;
       }
       .app-shell-pre {
         display: flex;
         min-height: 100vh;
-        background: #f8fafc;
+        min-height: 100dvh;
+        padding: 14px;
+        gap: 14px;
+        box-sizing: border-box;
       }
       .app-shell-side {
-        width: 250px;
-        background: #ffffff;
-        border-right: 1px solid #e2e8f0;
+        width: 248px;
+        background: rgba(244, 238, 228, 0.55);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 28px;
         padding: 24px 20px;
         box-sizing: border-box;
       }
@@ -60,32 +68,44 @@
         flex: 1;
         display: flex;
         flex-direction: column;
+        gap: 14px;
+        min-width: 0;
       }
       .app-shell-hdr {
-        height: 72px;
-        background: #ffffff;
-        border-bottom: 1px solid #e2e8f0;
-        padding: 0 28px;
+        height: 76px;
+        background: rgba(250, 245, 237, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 22px;
+        padding: 0 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        box-sizing: border-box;
       }
       .app-shell-cnt {
-        padding: 24px 28px;
+        padding: 0 4px;
       }
       .app-shell-kpis {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 18px;
+        gap: 16px;
       }
       .app-shell-card {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 18px 20px;
+        background: rgba(250, 245, 237, 0.65);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 22px;
+        padding: 20px 22px;
+        box-sizing: border-box;
       }
       @media (max-width: 900px) {
+        .app-shell-pre { padding: 10px; gap: 10px; }
         .app-shell-side { display: none; }
+        .app-shell-hdr { height: 66px; padding: 0 16px; border-radius: 20px; }
+        .app-shell-kpis { grid-template-columns: 1fr; gap: 12px; }
       }
     </style>
     <script type="module" crossorigin src="/Security-Operations/assets/index-YYqb0C-9.js"></script>
@@ -98,37 +118,37 @@
     <div id="root">
       <div class="app-shell-pre">
         <aside class="app-shell-side">
-          <div style="font-weight: 700; font-size: 1.1rem; color: #0f172a; letter-spacing: 0.5px;">secops</div>
+          <div style="font-weight: 700; font-size: 1.15rem; color: #294b39; letter-spacing: -0.01em;">secops</div>
         </aside>
         <div class="app-shell-main">
           <header class="app-shell-hdr">
             <div>
-              <div style="font-size: 1.15rem; font-weight: 600; color: #0f172a;">Overview</div>
-              <div style="font-size: 0.75rem; color: #64748b; margin-top: 2px;">Gateway traffic, latency and response codes</div>
+              <div style="font-size: 1.25rem; font-weight: 600; color: #242b27; letter-spacing: -0.02em;">Overview</div>
+              <div style="font-size: 0.75rem; color: #5b6458; margin-top: 2px;">Gateway traffic, latency and response codes</div>
             </div>
-            <div style="font-size: 0.72rem; font-family: monospace; color: #16a34a; font-weight: 600;">99.98% UPTIME</div>
+            <div style="font-size: 0.72rem; font-family: monospace; color: #326b54; font-weight: 600; background: rgba(220, 233, 218, 0.85); padding: 4px 10px; border-radius: 999px;">99.98% UPTIME</div>
           </header>
           <main class="app-shell-cnt">
             <div class="app-shell-kpis">
               <div class="app-shell-card">
-                <div style="font-size: 0.78rem; color: #64748b;">Requests</div>
-                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">14.8M</div>
-                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600;">+12.4% vs last week</div>
+                <div style="font-size: 0.78rem; color: #5b6458;">Requests</div>
+                <div style="font-size: 2rem; font-weight: 600; color: #242b27; margin: 6px 0; letter-spacing: -0.03em;">14.8M</div>
+                <div style="font-size: 0.74rem; color: #326b54; font-weight: 600;">+12.4% vs last week</div>
               </div>
               <div class="app-shell-card">
-                <div style="font-size: 0.78rem; color: #64748b;">Rejected (4xx/5xx)</div>
-                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">32.1K</div>
-                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600;">-8.3% vs last week</div>
+                <div style="font-size: 0.78rem; color: #5b6458;">Rejected (4xx/5xx)</div>
+                <div style="font-size: 2rem; font-weight: 600; color: #242b27; margin: 6px 0; letter-spacing: -0.03em;">32.1K</div>
+                <div style="font-size: 0.74rem; color: #326b54; font-weight: 600;">-8.3% vs last week</div>
               </div>
               <div class="app-shell-card">
-                <div style="font-size: 0.78rem; color: #64748b;">Active sockets</div>
-                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">4,190</div>
-                <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600;">+5.1% vs yesterday</div>
+                <div style="font-size: 0.78rem; color: #5b6458;">Active sockets</div>
+                <div style="font-size: 2rem; font-weight: 600; color: #242b27; margin: 6px 0; letter-spacing: -0.03em;">4,190</div>
+                <div style="font-size: 0.74rem; color: #326b54; font-weight: 600;">+5.1% vs yesterday</div>
               </div>
               <div class="app-shell-card">
-                <div style="font-size: 0.78rem; color: #64748b;">Open incidents</div>
-                <div style="font-size: 1.75rem; font-weight: 700; color: #0f172a; margin: 8px 0;">5</div>
-                <div style="font-size: 0.74rem; color: #64748b;">need triage</div>
+                <div style="font-size: 0.78rem; color: #5b6458;">Open incidents</div>
+                <div style="font-size: 2rem; font-weight: 600; color: #242b27; margin: 6px 0; letter-spacing: -0.03em;">2</div>
+                <div style="font-size: 0.74rem; color: #5b6458;">need triage</div>
               </div>
             </div>
           </main>
